@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Lead Detail</title>
+</head>
+<body>
+
+<h2>Lead Details</h2>
+
+<p><strong>Name:</strong> {{ lead.full_name }}</p>
+<p><strong>Email:</strong> {{ lead.email }}</p>
+<p><strong>Phone:</strong> {{ lead.phone_no }}</p>
+<p><strong>Course:</strong> {{ lead.course_interested }}</p>
+<p><strong>Status:</strong> {{ lead.status }}</p>
+<p><strong>Source:</strong> {{ lead.source }}</p>
+
+<hr>
+
+<h3>Add Call Log</h3>
+
+<form method="POST" action="{% url 'add_call_log' lead.id %}">
+    {% csrf_token %}
+    {{ call_form.as_p }}
+    <button type="submit">Add Call Log</button>
+</form>
+
+<hr>
+
+<h3>Call Logs</h3>
+
+<table border="1" cellpadding="8">
+    <tr>
+        <th>Type</th>
+        <th>Time</th>
+        <th>Duration</th>
+        <th>Notes</th>
+    </tr>
+
+    {% for call in call_logs %}
+    <tr>
+        <td>{{ call.call_type }}</td>
+        <td>{{ call.call_time }}</td>
+        <td>{{ call.duration }} sec</td>
+        <td>{{ call.notes }}</td>
+    </tr>
+    {% empty %}
+    <tr>
+        <td colspan="4">No call logs</td>
+    </tr>
+    {% endfor %}
+</table>
+
+<hr>
+
+<h3>Add Follow Up</h3>
+
+<form method="POST" action="{% url 'add_follow_up' lead.id %}">
+    {% csrf_token %}
+    {{ follow_form.as_p }}
+    <button type="submit">Add Follow Up</button>
+</form>
+
+<hr>
+
+<h3>Follow Ups</h3>
+
+<table border="1" cellpadding="8">
+    <tr>
+        <th>Date</th>
+        <th>Status</th>
+        <th>Remarks</th>
+    </tr>
+
+    {% for follow in follow_ups %}
+    <tr>
+        <td>{{ follow.follow_up_date }}</td>
+        <td>{{ follow.status }}</td>
+        <td>{{ follow.remarks }}</td>
+    </tr>
+    {% empty %}
+    <tr>
+        <td colspan="3">No follow-ups</td>
+    </tr>
+    {% endfor %}
+</table>
+
+<br><br>
+<a href="{% url 'lead_list' %}">← Back to Leads</a>
+
+</body>
+</html>

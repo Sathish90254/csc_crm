@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Create Lead</title>
+</head>
+<body>
+
+<h2>Create New Lead</h2>
+
+<form method="POST">
+    {% csrf_token %}
+
+    {{ form.as_p }}
+
+    <button type="submit">Save Lead</button>
+</form>
+
+<br>
+<a href="{% url 'lead_list' %}">View All Leads</a>
+
+</body>
+</html>
