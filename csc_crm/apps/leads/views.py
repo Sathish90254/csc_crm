@@ -31,15 +31,18 @@ def lead_capture_list(request):
         )
 
     # Get recent Leads for Today
-    today = timezone.now().date()
+    today = timezone.localdate()
     recent_leads = LeadCapture.objects.filter(enquiry_date=today).order_by('-created_at')[:10]
 
     # Get Status Counts
     status_counts = LeadCapture.objects.values('initial_status').annotate(count=Count('id'))
 
+    form = LeadCaptureForm()
+
     # Context
     context = {
         'leads': leads,
+        'form': form,
         'recent_leads': recent_leads,
         'status_counts': status_counts,
         'search_query': search_query
@@ -68,16 +71,33 @@ def lead_capture_create(request):
             lead.lead_id = f'LID-{lead_count:04d}'
             lead.save()
             messages.success(request, f'Lead{lead.lead_name} created successfully!')
-            return redirect('lead_capture_details')
+            return redirect('lead_capture_details', id=lead.id)
+        else:
+            print(form.errors) 
     else:
         form = LeadCaptureForm()
+
+    today = timezone.localdate()
+
+    recent_leads = LeadCapture.objects.filter(
+        enquiry_date=today
+    ).order_by('-created_at')[:10]
+
+    status_counts = LeadCapture.objects.values(
+        'initial_status'
+    ).annotate(count=Count('id'))
+
+    leads = LeadCapture.objects.all().order_by('-created_at')
 
     context = {
         'form': form,
         'page_title':'New Lead Entry',
+        'leads': leads,
+        'recent_leads': recent_leads,
+        'status_counts': status_counts,
     }
 
-    return render(request, 'leads/lead_form.html', context)
+    return render(request, 'leads/lead_list.html', context)
 
 # Update leads
 @require_http_methods(['GET','POST'])
@@ -86,28 +106,53 @@ def lead_capture_update(request, id):
 
     if request.method == 'POST':
         form = LeadCaptureForm(request.POST, instance=lead)
+
         if form.is_valid():
-            form.save()
-            messages.success(request, f'Lead {lead.lead_name} updated successfully!')
-            return redirect('lead_capture_details', id=lead.id)
+            updated_lead = form.save()
+
+            messages.success(
+                request,
+                f'Lead {updated_lead.lead_name} updated successfully!'
+            )
+
+            return redirect('lead_capture_details', id=updated_lead.id)
+
+        else:
+            print(form.errors)
+
     else:
         form = LeadCaptureForm(instance=lead)
-        
-        context = {
-            'form':form,
-            'lead':lead,
-            'pade_title':f'Edit Lead - {lead.lead_name}',
-        }
-    return render(request, 'leads/lead_form.html', context)
 
+    today = timezone.localdate()
+
+    recent_leads = LeadCapture.objects.filter(
+        enquiry_date=today
+    ).order_by('-created_at')[:10]
+
+    status_counts = LeadCapture.objects.values(
+        'initial_status'
+    ).annotate(count=Count('id'))
+
+    leads = LeadCapture.objects.all().order_by('-created_at')
+
+    context = {
+        'form': form,
+        'lead': lead,
+        'leads': leads,
+        'page_title': f'Edit Lead - {lead.lead_name}',
+        'recent_leads': recent_leads,
+        'status_counts': status_counts,
+    }
+
+    return render(request, 'leads/lead_list.html', context)
 # Deleting Lead
-@require_http_methods(['POST'])
-def lead_capture_delete(request, id):
-    lead = get_object_or_404(LeadCapture, id=id)
-    lead_name = lead.lead_name
-    lead.delete()
-    messages.success(request, f'Lead {lead.lead_name} Deleted Successfully!')
-    return redirect('lead_capture_list')
+# @require_http_methods(['POST'])
+# def lead_capture_delete(request, id):
+#     lead = get_object_or_404(LeadCapture, id=id)
+#     lead_name = lead.lead_name
+#     lead.delete()
+#     messages.success(request, f'Lead {lead.lead_name} Deleted Successfully!')
+#     return redirect('lead_capture_list')
 
 # PipeLine View
 def lead_pipeline_view(request):
@@ -227,7 +272,7 @@ def call_log_view(request):
 
     logs = CallLog.objects.all().order_by('-created_at')
 
-    return render(request, 'call_logs.html', {
+    return render(request, 'leads/call_logs.html', {
         'form': form,
         'logs': logs
     })

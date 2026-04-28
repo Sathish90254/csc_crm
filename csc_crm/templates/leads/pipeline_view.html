@@ -280,6 +280,59 @@
         </section>
     </div>
 
+          <!-- All Leads -->
+       <section class="all-leads-section">
+         <div class="content-card">
+
+            <div class="card-header">
+               <h2 class="card-title">All Leads</h2>
+            </div>
+
+            <div class="table-wrapper">
+
+               <table class="data-table">
+                  <thead>
+                     <tr>
+                        <th>ID</th>
+                        <th>Name</th>
+                        <th>Email</th>
+                        <th>Phone</th>
+                        <th>Source</th>
+                        <th>Status</th>
+                        <th>Action</th>
+                     </tr>
+                  </thead>
+
+                  <tbody>
+                     {% for lead in leads %}
+
+                     <tr>
+                        <td>{{lead.lead_id}}</td>
+                        <td>{{lead.lead_name}}</td>
+                        <td>{{lead.email}}</td>
+                        <td>{{lead.phone_no}}</td>
+                        <td>{{lead.lead_source}}</td>
+                        <td>{{ lead.initial_status|title }}</td>
+                        <td>
+
+                                <a href="{% url 'lead_capture_details' lead.id %}" class="btn-view">
+                                    View
+                                </a>
+
+                                <a href="{% url 'lead_capture_update' lead.id %}" class="btn-edit">
+                                    Edit
+                                </a>
+
+                            </td>
+                     </tr>
+                     {% endfor %}
+                  </tbody>
+               </table>
+
+            </div>
+
+         </div>
+       </section>
 
 </body>
 </html>
