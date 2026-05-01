@@ -34,7 +34,7 @@ class LeadCapture(models.Model):
     lead_id = models.CharField(max_length=10, unique=True)
     lead_name = models.CharField(max_length=100,)
     email = models.EmailField(blank=True, null=True, unique=True)
-    phone_no = models.CharField(unique=True, max_length=12)
+    phone_no = models.CharField(unique=True, max_length=12,)
     course_interested = models.CharField(max_length=100)
     lead_source = models.CharField(max_length=100, choices=SOURCE_CHOICES)
     assigned_to = models.ForeignKey(User, on_delete=models.SET_NULL, null=True)

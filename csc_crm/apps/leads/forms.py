@@ -10,6 +10,17 @@ class LeadCaptureForm(forms.ModelForm):
         widgets = {
             'enquiry_date': forms.DateInput(attrs={'type':'date'}),
             'next_followup_date':forms.DateInput(attrs={'type': 'date'}),
+            'phone_no':forms.TextInput(attrs={
+                'id':'phone_no',
+                'placeholder': 'Enter phone number',
+            }),
+            'lead_name':forms.TextInput(attrs={
+                'placeholder': 'Enter lead name'
+            }),
+            'email':forms.TextInput(attrs={
+                'placeholder': 'Enter email address'
+            }),
+            
         }
 
 # Call-log form

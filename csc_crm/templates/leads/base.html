@@ -8,17 +8,45 @@
     <title>{% block title %}CSC CRM{% endblock %}</title>
     <link rel="stylesheet" href="{% static 'css/style.css' %}">
     <link rel="stylesheet" href="{% static 'css/lead_list.css' %}">
+    <link rel="stylesheet" href="{% static 'css/base.css' %}">
+    <link rel="stylesheet" href="{% static 'css/lead_details.css' %}">
+    <link rel="stylesheet" href="{% static 'css/call_logs.css' %}">
 </head>
 <body>
-
+     
 <div class="crm-wrapper">
     <!-- Nav Bar -->
      <header class="main-navbar">
         <div class="navbar-left">
-            <h1 class="brand-title">CSC CRM</h1>
+            <h1 class="brand-title">CSC</h1>
         </div>
      </header>
 </div>
+
+<!-- Module Navigation Tabs -->
+     <nav class="module-tabs">
+        <a href="{% url 'lead_capture_list' %}" 
+           class="tab-link {% if request.resolver_match.url_name == 'lead_capture_list' %}active-tab{% endif %}">
+           Lead Capture
+        </a>
+        <a href="{% url 'lead_pipeline_view' %}"
+          class="tab-link {% if request.resolver_match.url_name == 'lead_pipeline_view' %}active-tab{% endif %}">
+          Pipeline View
+        </a>
+        <a href="{% url 'call_logs' %}" 
+           class="tab-link {% if request.resolver_match.url_name == 'call_logs' %}active-tab {% endif %}">
+           Call-Log
+        </a>
+        <a href="{% url 'followup_shedule' %}"
+           class="tab-link {% if request.resolver_match.url_name == 'followup_shedule' %}active-tab {% endif %}">
+           Follow-Up
+        </a>
+        <a href="{% url 'lead_conversion_report' %}"
+           class="tab-link {% if request.resolver_match.url_name == 'lead_conversion_report' %}active-tab {% endif %}">
+           Conversion Report
+        </a>
+
+     </nav>
 
 <main class="page-body">
     {% block content %}
@@ -40,4 +68,36 @@
 
 
 </body>
+
+<script>
+
+    const phoneInput = document.getElementById('phone_no');
+    const error = document.getElementById('error');
+    const form = document.getElementById('leadForm');
+
+    phoneInput.addEventListener('input', function() {
+        let value = this.value.replace(/\D/g, '');
+
+        if (value.length > 12){
+            error.innerText = "Maximum 12 digits only!";
+        }
+        else if (value.length < 10){
+            error.innerText = "Minimum 10 digits required"
+        }
+        else{
+            error.innerText = "";
+        }
+        this.value = value.slice(0, 12)
+    });
+
+    form.addEventListener('submit', function(e){
+        let value = phoneInput.value
+
+        if (value.length < 10 || value.length > 12){
+            e.preventDefault()
+            error.innerText = "Enter valid phone number"
+        }
+    });
+
+</script>
 </html>

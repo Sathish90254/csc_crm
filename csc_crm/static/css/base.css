@@ -1,0 +1,199 @@
+/*
+   CSC CRM BASE.CSS
+   For Updated base.html
+   Theme:
+   Navy   : #262170
+   Yellow : #FEF200
+*/
+/*RESET*/
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+}
+
+html,
+body{
+    height:100%;
+}
+
+
+/* ROOT VARIABLES */
+
+:root{
+    --primary:#262170;
+    --secondary:#FEF200;
+    --white:#ffffff;
+    --light:#f5f7fb;
+    --text:#1f2937;
+    --muted:#6b7280;
+    --border:#e5e7eb;
+    --shadow:0 10px 24px rgba(0,0,0,0.08);
+}
+
+
+/* BODY */
+
+body{
+    font-family:Arial, Helvetica, sans-serif;
+    background:linear-gradient(to bottom right,#f8f9fc,#eef2f8);
+    color:var(--text);
+
+    min-height:100vh;
+    display:flex;
+    flex-direction:column;
+}
+
+
+/* WRAPPER */
+
+.crm-wrapper{
+    width:100%;
+}
+
+
+/* TOP NAVBAR */
+
+.main-navbar{
+    background:linear-gradient(135deg,#262170,#1b174f);
+    height:78px;
+
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+
+    padding:0 35px;
+    box-shadow:var(--shadow);
+
+    position:sticky;
+    top:0;
+    z-index:999;
+}
+
+
+/* NAV LEFT */
+
+.navbar-left{
+    display:flex;
+    align-items:center;
+}
+
+
+/* BRAND TITLE */
+
+.brand-title{
+    font-size:30px;
+    font-weight:800;
+    color:var(--secondary);
+    letter-spacing:1px;
+    text-transform:uppercase;
+}
+
+
+/* MODULE TAB AREA */
+
+.leads-page{
+    width:100%;
+    max-width:1450px;
+    margin:24px auto 0;
+    padding:0 24px;
+}
+
+
+/* PAGE BODY */
+
+.page-body{
+    width:100%;
+    max-width:1450px;
+    margin:0 auto;
+    padding:24px;
+    flex:1;
+}
+
+
+/* FOOTER */
+
+.main-footer{
+    background:var(--primary);
+    color:var(--white);
+
+    min-height:62px;
+
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+
+    padding:0 30px;
+    margin-top:auto;
+
+    border-top:4px solid var(--secondary);
+}
+
+
+/* FOOTER LEFT */
+
+.footer-left{
+    font-size:14px;
+    font-weight:600;
+}
+
+
+/* FOOTER RIGHT */
+
+.footer-right{
+    font-size:14px;
+    font-weight:700;
+    color:var(--secondary);
+}
+
+
+/* LINKS */
+
+a{
+    text-decoration:none;
+}
+
+
+/* RESPONSIVE */
+
+@media(max-width:992px){
+
+    .main-navbar{
+        padding:0 20px;
+    }
+
+    .brand-title{
+        font-size:24px;
+    }
+
+    .leads-page,
+    .page-body{
+        padding:0 16px;
+    }
+
+}
+
+@media(max-width:768px){
+
+    .main-navbar{
+        height:auto;
+        padding:18px;
+    }
+
+    .brand-title{
+        font-size:22px;
+    }
+
+    .page-body{
+        padding:18px 16px;
+    }
+
+    .main-footer{
+        flex-direction:column;
+        justify-content:center;
+        gap:6px;
+        padding:14px;
+        text-align:center;
+    }
+
+}

@@ -159,6 +159,7 @@ def lead_pipeline_view(request):
 
     leads_by_status = {}
     status_choices = LeadCapture.STATUS_CHOICES
+    leads = LeadCapture.objects.all().order_by('created_at')
 
     for status_value, status_label in status_choices:
         leads_by_status[status_label] = LeadCapture.objects.filter(initial_status=status_value)
@@ -176,13 +177,14 @@ def lead_pipeline_view(request):
             'percentage': round(percentage, 1)
         })
 
-        context = {
-            'leads_by_status': leads_by_status,
-            'funnel_data':funnel_data,
-            'total_leads':total_leads,
+    context={
+        'leads_by_status': leads_by_status,
+        'funnel_data':funnel_data,
+        'total_leads':total_leads,
+        'leads':leads
         }
 
-        return render(request, 'leads/pipeline_view.html', context)
+    return render(request, 'leads/pipeline_view.html', context)
 
 # Lead Conversion 
 def lead_conversion_report(request):

@@ -3,15 +3,7 @@
 
 {% block content %}
 <section class="leads-page">
-    <!-- Module Navigation Tabs -->
-     <nav class="module-tabs">
-        <a href="{% url 'lead_capture_list' %}" class="tab-link active-tab">Lead Capture</a>
-        <a href="{% url 'lead_pipeline_view' %}" class="tab-link">Pipeline View</a>
-        <a href="{% url 'call_logs' %}" class="tab-link">Call-Log</a>
-        <a href="{% url 'followup_shedule' %}" class="tab-link">Follow-Up</a>
-        <a href="{% url 'lead_conversion_report' %}" class="tab-link">Conversion Report</a>
-
-     </nav>
+    
 
      <!-- Page Header -->  
       <section class="page-header">
@@ -42,7 +34,7 @@
             </div>
 
             <!-- Form -->
-             <form action="{% if lead %}{% url 'lead_capture_update' lead.id %}{% else %}{% url 'lead_capture_create' %}{% endif %}" method="POST" class="lead-form">
+             <form action="{% if lead %}{% url 'lead_capture_update' lead.id %}{% else %}{% url 'lead_capture_create' %}{% endif %}" id="leadForm" method="POST" class="lead-form">
 
                {% csrf_token %}
 
@@ -58,6 +50,7 @@
                   <div class="form-group">
                      <label class="form-label">Phone Number</label>
                      {{ form.phone_no }}
+                     <span id="errors"></span>
                   </div>
 
                   <div class="form-group">
@@ -115,6 +108,8 @@
 
                </div>
 
+               <span id="error" style="color:red;"></span>
+
                <div class="form-actions">
                   <a href="{% url 'lead_capture_list' %}" class="btn-cancel">Cancel</a>
                   <button type="submit" class="btn-submit">Save Lead</button>
@@ -125,23 +120,6 @@
          </div>
 
       </section>
-
-      <!-- Search / Filter -->
-       <section class="filter-section">
-         <form method="GET" class="filter-form">
-            <div class="filter-group">
-               <input type="text"
-                      name="search" 
-                      value="{{ search_query }}" 
-                      placeholder="Search leads..." 
-                      class="search-input"
-               >
-            </div>
-            <div class="filter-group">
-               <button type="submit" class="btn-search">Search</button>
-            </div>
-         </form>
-       </section>
 
       <!-- Status Cards -->
         <section class="status-section">
