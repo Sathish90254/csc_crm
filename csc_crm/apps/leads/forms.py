@@ -8,8 +8,14 @@ class LeadCaptureForm(forms.ModelForm):
         fields = '__all__'
         exclude = ['lead_id', 'created_at', 'updated_at']
         widgets = {
-            'enquiry_date': forms.DateInput(attrs={'type':'date'}),
-            'next_followup_date':forms.DateInput(attrs={'type': 'date'}),
+            'enquiry_date': forms.DateInput(attrs={
+                'type':'date',
+                'id':'enquiryDate',
+                }),
+            'next_followup_date':forms.DateInput(attrs={
+                'type': 'date',
+                'id': 'nextFollowUpDate',
+                }),
             'phone_no':forms.TextInput(attrs={
                 'id':'phone_no',
                 'placeholder': 'Enter phone number',
@@ -18,6 +24,7 @@ class LeadCaptureForm(forms.ModelForm):
                 'placeholder': 'Enter lead name'
             }),
             'email':forms.TextInput(attrs={
+                'id': 'email',
                 'placeholder': 'Enter email address'
             }),
             

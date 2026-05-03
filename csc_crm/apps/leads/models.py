@@ -31,11 +31,27 @@ class LeadCapture(models.Model):
         ('lost', 'Lost')
     ]
 
+    COURSE_CHOICES = [
+    ('fullstack', 'Full Stack Development'),
+    ('frontend', 'Front-End Development'),
+    ('backend', 'Back-End Development'),
+    ('python', 'Python Programming'),
+    ('java', 'Java Programming'),
+    ('dotnet', '.NET Development'),
+    ('mern', 'MERN Stack Development'),
+    ('mean', 'MEAN Stack Development'),
+    ('data_science', 'Data Science'),
+    ('ai_ml', 'AI & Machine Learning'),
+    ('cyber_security', 'Cyber Security'),
+    ('cloud_computing', 'Cloud Computing'),
+    ('uiux', 'UI/UX Design'),
+]
+
     lead_id = models.CharField(max_length=10, unique=True)
     lead_name = models.CharField(max_length=100,)
     email = models.EmailField(blank=True, null=True, unique=True)
-    phone_no = models.CharField(unique=True, max_length=12,)
-    course_interested = models.CharField(max_length=100)
+    phone_no = models.CharField(unique=True, max_length=10,)
+    course_interested = models.CharField(max_length=100, choices=COURSE_CHOICES)
     lead_source = models.CharField(max_length=100, choices=SOURCE_CHOICES)
     assigned_to = models.ForeignKey(User, on_delete=models.SET_NULL, null=True)
     created_at = models.DateTimeField(auto_now_add=True)

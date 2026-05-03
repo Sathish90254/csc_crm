@@ -83,18 +83,6 @@
     font-size: 14px;
     opacity: 0.9;
 }
-.btn-primary{
-    background: var(--secondary);
-    color: var(--primary);
-    text-decoration: none;
-    padding: 13px 20px;
-    border-radius: 12px;
-    font-weight: 700;
-    transition:0.3s;
-}
-.btn-primary:hover{
-    transform:translateY(-2px);
-}
 
 /* FORM SECTION */
 .form-card{
@@ -226,6 +214,10 @@
 }
 .btn-submit:hover{
     background:#1c184f;
+}
+.btn-cancel:hover{
+    background:#DC3545 ;
+    color: white;
 }
 
 /* SEARCH SECTION */
