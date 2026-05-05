@@ -1,16 +1,12 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Follow-Up Schedule - CRM</title>
-</head>
+{% extends 'leads/base.html' %}
+
+{% block content %}
 <body>
-    <div class="container">
+    <div class="followup-container">
         <!-- Header Section -->
         <header class="header">
             <div class="header-content">
-                <h1 class="page-title">📅 Follow-Up Schedule</h1>
+                <h1 class="page-title"> Follow-Up Schedule</h1>
                 <p class="page-subtitle">Manage and track all lead follow-ups</p>
             </div>
         </header>
@@ -18,7 +14,7 @@
         <!-- Status Summary Cards -->
         <section class="status-summary">
             <div class="summary-card">
-                <div class="summary-icon">⏰</div>
+                <div class="summary-icon"></div>
                 <div class="summary-content">
                     <div class="summary-label">Due Today</div>
                     <div class="summary-count">{{ due_today }}</div>
@@ -26,7 +22,7 @@
             </div>
 
             <div class="summary-card card-alert">
-                <div class="summary-icon">⚠️</div>
+                <div class="summary-icon"></div>
                 <div class="summary-content">
                     <div class="summary-label">Overdue</div>
                     <div class="summary-count">{{ overdue_count }}</div>
@@ -34,7 +30,7 @@
             </div>
 
             <div class="summary-card">
-                <div class="summary-icon">📆</div>
+                <div class="summary-icon"></div>
                 <div class="summary-content">
                     <div class="summary-label">This Week</div>
                     <div class="summary-count">{{ this_week }}</div>
@@ -42,7 +38,7 @@
             </div>
 
             <div class="summary-card card-success">
-                <div class="summary-icon">✅</div>
+                <div class="summary-icon"></div>
                 <div class="summary-content">
                     <div class="summary-label">Completed Today</div>
                     <div class="summary-count">{{ completed_today }}</div>
@@ -97,21 +93,22 @@
                                                     </div>
                                                 </div>
                                             </td>
-                                            <td class="col-course">{{ lead.course_of_interest|truncatewords:2 }}</td>
+                                            
+                                            <td class="col-course">{{ lead.course_interested|truncatewords:2 }}</td>
                                             <td class="col-stage">
                                                 <span class="status-badge status-{{ lead.initial_status }}">
                                                     {{ lead.get_initial_status_display }}
                                                 </span>
                                             </td>
                                             <td class="col-scheduled">
-                                                <span class="date-overdue">{{ lead.next_followup_date|date:"d M (\z \d\a\y\s \a\g\o)" }}</span>
+                                                <span class="date-overdue">{{ lead.next_followup_date|date:"d M" }} (days ago) </span>
                                             </td>
                                             <td class="col-assigned">{{ lead.assigned_to|default:"Unassigned" }}</td>
                                             <td class="col-notes">
                                                 <span class="notes-text">{{ lead.initial_notes|truncatewords:5 }}</span>
                                             </td>
                                             <td class="col-action">
-                                                <a href="#" class="btn btn-small btn-action">📞 Log Call</a>
+                                                <a href="{% url 'call_logs' %}" class="btn btn-small btn-action">📞 Log Call</a>
                                             </td>
                                         </tr>
                                     {% endfor %}
@@ -131,7 +128,7 @@
                                                     </div>
                                                 </div>
                                             </td>
-                                            <td class="col-course">{{ lead.course_of_interest|truncatewords:2 }}</td>
+                                            <td class="col-course">{{ lead.course_interested|truncatewords:2 }}</td>
                                             <td class="col-stage">
                                                 <span class="status-badge status-{{ lead.initial_status }}">
                                                     {{ lead.get_initial_status_display }}
@@ -145,7 +142,7 @@
                                                 <span class="notes-text">{{ lead.initial_notes|truncatewords:5 }}</span>
                                             </td>
                                             <td class="col-action">
-                                                <a href="#" class="btn btn-small btn-action">📞 Log Call</a>
+                                                <a href="{% url 'call_logs' %}" class="btn btn-small btn-action">📞 Log Call</a>
                                             </td>
                                         </tr>
                                     {% endfor %}
@@ -164,7 +161,7 @@
                                                     </div>
                                                 </div>
                                             </td>
-                                            <td class="col-course">{{ lead.course_of_interest|truncatewords:2 }}</td>
+                                            <td class="col-course">{{ lead.course_interested|truncatewords:2 }}</td>
                                             <td class="col-stage">
                                                 <span class="status-badge status-{{ lead.initial_status }}">
                                                     {{ lead.get_initial_status_display }}
@@ -178,7 +175,7 @@
                                                 <span class="notes-text">{{ lead.initial_notes|truncatewords:5 }}</span>
                                             </td>
                                             <td class="col-action">
-                                                <a href="#" class="btn btn-small btn-action">📞 Log Call</a>
+                                                <a href="{% url 'call_logs' %}" class="btn btn-small btn-action">📞 Log Call</a>
                                             </td>
                                         </tr>
                                     {% endfor %}
@@ -226,21 +223,22 @@
                                                 </div>
                                             </div>
                                         </td>
-                                        <td class="col-course">{{ lead.course_of_interest|truncatewords:2 }}</td>
+                                        <td class="col-course">{{ lead.course_interested|truncatewords:2 }}</td>
                                         <td class="col-stage">
                                             <span class="status-badge status-{{ lead.initial_status }}">
                                                 {{ lead.get_initial_status_display }}
                                             </span>
                                         </td>
                                         <td class="col-scheduled">
-                                            <span class="date-overdue">{{ lead.next_followup_date|date:"d M" }}</span>
+                                            <span class="date-overdue">{{ lead.next_followup_date|date:"d M " }}</span>
                                         </td>
                                         <td class="col-assigned">{{ lead.assigned_to|default:"Unassigned" }}</td>
                                         <td class="col-notes">
                                             <span class="notes-text">{{ lead.initial_notes|truncatewords:5 }}</span>
                                         </td>
+
                                         <td class="col-action">
-                                            <a href="#" class="btn btn-small btn-action">📞 Log Call</a>
+                                            <a href="{% url 'call_logs' %}" class="btn btn-small btn-action">📞 Log Call</a>
                                         </td>
                                     </tr>
                                 {% endfor %}
@@ -287,7 +285,8 @@
                                                 </div>
                                             </div>
                                         </td>
-                                        <td class="col-course">{{ lead.course_of_interest|truncatewords:2 }}</td>
+                      
+                                        <td class="col-course">{{ lead.course_interested|truncatewords:2 }}</td>
                                         <td class="col-stage">
                                             <span class="status-badge status-{{ lead.initial_status }}">
                                                 {{ lead.get_initial_status_display }}
@@ -301,7 +300,7 @@
                                             <span class="notes-text">{{ lead.initial_notes|truncatewords:5 }}</span>
                                         </td>
                                         <td class="col-action">
-                                            <a href="#" class="btn btn-small btn-action">📞 Log Call</a>
+                                            <a href="{% url 'call_logs' %}" class="btn btn-small btn-action">📞 Log Call</a>
                                         </td>
                                     </tr>
                                 {% endfor %}
@@ -348,7 +347,7 @@
                                                 </div>
                                             </div>
                                         </td>
-                                        <td class="col-course">{{ lead.course_of_interest|truncatewords:2 }}</td>
+                                        <td class="col-course">{{ lead.course_interested|truncatewords:2 }}</td>
                                         <td class="col-stage">
                                             <span class="status-badge status-{{ lead.initial_status }}">
                                                 {{ lead.get_initial_status_display }}
@@ -362,7 +361,7 @@
                                             <span class="notes-text">{{ lead.initial_notes|truncatewords:5 }}</span>
                                         </td>
                                         <td class="col-action">
-                                            <a href="#" class="btn btn-small btn-action">📞 Log Call</a>
+                                            <a href="{% url 'call_logs' %}" class="btn btn-small btn-action">📞 Log Call</a>
                                         </td>
                                     </tr>
                                 {% endfor %}
@@ -379,5 +378,11 @@
     </div>
 
 
+
 </body>
-</html>
+<script>
+    
+
+</script>
+
+{% endblock %}

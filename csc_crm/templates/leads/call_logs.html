@@ -9,31 +9,33 @@
 
     
     <div class="form-box">
-        <h2><i class="fa fa-phone"></i> Log a Call.. </h2>
+        <h2> Log a Call.. </h2>
         <p class="sub-text">Record call details ..</p>
 
-        <form method="POST">
-            {% csrf_token %}
+        <form method="POST" onsubmit="return validateForm()">
+        {% csrf_token %}
 
-            <label> NAME</label>
-            <input type="text" name="lead_name">
+    
+        <label> NAME</label>
+        <input type="text" name="lead_name" id="lead_name"  placeholder="Enter name">
+        <span id="name_error" style="color:red; font-size:12px;"></span>
 
             <div class="row">
                 <div class="field">
                     <label>CALL DATE</label>
-                    <input type="date" name="call_date">
+                    <input type="date" name="call_date" placeholder="enter call date" onclick="this.showPicker()">
                 </div>
 
                 <div class="field">
                     <label>CALL TIME</label>
-                    <input type="time" name="call_time">
+                    <input type="time" name="call_time" placeholder="enter calltime" onclick="this.showPicker()">
                 </div>
             </div>
 
            <div class="row">
                   <div class="field">
                     <label>DURATION</label>
-                    <input type="number" name="duration">
+                    <input type="number" name="duration" >
                 </div>
 
                 <div class="field">
@@ -48,11 +50,11 @@
                 </div>
             </div>
 
-            <label>CALL NOTES</label>
-            <textarea name="notes"></textarea>
+            <label>CALL NOTES (OPTIONAL)</label>
+            <textarea name="notes" rows="5"></textarea>
 
             <label>NEXT FOLLOW-UP DATE</label>
-            <input type="date" name="next_followup_date">
+            <input type="date" name="next_followup_date" onclick="this.showPicker()">
 
             <button type="submit"><i class="fa fa-phone save"></i> Save CallLog..</button>
             
@@ -62,13 +64,24 @@
    
     <div class="history">
 
-        <div class="recent-header">
+        
     <h3>Recent Call History</h3>
-  </div>
+  
        
 
-        {% for log in logs %}
-        <div class="card {{ log.call_outcome|slugify }}">
+    {% for log in logs %}
+        
+            <a href="javascript:void(0);" class="card-link"
+             onclick="openPopup(
+            '{{ log.lead_name }}',
+            '{{ log.call_date }}',
+            '{{ log.call_time }}',
+            '{{ log.duration }}',
+            '{{ log.call_outcome }}',
+            '{{ log.notes }}',
+            '{{ log.next_followup_date }}')">
+
+         <div class="card {{ log.call_outcome|slugify }}">
 
             <div class="card-header">
                 <h4>{{ log.lead_name }}</h4>
@@ -97,13 +110,30 @@
 
         followup date: {{ log.next_followup_date }}
     </div>
-    {% endif %}
-
-        </div>
-        {% endfor %}
+     {% endif %}
+      
+    </div>
+       <a>
+     {% endfor %}
 
     </div>
 
+</div>
+
+
+<div id="popup" class="popup">
+<div class="popup-content">
+<span class="close" onclick="closePopup()">&times;</span>
+
+<h3 id="p_name"></h3>
+<p>Date: <span id="p_date"></span></p>
+<p>Time: <span id="p_time"></span></p>
+<p>Duration: <span id="p_duration"></span></p>
+<p>Outcome: <span id="p_outcome"></span></p>
+<p>Notes: <span id="p_notes"></span></p>
+<p>Followup: <span id="p_follow"></span></p>
+
+</div>
 </div>
 
 </body>
