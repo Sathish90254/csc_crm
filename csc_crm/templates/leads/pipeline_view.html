@@ -1,6 +1,5 @@
 {% extends 'leads/base.html' %}
 
-
 {% block content %}
 <body>
     <div class="container">
@@ -14,15 +13,41 @@
 
         <!-- Filter Section -->
         <section class="filter-section">
-            <div class="filter-item">
-                <label for="staff-filter">Filter by Staff</label>
-                <select class="filter-select" id="staff-filter">
-                    <option value="">All Staff</option>
-                    <option value="sathish_vishnu">Sathish Vishnu</option>
-                    <option value="receptionist_1">Receptionist 1</option>
-                    <option value="receptionist_2">Receptionist 2</option>
-                </select>
-            </div>
+                
+               <form method="GET" class="search-form">
+                <div class="filter-item">
+
+                <label>Filter by Staff</label>
+
+        <select name="assigned_to" class="filter-select" onchange="this.form.submit()">
+            <option value="">All Staff</option>
+
+            <option value="1" {% if assigned_to == "1" %}selected{% endif %}>admin</option>
+            <option value="2" {% if assigned_to == "2" %}selected{% endif %}>admin2</option>
+            <option value="3" {% if assigned_to == "3" %}selected{% endif %}>admin3</option>
+        </select>
+
+
+                <input type="text"
+                   name="search"
+                   value="{{ search_query|default:'' }}"
+                   placeholder="Search leads..."
+                   class="search-input">
+
+                <button type="submit" class="search-btn">
+                Search
+                </button>
+                <a href="{% url 'lead_pipeline_view' %}" class="clear-btn">
+                Clear
+                </a>
+                </div>
+            </form>
+        
+          <!-- Export -->
+    <a href="{% url 'export_leads_csv' %}?search={{ search_query }}&assigned_to={{ assigned_to }}"
+   class="download-btn">
+   Export
+</a>
         </section>
 
         <!-- Funnel Summary -->
@@ -45,6 +70,23 @@
             <div class="funnel-total">
                 <p>Total Leads: <strong>{{ total_leads }}</strong></p>
             </div>
+        </section>
+
+        
+      <!-- Status Cards -->
+        <section class="status-section">
+
+         {% for item in status_counts %}
+            <div class="status-card">
+               <h3 class="status-title">
+                  {{ item.status|title }}
+               </h3>
+               <p class="status-number">
+                  {{item.count}}
+               </p>
+            </div>
+         {% endfor %}
+
         </section>
 
         <!-- Pipeline Kanban Board -->
@@ -74,8 +116,8 @@
                                     </div>
                                     <div class="card-body">
                                         <p class="card-course">{{ lead.course_of_interest }}</p>
-                                        <p class="card-assigned">📌 {{ lead.assigned_to|default:"Unassigned" }}</p>
-                                        <p class="card-contact">📞 {{ lead.phone_no }}</p>
+                                        <p class="card-assigned"> {{ lead.assigned_to|default:"Unassigned" }}</p>
+                                        <p class="card-contact">{{ lead.phone_no }}</p>
                                     </div>
                                     <div class="card-footer">
                                         <span class="card-date">{{ lead.created_at|date:"d M" }}</span>
@@ -111,8 +153,8 @@
                                     </div>
                                     <div class="card-body">
                                         <p class="card-course">{{ lead.course_of_interest }}</p>
-                                        <p class="card-assigned">📌 {{ lead.assigned_to|default:"Unassigned" }}</p>
-                                        <p class="card-contact">📞 {{ lead.phone_no }}</p>
+                                        <p class="card-assigned"> {{ lead.assigned_to|default:"Unassigned" }}</p>
+                                        <p class="card-contact"> {{ lead.phone_no }}</p>
                                     </div>
                                     <div class="card-footer">
                                         <span class="card-date">{{ lead.created_at|date:"d M" }}</span>
@@ -148,8 +190,8 @@
                                     </div>
                                     <div class="card-body">
                                         <p class="card-course">{{ lead.course_of_interest }}</p>
-                                        <p class="card-assigned">📌 {{ lead.assigned_to|default:"Unassigned" }}</p>
-                                        <p class="card-contact">📞 {{ lead.phone_no }}</p>
+                                        <p class="card-assigned"> {{ lead.assigned_to|default:"Unassigned" }}</p>
+                                        <p class="card-contact"> {{ lead.phone_no }}</p>
                                     </div>
                                     <div class="card-footer">
                                         <span class="card-date">{{ lead.created_at|date:"d M" }}</span>
@@ -185,8 +227,8 @@
                                     </div>
                                     <div class="card-body">
                                         <p class="card-course">{{ lead.course_of_interest }}</p>
-                                        <p class="card-assigned">📌 {{ lead.assigned_to|default:"Unassigned" }}</p>
-                                        <p class="card-contact">📞 {{ lead.phone_no }}</p>
+                                        <p class="card-assigned"> {{ lead.assigned_to|default:"Unassigned" }}</p>
+                                        <p class="card-contact"> {{ lead.phone_no }}</p>
                                     </div>
                                     <div class="card-footer">
                                         <span class="card-date">{{ lead.created_at|date:"d M" }}</span>
@@ -222,8 +264,8 @@
                                     </div>
                                     <div class="card-body">
                                         <p class="card-course">{{ lead.course_of_interest }}</p>
-                                        <p class="card-assigned">📌 {{ lead.assigned_to|default:"Unassigned" }}</p>
-                                        <p class="card-contact">📞 {{ lead.phone_no }}</p>
+                                        <p class="card-assigned"> {{ lead.assigned_to|default:"Unassigned" }}</p>
+                                        <p class="card-contact"> {{ lead.phone_no }}</p>
                                     </div>
                                     <div class="card-footer">
                                         <span class="card-date">{{ lead.created_at|date:"d M" }}</span>
@@ -259,8 +301,8 @@
                                     </div>
                                     <div class="card-body">
                                         <p class="card-course">{{ lead.course_of_interest }}</p>
-                                        <p class="card-assigned">📌 {{ lead.assigned_to|default:"Unassigned" }}</p>
-                                        <p class="card-contact">📞 {{ lead.phone_no }}</p>
+                                        <p class="card-assigned"> {{ lead.assigned_to|default:"Unassigned" }}</p>
+                                        <p class="card-contact"> {{ lead.phone_no }}</p>
                                     </div>
                                     <div class="card-footer">
                                         <span class="card-date">{{ lead.created_at|date:"d M" }}</span>
@@ -275,11 +317,10 @@
                 </div>
             </div>
         </section>
-    </div>
 
           <!-- All Leads -->
        <section class="all-leads-section">
-         <div class="content-card">
+             <div class="content-card">
 
             <div class="card-header">
                <h2 class="card-title">All Leads</h2>
@@ -327,10 +368,10 @@
                </table>
 
             </div>
-
-         </div>
+             </div>
+        
        </section>
+    </div>
 
 </body>
-</html>
 {% endblock %}

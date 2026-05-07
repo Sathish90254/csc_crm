@@ -117,22 +117,6 @@
 
       </section>
 
-      <!-- Status Cards -->
-        <section class="status-section">
-
-         {% for item in status_counts %}
-            <div class="status-card">
-               <h3 class="status-title">
-                  {{ item.initial_status|title }}
-               </h3>
-               <p class="status-number">
-                  {{item.count}}
-               </p>
-            </div>
-         {% endfor %}
-
-        </section>
-
       <!-- Recent Leads -->
       <section class="recent-leads-section">
          <div class="content-card">

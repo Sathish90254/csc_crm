@@ -6,6 +6,8 @@ from datetime import timedelta
 from django.contrib import messages
 from .models import *
 from .forms import *
+import csv
+from django.http import HttpResponse
 
 def lead_capture_list(request):
 
@@ -157,34 +159,110 @@ def lead_capture_update(request, id):
 # PipeLine View
 def lead_pipeline_view(request):
 
-    leads_by_status = {}
-    status_choices = LeadCapture.STATUS_CHOICES
     leads = LeadCapture.objects.all().order_by('created_at')
 
-    for status_value, status_label in status_choices:
-        leads_by_status[status_label] = LeadCapture.objects.filter(initial_status=status_value)
-   
-    # Get funnel Data
-    total_leads = LeadCapture.objects.count()
-    funnel_data = []
+    search_query = request.GET.get('search')
+    if search_query:
+        leads = leads.filter(
+            Q(course_interested__icontains=search_query) |
+            Q(email__icontains=search_query) |
+            Q(phone_no__icontains=search_query)
+        )
+    
+    assigned_to = request.GET.get('assigned_to')
 
-    for status_value, status_label in status_choices:
-        count = LeadCapture.objects.filter(initial_status=status_value).count()
+    if assigned_to: 
+        leads = leads.filter(assigned_to_id=assigned_to)
+
+    # Pipeline
+    leads_by_status = {}
+    for value, label in LeadCapture.STATUS_CHOICES:
+        leads_by_status[label] = leads.filter(initial_status=value)
+
+    # Funnel + Status Cards
+    total_leads = leads.count()
+
+    funnel_data = []
+    status_counts = []
+
+    for value, label in LeadCapture.STATUS_CHOICES:
+        count = leads.filter(initial_status=value).count()
         percentage = (count / total_leads * 100) if total_leads > 0 else 0
+
         funnel_data.append({
-            'status': status_label,
+            'status': label,
             'count': count,
             'percentage': round(percentage, 1)
         })
 
-    context={
+        status_counts.append({
+            'status': label,
+            'count': count,
+            "percentage": round(percentage, 1)
+        })
+
+    context = {
         'leads_by_status': leads_by_status,
-        'funnel_data':funnel_data,
-        'total_leads':total_leads,
-        'leads':leads
-        }
+        'funnel_data': funnel_data,
+        'total_leads': total_leads,
+        'leads': leads,
+        'search_query': search_query,
+        'status_counts': status_counts,
+        'assigned_to': assigned_to,
+    }
 
     return render(request, 'leads/pipeline_view.html', context)
+
+# csv download
+def export_leads_csv(request):
+
+    leads = LeadCapture.objects.all().order_by('created_at')
+
+    # Clean inputs
+    search_query = request.GET.get('search', '').strip()
+    assigned_to = request.GET.get('assigned_to', '').strip()
+    status = request.GET.get('status', '').strip()
+
+    # Apply filters safely
+    if search_query and search_query.lower() != "none":
+        leads = leads.filter(
+            Q(email__icontains=search_query) |
+            Q(phone_no__icontains=search_query) |
+            Q(course_interested__icontains=search_query)
+        )
+
+    if assigned_to:  
+        leads = leads.filter(assigned_to__id=assigned_to)
+
+    if status:
+        leads = leads.filter(initial_status=status)
+
+    print("EXPORT COUNT:", leads.count())  # DEBUG
+
+    response = HttpResponse(content_type='text/csv')
+    response['Content-Disposition'] = 'attachment; filename="leads.csv"'
+
+    writer = csv.writer(response)
+
+    writer.writerow([
+        'Lead ID','Name','Email','Phone','Course',
+        'Source','Status','Assigned To','Date'
+    ])
+
+    for lead in leads:
+        writer.writerow([
+            lead.lead_id,
+            lead.lead_name,
+            lead.email,
+            lead.phone_no,
+            lead.course_interested,
+            lead.lead_source,
+            lead.initial_status,
+            lead.assigned_to if lead.assigned_to else 'Unassigned',
+            lead.created_at.strftime('%Y-%m-%d')
+        ])
+
+    return response
 
 # Lead Conversion 
 def lead_conversion_report(request):

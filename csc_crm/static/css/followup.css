@@ -10,7 +10,7 @@ body {
     color: #1f2937;
 }
 
-.followup-container {
+.container {
     padding: 20px 40px;
    
 }
@@ -32,10 +32,13 @@ body {
     
 }
 
+
+
+
 .page-subtitle {
     font-size: 16px;
     color: #e4e7ec;
-    margin-top: 12px;
+    margin-top: 2px;
 }
 
 .section-header {
@@ -51,14 +54,11 @@ body {
 
 .summary-card {
     flex: 1;
-    height: 120px;
     background:#ffffff;
     border: 1px solid #e4e7ec;
     border-radius: 12px;
     padding: 20px 20px;
     display: flex;
-    flex-direction: column;
-    justify-content: center;
     align-items: center;
     text-align: center;
     gap: 20px;
@@ -124,13 +124,11 @@ body {
 
 
 .table-wrapper {
-   background: #f8f9fc;
-    padding: 8px;
-    border-radius: 16px;
-    box-shadow: 0 4px 20px #f8f9fc ;
+  
     max-height: 420px;
-    overflow-y: auto;    
-}
+    overflow-y: auto;  
+    border-radius:20px 20px;
+} 
 .table-header th:first-child {
     border-top-left-radius: 12px;
 }
@@ -141,8 +139,8 @@ body {
 
 .followup-table {
     width: 100%;
-    border-collapse: separate;   
-    border-spacing: 0 5px;      
+    border-collapse: collapse;   
+     
   
 }
 
@@ -154,9 +152,9 @@ body {
     padding: 10px 12px;
     text-align: left;
     letter-spacing: 0.5px;
-    position: sticky;
-    top: 0;
-    z-index: 5;
+    position :sticky;
+    top:0;
+    z-index: 100;
 }
 
 
@@ -172,7 +170,7 @@ body {
 .table-row td {
     padding: 10px 10px;  
     font-size: 13px;
-     vertical-align: top;
+    vertical-align: top;
 }
 
 
@@ -309,7 +307,7 @@ html, body {
 
 @media screen and (max-width: 1024px) {
 
-    .followup-container {
+    .container {
         padding: 15px;
     }
 
@@ -335,7 +333,7 @@ html, body {
  
 @media screen and (max-width: 768px) {
 
-    .followup-container {
+    .container {
         padding: 10px;
     }
 
@@ -403,7 +401,7 @@ html, body {
 
 @media screen and (max-width: 480px) {
 
-    .followup-container {
+    .container {
         padding: 8px;
     }
 
