@@ -361,4 +361,5 @@ def delete_call_log(request, id):
     
     log = get_object_or_404(CallLog, id=id)
     log.delete()
+    messages.success(request, f'Call-Log Deleted!')
     return redirect('call_logs')
