@@ -58,6 +58,16 @@
 
      </nav>
 
+        {% if messages %}
+        <div class="messages-container">
+            {% for message in messages %}
+                <div class="alert-message {{ message.tags }}">
+                    {{ message }}
+                </div>
+            {% endfor %}
+        </div>
+        {% endif %}
+
 <main class="page-body">
     {% block content %}
 
@@ -82,6 +92,5 @@
 <!-- Scripting Tags for JS -->
 <script src="{% static 'js/followup.js' %}"></script>
 <script src="{% static 'js/lead_capture.js' %}"></script>
-<script src="{% static 'js/call_logs.js' %}"></script>
-
+<script src="{% static 'js/call_logs.js' %}"></script>    
 </html>

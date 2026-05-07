@@ -8,6 +8,7 @@ from .models import *
 from .forms import *
 import csv
 from django.http import HttpResponse
+from django.contrib.auth.models import User
 
 def lead_capture_list(request):
 
@@ -174,6 +175,8 @@ def lead_pipeline_view(request):
     if assigned_to: 
         leads = leads.filter(assigned_to_id=assigned_to)
 
+    staffs = User.objects.all()
+
     # Pipeline
     leads_by_status = {}
     for value, label in LeadCapture.STATUS_CHOICES:
@@ -209,6 +212,7 @@ def lead_pipeline_view(request):
         'search_query': search_query,
         'status_counts': status_counts,
         'assigned_to': assigned_to,
+        'staffs': staffs,
     }
 
     return render(request, 'leads/pipeline_view.html', context)
@@ -269,6 +273,9 @@ def lead_conversion_report(request):
     total_leads = LeadCapture.objects.count()
     enrolled_leads = LeadCapture.objects.filter(initial_status='enrolled').count()
     lost_leads = LeadCapture.objects.filter(initial_status='lost').count()
+    new_leads=LeadCapture.objects.filter(initial_status='new').count()
+    demo_leads=LeadCapture.objects.filter(initial_status='demo_scheduled').count()
+    contacted_leads=LeadCapture.objects.filter(initial_status='contacted').count()
 
     conversion_rate = (enrolled_leads / total_leads *100) if total_leads > 0 else 0
 
@@ -280,8 +287,9 @@ def lead_conversion_report(request):
             lead_source = source_value,
             initial_status = 'enrolled',
         ).count()
-        rate = (enrolled / total * 100) if total > 0 else 0
-
+        
+        rate = round(enrolled / total * 100) if total > 0 else 0
+    
         source_performance.append({
         'source' : source_label,
         'total': total,
@@ -294,6 +302,9 @@ def lead_conversion_report(request):
         'enrolled_leads':enrolled_leads,
         'lost_leads':lost_leads,
         'conversion_rate':conversion_rate,
+        'new_leads':new_leads,
+        'contacted_leads':contacted_leads,
+        'demo_leads':demo_leads,
         'source_performance':source_performance,
     }
 

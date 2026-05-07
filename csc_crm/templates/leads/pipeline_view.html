@@ -22,9 +22,12 @@
         <select name="assigned_to" class="filter-select" onchange="this.form.submit()">
             <option value="">All Staff</option>
 
-            <option value="1" {% if assigned_to == "1" %}selected{% endif %}>admin</option>
-            <option value="2" {% if assigned_to == "2" %}selected{% endif %}>admin2</option>
-            <option value="3" {% if assigned_to == "3" %}selected{% endif %}>admin3</option>
+            {% for staff in staffs %}
+            <option value="{{ staff.id }}"
+                {% if assigned_to == staff.id|stringformat:"s" %}selected{% endif %}>
+                {{ staff.username }}
+            </option>
+            {% endfor %}
         </select>
 
 
