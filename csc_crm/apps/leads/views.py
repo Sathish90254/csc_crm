@@ -9,6 +9,7 @@ from .forms import *
 import csv
 from django.http import HttpResponse
 from django.contrib.auth.models import User
+from django.http import JsonResponse
 
 def lead_capture_list(request):
 
@@ -53,6 +54,24 @@ def lead_capture_list(request):
 
     return render(request, 'leads/lead_list.html', context)
 
+def check_lead_exists(request):
+
+    email = request.GET.get('email')
+    phone = request.GET.get('phone')
+
+    data = {
+        'email_exists': False,
+        'phone_exists': False
+    }
+
+    if email:
+        data['email_exists'] = LeadCapture.objects.filter(email=email).exists()
+
+    if phone:
+        data['phone_exists'] = LeadCapture.objects.filter(phone_no=phone).exists()
+
+    return JsonResponse(data)
+
 # Get Lead in Leads and Their Information
 def lead_capture_details(request, id):
 
@@ -73,7 +92,7 @@ def lead_capture_create(request):
             lead_count = LeadCapture.objects.count()+1
             lead.lead_id = f'LID-{lead_count:04d}'
             lead.save()
-            messages.success(request, f'Lead{lead.lead_name} created successfully!')
+            messages.success(request, f'Lead {lead.lead_name} created successfully!')
             return redirect('lead_capture_details', id=lead.id)
         else:
             print(form.errors) 

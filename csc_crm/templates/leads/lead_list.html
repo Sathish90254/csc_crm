@@ -48,12 +48,14 @@
                      <label class="form-label">Phone Number</label>
                      {{ form.phone_no }}
                      <span id="phoneError" style="color:red;"></span>
+                     <small id="phone-error" style="color:red;"></small>
                   </div>
 
                   <div class="form-group">
                      <label class="form-label">Email</label>
                      {{ form.email }}
                      <span id="emailError" style="color:red;" class="error-message"></span>
+                     <small id="email-error" style="color:red;"></small>
                   </div>
 
                </div>
@@ -108,7 +110,7 @@
 
                <div class="form-actions">
                   <button type="button" class="btn-cancel" onclick="clearForm()">Clear</button>
-                  <button type="submit" class="btn-submit">Save Lead</button>
+                  <button type="submit" class="btn-submit" id="submit-btn">Save Lead</button>
                </div>
 
              </form>

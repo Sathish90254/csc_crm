@@ -13,4 +13,5 @@ urlpatterns = [
     path('followup/', followup_shedule, name='followup_shedule'),
     path('call_logs/', call_log_view, name='call_logs'),
     path('delete/<int:id>/', delete_call_log, name='delete_call'),
+    path('check-lead/', check_lead_exists, name='check_lead_exists'),
 ]

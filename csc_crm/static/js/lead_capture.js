@@ -2,6 +2,9 @@
     const phoneInput = document.getElementById('phone_no');
     const phoneError = document.getElementById('phoneError');
     const form = document.getElementById('leadForm');
+    const duplicateEmailError = document.getElementById('emailError');
+    const duplicatePhoneError = document.getElementById('phoneError');
+    const submitBtn = document.getElementById('submit-btn');
 
     phoneInput.addEventListener('input', function() {
         let value = this.value.replace(/\D/g, '');
@@ -23,7 +26,7 @@
 
         if (value.length < 10 || value.length > 12){
             e.preventDefault()
-            error.innerText = "Enter valid phone number"
+            phoneError.innerText = "Enter valid phone number"
         }
     });
 
@@ -61,3 +64,71 @@
     document.getElementById('nextFollowUpDate').addEventListener("click", function(){
         this.showPicker();
     })
+
+    // Disable and enable Save lead Button
+
+    function toggleSubmitButton(){
+        if(duplicateEmailError.innerText !== "" || duplicatePhoneError.innerText !== ""){
+            submitBtn.disabled = true;
+            submitBtn.style.opacity = "0.6";
+            submitBtn.style.cursor = "not-allowed";
+        }
+        else{
+            submitBtn.disabled = false;
+            submitBtn.style.opacity = "1";
+            submitBtn.style.cursor = "pointer"
+        }
+    }
+
+    async function checkLeadExists(field, value){
+
+        if(!value.trim()) return;
+
+        try{
+            const response = await fetch(
+                `/check-lead/?${field}=${value}`
+            );
+
+            const data = await response.json()
+
+            // Email Duplicate Check
+            if(field === 'email'){
+
+                if(data.email_exists){
+                    duplicateEmailError.innerText = "This email already exists";
+                    document.getElementById('email').style.border = "1px solid red"
+                }
+                else{
+                    duplicateEmailError.innerText = ""
+                    document.getElementById('email').style.border = "";
+                }
+            }
+
+            if(field === 'phone'){
+
+                if(data.phone_exists){
+                    duplicatePhoneError.innerText = "This number already exists";
+                    document.getElementById('phone_no').style.border = "1px solid red"
+                }
+                else{
+                    duplicatePhoneError.innerText = "";
+                    document.getElementById('phone_no').style.border = ""
+                }
+            }
+
+            // Enable/Disable Submit Button
+            toggleSubmitButton();
+        }
+        catch(error){
+        console.log(error);
+        }
+    }
+
+    // Trigger duplicate check
+    document.getElementById('email').addEventListener('blur', function(){
+    checkLeadExists('email', this.value);
+    });
+
+    document.getElementById('phone_no').addEventListener('blur', function(){
+        checkLeadExists('phone', this.value);
+    });

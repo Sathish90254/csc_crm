@@ -26,7 +26,7 @@ class LeadCapture(models.Model):
         ('new', 'New'),
         ('contacted', 'Contacted'),
         ('interested', 'Interested'),
-        ('demo_scheduled', 'Deme Scheduled'),
+        ('demo_scheduled', 'Demo_Scheduled'),
         ('enrolled', 'Enrolled'),
         ('lost', 'Lost')
     ]

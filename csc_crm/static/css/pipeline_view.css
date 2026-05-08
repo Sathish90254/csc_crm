@@ -87,6 +87,13 @@ body{
 
 /* Filter Item */
 
+.filter-item{
+    display:flex;
+    align-items:center;
+    gap:12px;
+    flex-wrap:wrap;
+    width:100%;
+}
 
 /* SEARCH FORM */
 
