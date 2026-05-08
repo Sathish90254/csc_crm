@@ -21,7 +21,8 @@ class LeadCaptureForm(forms.ModelForm):
                 'placeholder': 'Enter phone number',
             }),
             'lead_name':forms.TextInput(attrs={
-                'placeholder': 'Enter lead name'
+                'placeholder': 'Enter lead name',
+                'id':'id_lead_name'
             }),
             'email':forms.TextInput(attrs={
                 'id': 'email',

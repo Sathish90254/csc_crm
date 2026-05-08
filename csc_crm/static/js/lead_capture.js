@@ -5,6 +5,14 @@
     const duplicateEmailError = document.getElementById('emailError');
     const duplicatePhoneError = document.getElementById('phoneError');
     const submitBtn = document.getElementById('submit-btn');
+    const leadId = document.getElementById('leadId')?.value || '';
+    const leadNameInput = document.getElementById('id_lead_name')
+    
+
+    // Lead name validation
+    leadNameInput.addEventListener('input', function(){
+        this.value = this.value.replace(/[^a-zA-Z\s]/g, '');
+    })
 
     phoneInput.addEventListener('input', function() {
         let value = this.value.replace(/\D/g, '');
@@ -50,9 +58,23 @@
     // Clear button to clear the input fields
 
     function clearForm(){
-        document.getElementById('leadForm').reset();
-    }
 
+    document.getElementById('leadForm').reset();
+
+    // Clear error messages
+    phoneError.innerText = "";
+    duplicatePhoneError.innerText = "";
+    duplicateEmailError.innerText = "";
+
+    // Remove borders
+    document.getElementById('phone_no').style.border = "";
+    document.getElementById('email').style.border = "";
+
+    // Enable submit button
+    submitBtn.disabled = false;
+    submitBtn.style.opacity = "1";
+    submitBtn.style.cursor = "pointer";
+}
     // Shows Calender when click the enquiry field //
 
     document.getElementById("enquiryDate").addEventListener("click", function() {
@@ -86,7 +108,7 @@
 
         try{
             const response = await fetch(
-                `/check-lead/?${field}=${value}`
+                `/check-lead/?${field}=${value}&lead_id=${leadId}`
             );
 
             const data = await response.json()

@@ -35,6 +35,10 @@
 
                {% csrf_token %}
 
+               {% if lead %}
+                  <input type="hidden" id="leadId" value="{{ lead.id }}">
+               {% endif %}
+
                <!-- ROW-1 -->
 
                <div class="form-row">

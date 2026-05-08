@@ -58,6 +58,7 @@ def check_lead_exists(request):
 
     email = request.GET.get('email')
     phone = request.GET.get('phone')
+    lead_id = request.GET.get('lead_id')
 
     data = {
         'email_exists': False,
@@ -65,10 +66,21 @@ def check_lead_exists(request):
     }
 
     if email:
-        data['email_exists'] = LeadCapture.objects.filter(email=email).exists()
+        qs = LeadCapture.objects.filter(email=email)
+
+        if lead_id:
+            qs = qs.exclude(id=lead_id)
+
+        data['email_exists'] = qs.exists()
 
     if phone:
-        data['phone_exists'] = LeadCapture.objects.filter(phone_no=phone).exists()
+        qs = LeadCapture.objects.filter(phone_no=phone)
+
+        if lead_id:
+            qs = qs.exclude(id=lead_id)
+
+        data['phone_exists'] = qs.exists()
+
 
     return JsonResponse(data)
 
