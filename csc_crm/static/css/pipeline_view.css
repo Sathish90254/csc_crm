@@ -35,12 +35,13 @@
 body{
     background:var(--light);
     color:var(--text);
+    padding: 0;
 }
 
 /* MAIN CONTAINER */
 
-.container{
-    padding:10px 0px;
+.pipeline-container{
+    padding:15px;
     display:flex;
     flex-direction:column;
     gap:20px;
@@ -93,6 +94,14 @@ body{
     gap:12px;
     flex-wrap:wrap;
     width:100%;
+    font-weight: 500;
+}
+
+.filter-select{
+    padding: 10px 14px;
+    border: 1px solid var(--muted);
+    border-radius: 8px;
+    font-weight: 500;
 }
 
 /* SEARCH FORM */
@@ -100,7 +109,7 @@ body{
 .search-form {
     display: flex;
     align-items: center;
-    gap: 10px;
+    gap: 15px;
 }
 
 /* Search Input */
@@ -130,6 +139,7 @@ body{
     cursor: pointer;
     font-weight: 600;
     transition: 0.3s;
+    min-height:42px;
 }
 
 .search-btn:hover {
@@ -146,6 +156,7 @@ body{
     text-decoration: none;
     font-size: 13px;
     transition: 0.3s;
+    min-height:42px;
 }
 
 .clear-btn:hover {
@@ -163,6 +174,7 @@ body{
     font-weight: bold;
     text-decoration: none;
     transition: 0.3s;
+    min-height:42px;
 }
 
 .download-btn:hover {
@@ -191,7 +203,7 @@ body{
 }
 
 .funnel-item{
-    min-width:165px;
+    min-width:150px;
 }
 
 .funnel-bar{
@@ -231,6 +243,7 @@ body{
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(180px,1fr));
     gap: 18px;
+    margin: 20px 0px;
 }
 .status-card{
     background: var(--white);
@@ -269,19 +282,54 @@ body{
 .kanban-container{
     display:flex;
     gap:16px;
-    overflow-x:auto;
-    padding-bottom:10px;
+    overflow-x:hidden;
+    padding: 10px;
+    scroll-behavior:smooth;
+    width: 100%;
 }
 
-/* SCROLLBAR */
+/* WRAPPER */
 
-.kanban-container::-webkit-scrollbar{
-    height:8px;
+.pipeline-wrapper{
+    position:relative;
+    display:flex;
+    align-items:center;
+}
+/* button */
+
+.nav-btn{
+    position:absolute;
+    top:50%;
+    transform:translateY(-50%);
+    width:40px;
+    height:40px;
+    border:none;
+    padding: 2px 3px;
+    border-radius:50%;
+    background:var(--primary);
+    color:var(--white);
+    font-size:22px;
+    cursor:pointer;
+    z-index:100;
+    transition:0.3s;
+    box-shadow:0 2px 8px rgba(0,0,0,0.2);
 }
 
-.kanban-container::-webkit-scrollbar-thumb{
-    background:#ccc;
-    border-radius:10px;
+.nav-btn:hover{
+    background:var(--secondary);
+    color:var(--primary);
+}
+
+/* LEFT */
+
+.left-btn{
+    left:-20px;
+}
+
+/* RIGHT */
+
+.right-btn{
+    right:-20px;
 }
 
 /* COLUMN */
@@ -294,6 +342,7 @@ body{
     display:flex;
     flex-direction:column;
     max-height:80vh;
+    flex-shrink:0;
 }
 
 /* COLUMN HEADER */
@@ -325,6 +374,7 @@ body{
 
 .column-cards{
     padding:10px;
+    max-height:70vh;
     overflow-y:auto;
 }
 
@@ -348,6 +398,7 @@ body{
     display:flex;
     justify-content:space-between;
     align-items:center;
+    margin: 5px 0px 10px 0px;
 }
 
 .card-title{
@@ -364,7 +415,7 @@ body{
 .card-body p{
     font-size:12px;
     color:var(--muted);
-    margin-top:4px;
+    margin-top: 4px;
 }
 
 .card-footer{
@@ -407,116 +458,124 @@ body{
 
 /* TABLE SECTION */
 
-.all-leads-section{
-    margin-top:10px;
+.all-leads-pipe-section{
+    margin-top:5px;
+    width:100%;
 }
 
-.content-card{
+.content-card-pipe{
     background:var(--white);
     padding:20px;
     border-radius:16px;
     box-shadow:var(--shadow);
+    width:100%;
+    overflow:hidden;
 }
 
-.card-title{
+.all-card-title-pipe{
     font-size:18px;
     font-weight:800;
     color:var(--primary);
-    margin-bottom:12px;
+    margin-bottom:10px;
+}
+
+/* TABLE WRAPPER */
+
+.table-wrapper-pipe{
+    width:100%;
+    overflow-x:auto;
+    overflow-y:hidden;
+    -webkit-overflow-scrolling:touch;
+    border-radius:15px;
 }
 
 /* TABLE */
 
-.table-wrapper{
-    overflow-x:auto;
-}
-
-.data-table{
+.data-table-pipe{
     width:100%;
+    min-width:700px;
     border-collapse:collapse;
 }
 
-.data-table th{
+/* HEADER */
+
+.data-table-pipe th{
     background:var(--primary);
     color:white;
     padding:12px;
     text-align:left;
     font-size:13px;
+    white-space:nowrap;
 }
 
-.data-table td{
+/* BODY */
+
+.data-table-pipe td{
     padding:12px;
     border-bottom:1px solid #eee;
     font-size:13px;
+    white-space:nowrap;
 }
 
-.data-table tr:nth-child(even){
+.data-table-pipe tr:nth-child(even){
     background:#fafafa;
 }
 
-.data-table tr:hover{
+.data-table-pipe tr:hover{
     background:#fffde8;
 }
 
 /* BUTTONS */
 
-.btn-view{
-    background:var(--primary);
-    color:white;
+.btn-view,
+.btn-edit{
+    display:inline-block;
     padding:6px 10px;
     border-radius:8px;
     text-decoration:none;
     font-size:12px;
+    margin:2px;
+    white-space:nowrap;
+}
+
+.btn-view{
+    background:var(--primary);
+    color:white;
 }
 
 .btn-edit{
     background:var(--secondary);
     color:var(--primary);
-    padding:6px 10px;
-    border-radius:8px;
-    text-decoration:none;
-    font-size:12px;
-    margin-left:6px;
     font-weight:700;
 }
 
-/* RESPONSIVE */
+/* =========================================
+   RESPONSIVE DESIGN
+========================================= */
 
-/* RESPONSIVE */
+/* TABLET */
 
 @media(max-width:992px){
-    .kanban-column{
-        min-width:85%;
+
+    .pipeline-container{
+        padding:12px;
     }
 
     .filter-section{
         flex-direction:column;
         align-items:flex-start;
     }
-}
 
-/* ADD BELOW (ONLY RESPONSIVE IMPROVEMENT) */
-
-@media(max-width:768px){
-
-    .filter-section{
-        flex-direction:column;
-        align-items:stretch;
-        gap:12px;
+    .filter-item{
+        width:100%;
     }
 
     .search-form{
         width:100%;
     }
 
-    .search-input{
-        width:100%;
-    }
-
-    .download-btn{
-        margin-left:0;
-        width:100%;
-        text-align:center;
+    .status-section{
+        grid-template-columns:1fr 1fr;
     }
 
     .kanban-container{
@@ -524,13 +583,107 @@ body{
     }
 
     .kanban-column{
-        min-width:300px;
+        min-width:320px;
     }
 
-    .table-wrapper{
-        overflow-x:auto;
+    .data-table-pipe{
+        min-width:700px;
     }
 }
+
+/* MOBILE */
+
+@media(max-width:768px){
+
+    .header{
+        padding:18px;
+    }
+
+    .page-title{
+        font-size:22px;
+    }
+
+    .filter-section{
+        flex-direction:column;
+        align-items:stretch;
+        gap:12px;
+    }
+
+    .filter-item{
+        flex-direction:column;
+        align-items:stretch;
+    }
+
+    .search-form{
+        width:100%;
+        flex-direction:column;
+    }
+
+    .filter-select{
+        width:100%;
+    }
+
+    .search-input{
+        width:100%;
+    }
+
+    .search-btn{
+        width:100%;
+    }
+
+    .clear-btn{
+        width:100%;
+        text-align:center;
+    }
+
+    .download-btn{
+        width:100%;
+        margin-left:0;
+        text-align:center;
+    }
+
+    .status-section{
+        grid-template-columns:1fr;
+    }
+
+    .funnel-container{
+        overflow-x:auto;
+    }
+
+    .kanban-container{
+        overflow-x:auto;
+    }
+
+    .kanban-column{
+        min-width:280px;
+    }
+
+    .nav-btn{
+        display:none;
+    }
+
+    .table-wrapper-pipe{
+        overflow-x:auto;
+    }
+
+    .data-table-pipe{
+        min-width:650px;
+    }
+
+    .data-table-pipe th,
+    .data-table-pipe td{
+        font-size:12px;
+        padding:10px;
+    }
+
+    .btn-view,
+    .btn-edit{
+        font-size:11px;
+        padding:5px 8px;
+    }
+}
+
+/* SMALL MOBILE */
 
 @media(max-width:480px){
 
@@ -539,10 +692,58 @@ body{
     }
 
     .header{
+        padding:15px;
+    }
+
+    .page-title{
+        font-size:18px;
+    }
+
+    .page-subtitle{
+        font-size:11px;
+    }
+
+    .status-card{
         padding:16px;
     }
 
+    .status-number{
+        font-size:26px;
+    }
+
     .kanban-column{
-        min-width:260px;
+        min-width:250px;
+    }
+
+    .lead-card{
+        padding:10px;
+    }
+
+    .card-title{
+        font-size:13px;
+    }
+
+    .card-body p{
+        font-size:11px;
+    }
+
+    .content-card-pipe{
+        padding:12px;
+    }
+
+    .data-table-pipe{
+        min-width:600px;
+    }
+
+    .data-table-pipe th,
+    .data-table-pipe td{
+        padding:8px;
+        font-size:11px;
+    }
+
+    .btn-view,
+    .btn-edit{
+        font-size:10px;
+        padding:4px 6px;
     }
 }

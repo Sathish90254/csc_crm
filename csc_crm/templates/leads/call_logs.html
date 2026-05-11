@@ -16,32 +16,35 @@
         {% csrf_token %}
 
     
-        <label> NAME</label>
-        <input type="text" name="lead_name" id="lead_name"  placeholder="Enter name">
-        <span id="name_error" style="color:red; font-size:12px;"></span>
+        <label class="label"> NAME</label>
+        
+        <input type="text" name="lead_name" id="lead_name"  placeholder="Enter name"   oninput="onlyLetters(this)" class="input" required>
+        <span id="name_error" ></span>
+      
+        
 
             <div class="row">
                 <div class="field">
-                    <label>CALL DATE</label>
-                    <input type="date" name="call_date" placeholder="Enter call date" onclick="this.showPicker()">
+                    <label class="label">CALL DATE</label>
+                    <input type="date" name="call_date" placeholder="Enter call date" onclick="this.showPicker()" class="input" required>
                 </div>
 
                 <div class="field">
-                    <label>CALL TIME</label>
-                    <input type="time" name="call_time" placeholder="Enter calltime" onclick="this.showPicker()">
+                    <label class="label">CALL TIME</label>
+                    <input type="time" name="call_time" placeholder="Enter calltime" onclick="this.showPicker()" class="input" required>
                 </div>
             </div>
 
            <div class="row">
                   <div class="field">
-                    <label>DURATION</label>
-                    <input type="number" name="duration" placeholder="Enter Duration" >
+                    <label class="label">DURATION</label>
+                    <input type="number" name="duration" placeholder="Enter Duration" class="input" min="0" oninput="this.value = this.value.replace('-', '')" required>
                 </div>
 
                 <div class="field">
-                    <label>CALL OUTCOME</label>
+                    <label class="label">CALL OUTCOME</label required>
 
-                    <select name="call_outcome">
+                    <select name="call_outcome" class="select" required>
                         <option>Interested</option>
                         <option>Not Reachable</option>
                         <option>Demo Scheduled</option>
@@ -50,22 +53,22 @@
                 </div>
             </div>
 
-            <label>CALL NOTES (OPTIONAL)</label>
-            <textarea name="notes" rows="5" placeholder="Enter call notes"></textarea>
+            <label class="label">CALL NOTES (OPTIONAL)</label>
+            <textarea name="notes" rows="5" placeholder="Enter call notes" class="textarea" ></textarea>
 
-            <label>NEXT FOLLOW-UP DATE</label>
-            <input type="date" name="next_followup_date" onclick="this.showPicker()">
+            <label class="label">NEXT FOLLOW-UP DATE</label>
+            <input type="date" name="next_followup_date" onclick="this.showPicker()" class="input" required>
 
-            <button type="submit"><i class="fa fa-phone save"></i> Save CallLog..</button>
+            <button class="btn" type="submit"><i class="fa fa-phone save"></i> Save CallLog..</button>
             
         </form>
     </div>
 
-   
+   {% if logs %}
     <div class="history">
 
         
-    <h3>Recent Call History</h3>
+    <h3 class="recent-header">Recent Call History</h3>
   
        
 
@@ -121,7 +124,7 @@
      {% endfor %}
 
     </div>
-
+     {% endif %}
 </div>
 
 
@@ -139,6 +142,7 @@
 
 </div>
 </div>
+
 
 </body>
 {% endblock %}

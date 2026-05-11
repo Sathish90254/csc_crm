@@ -1,3 +1,7 @@
+* {
+    box-sizing: border-box;
+}
+
 body {
     font-family: Arial;
     background: rgb(236, 237, 241);
@@ -5,13 +9,16 @@ body {
 }
 
 .container {
-    display: flex;
+    display: grid !important;
+    grid-template-columns: 60% 40%;
     gap: 30px;
+    align-items: start;
 }
 
 .form-box {
-    width: 55%;
+    width: 100%;
 }
+
 
 .sub-text {
     color: rgb(140, 142, 169);
@@ -19,13 +26,13 @@ body {
     margin-bottom: 20px;
 }
 
-label {
+.label {
     font-size: 12px;
     color: rgb(88, 86, 86);
     font-weight: bold;
 }
 
-input, select, textarea {
+.input, .select, .textarea {
     width: 100%;
     padding: 8px 8px;
     margin-top: 5px;
@@ -38,9 +45,9 @@ input, select, textarea {
     box-sizing: border-box;
     
 }
-input:focus, 
-select:focus, 
-textarea:focus {
+.input:focus, 
+.select:focus, 
+.textarea:focus {
     outline: none;
     border: 1px solid rgba(9, 100, 170, 0.623); 
 }
@@ -56,12 +63,12 @@ textarea:focus {
     width: 50%;
 }
 
-textarea {
+.textarea {
     height: 120px;
     resize: vertical;
 }
 
-button {
+.btn {
     width: 100%;
     padding: 10px;
     background: rgb(4, 4, 138);
@@ -71,7 +78,7 @@ button {
     cursor: pointer;
 }
 
-button:hover {
+.btn:hover {
     background: rgb(37, 35, 158);
 }
 
@@ -84,21 +91,21 @@ h2 {
 }
 
 .history {
-    width: 45%;
+    
+    width: 100%;
     max-height: 550px;
     overflow-y: auto;
-    padding-right: 8px;
     scroll-behavior: smooth;
-    scrollbar-color: rgb(222, 221, 221);
     scrollbar-width: thin;
 }
 
 .recent-header {
     position: sticky;
     top: 0;
-    background-color: rgb(236, 237, 241);
-    z-index: 10;
+    background-color: rgb(250, 247, 247);
+    z-index: 2;
     padding: 10px 0;
+    
 }
 
 .card {
@@ -190,26 +197,41 @@ h2 {
     width: 100%;
     height: 100%;
     background: rgba(0,0,0,0.5);
+    z-index:10;
 }
 
 .popup-content {
-    background: #fff;
+    background: #fdf8f8;
     width: 400px;
     padding: 20px;
     margin: 8% auto;
     border-radius: 10px;
+    
    
 }
+.popup-content h3 {
+    margin-bottom: 25px;
+}
 
+.popup-content p {
+    margin-bottom: 18px;
+}
 .close {
     float: right;
     cursor: pointer;
     font-size: 20px;
 }
-
+#name_error{
+    color: #e63946;
+    font-size: 13px;
+    font-weight: 500;
+    display: block;
+    margin-top: -10px;
+    margin-bottom: 12px;
+}
 @media screen and (max-width: 992px) {
     .container {
-        flex-direction: column;
+        grid-template-columns: 1fr;
         gap: 20px;
     }
 
@@ -237,7 +259,7 @@ h2 {
     }
 
     .row {
-        flex-direction: column;
+        grid-template-columns: 1fr;
         gap: 10px;
     }
 

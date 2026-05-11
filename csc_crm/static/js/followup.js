@@ -13,3 +13,6 @@ const buttons = document.querySelectorAll(".tab-button");
             document.getElementById("tab-" + target).classList.add("active");
         });
     });
+ function toggleNote(el) {
+    el.classList.toggle("expanded");
+}

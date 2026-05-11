@@ -193,27 +193,25 @@ def lead_pipeline_view(request):
 
     leads = LeadCapture.objects.all().order_by('created_at')
 
-    search_query = request.GET.get('search')
+    search_query = request.GET.get('search', '').strip()
+    assigned_to = request.GET.get('assigned_to', '').strip()
+
     if search_query:
         leads = leads.filter(
             Q(course_interested__icontains=search_query) |
             Q(email__icontains=search_query) |
             Q(phone_no__icontains=search_query)
         )
-    
-    assigned_to = request.GET.get('assigned_to')
 
-    if assigned_to: 
+    if assigned_to:
         leads = leads.filter(assigned_to_id=assigned_to)
 
     staffs = User.objects.all()
 
-    # Pipeline
     leads_by_status = {}
     for value, label in LeadCapture.STATUS_CHOICES:
         leads_by_status[label] = leads.filter(initial_status=value)
 
-    # Funnel + Status Cards
     total_leads = leads.count()
 
     funnel_data = []
@@ -221,29 +219,29 @@ def lead_pipeline_view(request):
 
     for value, label in LeadCapture.STATUS_CHOICES:
         count = leads.filter(initial_status=value).count()
-        percentage = (count / total_leads * 100) if total_leads > 0 else 0
+        percentage = round((count / total_leads * 100), 1) if total_leads else 0
 
         funnel_data.append({
             'status': label,
             'count': count,
-            'percentage': round(percentage, 1)
+            'percentage': percentage
         })
 
         status_counts.append({
             'status': label,
             'count': count,
-            "percentage": round(percentage, 1)
+            'percentage': percentage
         })
 
     context = {
         'leads_by_status': leads_by_status,
         'funnel_data': funnel_data,
-        'total_leads': total_leads,
-        'leads': leads,
-        'search_query': search_query,
         'status_counts': status_counts,
+        'total_leads': total_leads,
+        'search_query': search_query,
         'assigned_to': assigned_to,
         'staffs': staffs,
+        'leads': leads,
     }
 
     return render(request, 'leads/pipeline_view.html', context)

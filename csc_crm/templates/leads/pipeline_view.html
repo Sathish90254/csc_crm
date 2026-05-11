@@ -2,7 +2,7 @@
 
 {% block content %}
 
-    <div class="container">
+    <div class="pipeline-container">
         <!-- Header Section -->
         <header class="header">
             <div class="header-content">
@@ -14,10 +14,11 @@
         <!-- Filter Section -->
         <section class="filter-section">
                 
-               <form method="GET" class="search-form">
-                <div class="filter-item">
+               <form method="GET" id="filterForm" class="search-form">
 
-                <label>Filter by Staff</label>
+    <div class="filter-item">
+
+        <label>Filter by Staff</label>
 
         <select name="assigned_to" class="filter-select" onchange="this.form.submit()">
             <option value="">All Staff</option>
@@ -30,21 +31,24 @@
             {% endfor %}
         </select>
 
+        <input type="text"
+               name="search"
+               value="{{ search_query|default:'' }}"
+               placeholder="Search leads..."
+               class="search-input">
 
-                <input type="text"
-                   name="search"
-                   value="{{ search_query|default:'' }}"
-                   placeholder="Search leads..."
-                   class="search-input">
+        <button type="submit" class="search-btn">
+            Search
+        </button>
 
-                <button type="submit" class="search-btn">
-                Search
-                </button>
-                <a href="{% url 'lead_pipeline_view' %}" class="clear-btn">
-                Clear
-                </a>
-                </div>
-            </form>
+        <!-- CLEAR FIX -->
+        <a href="{% url 'lead_pipeline_view' %}" class="clear-btn">
+            Clear
+        </a>
+
+    </div>
+
+</form>
         
           <!-- Export -->
     <a href="{% url 'export_leads_csv' %}?search={{ search_query }}&assigned_to={{ assigned_to }}"
@@ -52,6 +56,9 @@
    Export
 </a>
         </section>
+
+
+    <div id="pipelineData">
 
         <!-- Funnel Summary -->
         <section class="funnel-summary">
@@ -95,7 +102,12 @@
         <!-- Pipeline Kanban Board -->
         <section class="pipeline-board">
             <h3 class="board-title">Pipeline Stages</h3>
-            
+            <div class="pipeline-wrapper">
+
+    <!-- LEFT BUTTON -->
+
+    <button class="nav-btn left-btn"
+            onclick="moveLeft()">❮</button>
             <div class="kanban-container">
                 <!-- New Stage -->
                 <div class="kanban-column">
@@ -319,19 +331,23 @@
                     </div>
                 </div>
             </div>
-        </section>
-
+            <button class="nav-btn right-btn"
+            onclick="moveRight()">
+        ❯</button>
+        </div>   <!-- pipeline-wrapper -->
+</section>
+        
           <!-- All Leads -->
-       <section class="all-leads-section">
-             <div class="content-card">
+       <section class="all-leads-pipe-section">
+             <div class="content-card-pipe">
 
             <div class="card-header">
-               <h2 class="all-card-title">All Leads</h2>
+               <h2 class="all-card-title-pipe">All Leads</h2>
             </div>
 
-            <div class="table-wrapper">
+            <div class="table-wrapper-pipe">
 
-               <table class="data-table">
+               <table class="data-table-pipe">
                   <thead>
                      <tr>
                         <th>ID</th>
@@ -374,6 +390,8 @@
              </div>
         
        </section>
+        </div>
+
     </div>
 
 {% endblock %}
