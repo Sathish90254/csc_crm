@@ -11,16 +11,16 @@
             </div>
         </header>
 
-        <!-- Filter Section -->
-        <section class="filter-section">
-                
-               <form method="GET" id="filterForm" class="search-form">
+        <!-- FILTER SECTION -->
+<section class="filter-section">
+
+<form method="GET" id="filterForm" class="search-form">
 
     <div class="filter-item">
 
         <label>Filter by Staff</label>
 
-        <select name="assigned_to" class="filter-select" onchange="this.form.submit()">
+        <select name="assigned_to" class="filter-select" id="staffSelect">
             <option value="">All Staff</option>
 
             {% for staff in staffs %}
@@ -35,28 +35,27 @@
                name="search"
                value="{{ search_query|default:'' }}"
                placeholder="Search leads..."
-               class="search-input">
+               class="search-input"
+               id="searchInput">
 
-        <button type="submit" class="search-btn">
+        <button type="button" id="searchBtn" class="search-btn">
             Search
         </button>
 
-        <!-- CLEAR FIX -->
-        <a href="{% url 'lead_pipeline_view' %}" class="clear-btn">
+        <button type="button" id="clearBtn" class="clear-btn">
             Clear
-        </a>
+        </button>
 
     </div>
 
 </form>
-        
-          <!-- Export -->
-    <a href="{% url 'export_leads_csv' %}?search={{ search_query }}&assigned_to={{ assigned_to }}"
+
+<a href="{% url 'export_leads_csv' %}?search={{ search_query }}&assigned_to={{ assigned_to }}"
    class="download-btn">
    Export
 </a>
-        </section>
 
+</section>
 
     <div id="pipelineData">
 
@@ -106,9 +105,8 @@
 
     <!-- LEFT BUTTON -->
 
-    <button class="nav-btn left-btn"
-            onclick="moveLeft()">❮</button>
-            <div class="kanban-container">
+    <button class="nav-btn left-btn" onclick="moveLeft()">❮</button>
+            <div class="kanban-container" id="kanbanContainer">
                 <!-- New Stage -->
                 <div class="kanban-column">
                     <div class="column-header">
@@ -329,13 +327,8 @@
                             <div class="empty-column">No leads</div>
                         {% endif %}
                     </div>
-                </div>
-            </div>
-            <button class="nav-btn right-btn"
-            onclick="moveRight()">
-        ❯</button>
-        </div>   <!-- pipeline-wrapper -->
-</section>
+                <button class="nav-btn right-btn" onclick="moveRight()">❯</button>
+        </section>
         
           <!-- All Leads -->
        <section class="all-leads-pipe-section">
