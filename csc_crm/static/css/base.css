@@ -56,6 +56,62 @@ body{
     align-items: center;
 }
 
+.menu-toggle{
+    display:none;
+    background:var(--primary);
+    color:var(--white);
+    border:none;
+    padding:14px 18px;
+    font-size:22px;
+    cursor:pointer;
+    width:100%;
+    text-align:left;
+}
+
+.module-tabs{
+    display:flex;
+    align-items:center;
+    padding:15px 25px;
+    gap:20px;
+    background:var(--primary);
+    border-radius:0 0 18px 18px;
+}
+
+.tab-link{
+    font-weight:600;
+    color:var(--white);
+    padding:14px 20px;
+    border-radius:14px;
+    transition:.3s;
+}
+
+.tab-link:hover{
+    background:rgba(255,255,255,0.08);
+}
+
+.active-tab:hover{
+    background:var(--white);
+    color:var(--text);
+    backdrop-filter:blur(6px);
+}
+
+.active-tab{
+    background:var(--secondary);
+    color:var(--primary);
+    border-bottom:none;
+}
+.menu-toggle{
+    display:none;
+    background:var(--primary);
+    color:var(--white);
+    border:none;
+    padding:16px 20px;
+    font-size:22px;
+    cursor:pointer;
+    width:100%;
+    text-align:left;
+}
+
 /* TOP NAVBAR */
 
 .main-navbar{
@@ -234,25 +290,62 @@ a{
 
 @media(max-width:768px){
 
-    .main-navbar{
-        height:auto;
-        padding:18px;
+    .menu-toggle{
+        display:block;
+        position:relative;
+        z-index:1002;
     }
 
-    .brand-title{
-        font-size:22px;
+    .module-tabs{
+        display:none;
+        flex-direction:column;
+        align-items:flex-start;
+        width:100%;
+        padding:20px;
+        gap:14px;
+        background:var(--primary);
+
+        position:absolute;
+        top:140px;
+        left:0;
+        z-index:1001;
+
+        box-shadow:0 10px 20px rgba(0,0,0,0.15);
+        border-radius:0 0 18px 18px;
+    }
+
+    .module-tabs.show{
+        display:flex;
     }
 
     .page-body{
-        padding:18px 16px;
+        padding:24px 16px;
+        margin-top:20px;
     }
 
-    .main-footer{
-        flex-direction:column;
-        justify-content:center;
-        gap:6px;
-        padding:14px;
+    .module-tabs a{
+        width:100%;
+        margin-right:0;
+    }
+
+    .tab-link{
+        width:100%;
+        color:var(--white);
+    }
+
+    .active-tab{
+        color:var(--primary) !important;
+    }
+
+    .header-right{
+        width:100%;
+        margin-left:0;
+    }
+
+    .btn-primary{
+        width:100%;
+        display:block;
         text-align:center;
+        margin-left:0;
     }
-
 }
