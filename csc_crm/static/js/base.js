@@ -13,19 +13,38 @@
 
     }, 3000);
 
+// For Hamburger Menu
 const menuToggle = document.getElementById("menuToggle");
 const moduleTabs = document.getElementById("moduleTabs");
+const icon = menuToggle.querySelector("i");
 
-menuToggle.addEventListener("click", () => {
-    moduleTabs.classList.toggle("show");
+function openMenu(){
+    moduleTabs.classList.add("show");
+    icon.classList.remove("fa-bars");
+    icon.classList.add("fa-times");
+}
 
-    const icon = menuToggle.querySelector("i");
+function closeMenu(){
+    moduleTabs.classList.remove("show");
+    icon.classList.remove("fa-times");
+    icon.classList.add("fa-bars");
+}
+
+menuToggle.addEventListener("click", (e) => {
+    e.stopPropagation();
 
     if(moduleTabs.classList.contains("show")){
-        icon.classList.remove("fa-bars");
-        icon.classList.add("fa-times");
+        closeMenu();
     }else{
-        icon.classList.remove("fa-times");
-        icon.classList.add("fa-bars");
+        openMenu();
+    }
+});
+
+document.addEventListener("click", (e) => {
+    if(
+        !moduleTabs.contains(e.target) &&
+        !menuToggle.contains(e.target)
+    ){
+        closeMenu();
     }
 });
