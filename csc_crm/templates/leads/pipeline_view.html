@@ -34,7 +34,7 @@
         <input type="text"
                name="search"
                value="{{ search_query|default:'' }}"
-               placeholder="Search leads..."
+               placeholder="Search lead Course..."
                class="search-input"
                id="searchInput">
 
@@ -50,8 +50,7 @@
 
 </form>
 
-<a href="{% url 'export_leads_csv' %}?search={{ search_query }}&assigned_to={{ assigned_to }}"
-   class="download-btn">
+<a href="{% url 'export_leads_csv' %}" data-url="{% url 'export_leads_csv' %}" class="download-btn" id="exportBtn">
    Export
 </a>
 
@@ -61,7 +60,7 @@
 
         <!-- Funnel Summary -->
         <section class="funnel-summary">
-            <h3 class="summary-title">📊 Lead Funnel — April 2026</h3>
+            <h3 class="summary-title">📊 Lead Funnel — {% now "F Y" %}</h3>
             <div class="funnel-container">
                 {% for item in funnel_data %}
                     <div class="funnel-item">

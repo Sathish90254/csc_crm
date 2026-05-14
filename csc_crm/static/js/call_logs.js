@@ -16,40 +16,76 @@
         document.getElementById("popup").style.display = "none";
     }
 
-    function onlyLetters(input) {
+function onlyLetters(input) {
 
     input.value = input.value.replace(/[^A-Za-z\s]/g, '');
 
+}
+
+
+function validateForm() {
+
+    let name = document.getElementById("lead_name").value.trim();
+
+    let error = document.getElementById("name_error");
+
+    if (name === "") {
+
+        error.innerText = "Please enter a name";
+        return false;
     }
 
-    function validateForm() {
-        let name = document.getElementById("lead_name").value.trim();
-        let error = document.getElementById("name_error");
+    else {
 
-        if (name === "") {
-            error.innerText = "Enter valid name";
-            return false; 
-        } else {
-            error.innerText = "";
-            return true; 
-        }
+        error.innerText = "";
+        return true;
     }
+}
+window.onload = function () {
+
+    let today = new Date().toISOString().split("T")[0];
+
+    document.getElementById("call_date").setAttribute("max", today);
+
+}
+window.onload = function () {
+
+    let today = new Date().toISOString().split("T")[0];
+
+   
+    document.getElementById("call_date").setAttribute("max", today);
+
     
+    document.getElementById("next_followup_date").setAttribute("min", today);
 
-    function closePopup() {
-        document.getElementById("popup").style.display = "none";
+}
+
+window.onload = function () {
+
+    let today = new Date().toISOString().split("T")[0];
+
+    document.getElementById("call_date").setAttribute("max", today);
+
+    document.getElementById("next_followup_date").setAttribute("min", today);
+
+    toggleFollowupRequired();
+
+    document.getElementById("call_outcome").addEventListener("change", toggleFollowupRequired);
+}
+
+function toggleFollowupRequired() {
+
+    let outcome = document.getElementById("call_outcome").value;
+
+    let followup = document.getElementById("next_followup_date");
+
+    if (outcome === "Not Interested") {
+
+        followup.required = false;
+        followup.value = "";
+
+    } else {
+
+        followup.required = true;
     }
-
-
-    function validateForm() {
-        let name = document.getElementById("lead_name").value.trim();
-        let error = document.getElementById("name_error");
-
-        if (name === "") {
-            error.innerText = "Enter valid name";
-            return false; 
-        } else {
-            error.innerText = "";
-            return true; 
-        }
-    }
+}

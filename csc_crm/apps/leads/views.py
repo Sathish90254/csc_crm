@@ -197,18 +197,17 @@ def lead_pipeline_view(request):
     assigned_to = request.GET.get('assigned_to', '').strip()
 
     if search_query:
-        leads = leads.filter(
-            Q(course_interested__icontains=search_query) |
-            Q(email__icontains=search_query) |
-            Q(phone_no__icontains=search_query)
-        )
+       leads = leads.filter(
+          Q(course_interested__icontains=search_query)
+    )
 
     if assigned_to:
-        leads = leads.filter(assigned_to_id=assigned_to)
+        leads = leads.filter(assigned_to__id=assigned_to)
 
     staffs = User.objects.all()
 
     leads_by_status = {}
+
     for value, label in LeadCapture.STATUS_CHOICES:
         leads_by_status[label] = leads.filter(initial_status=value)
 
@@ -230,7 +229,6 @@ def lead_pipeline_view(request):
         status_counts.append({
             'status': label,
             'count': count,
-            'percentage': percentage
         })
 
     context = {

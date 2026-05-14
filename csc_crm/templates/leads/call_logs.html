@@ -26,7 +26,7 @@
             <div class="row">
                 <div class="field">
                     <label class="label">CALL DATE</label>
-                    <input type="date" name="call_date" placeholder="Enter call date" onclick="this.showPicker()" class="input" required>
+                    <input type="date"  id="call_date" name="call_date" placeholder="Enter call date" onclick="this.showPicker()" class="input" required>
                 </div>
 
                 <div class="field">
@@ -37,14 +37,14 @@
 
            <div class="row">
                   <div class="field">
-                    <label class="label">DURATION</label>
-                    <input type="number" name="duration" placeholder="Enter Duration" class="input" min="0" oninput="this.value = this.value.replace('-', '')" required>
+                    <label class="label">DURATION (MIN)</label>
+                    <input type="number" name="duration" placeholder="Enter Duration (min)" class="input" min="0" oninput="this.value = this.value.replace('-', '')" required>
                 </div>
 
                 <div class="field">
                     <label class="label">CALL OUTCOME</label required>
 
-                    <select name="call_outcome" class="select" required>
+                    <select name="call_outcome" id="call_outcome" class="select" required>
                         <option>Interested</option>
                         <option>Not Reachable</option>
                         <option>Demo Scheduled</option>
@@ -57,7 +57,7 @@
             <textarea name="notes" rows="5" placeholder="Enter call notes" class="textarea" ></textarea>
 
             <label class="label">NEXT FOLLOW-UP DATE</label>
-            <input type="date" name="next_followup_date" onclick="this.showPicker()" class="input" required>
+            <input type="date" id="next_followup_date" name="next_followup_date" onclick="this.showPicker()" class="input" >
 
             <button class="btn" type="submit"><i class="fa fa-phone save"></i> Save CallLog..</button>
             
@@ -73,54 +73,54 @@
        
 
     {% for log in logs %}
-        
-            <a href="javascript:void(0);" class="card-link"
-             onclick="openPopup(
-            '{{ log.lead_name }}',
-            '{{ log.call_date }}',
-            '{{ log.call_time }}',
-            '{{ log.duration }}',
-            '{{ log.call_outcome }}',
-            '{{ log.notes }}',
-            '{{ log.next_followup_date }}')">
 
-         <div class="card {{ log.call_outcome|slugify }}">
+<div class="card {{ log.call_outcome|slugify }}">
 
-            <div class="card-header">
-                <h4>{{ log.lead_name }}</h4>
+    <a href="javascript:void(0);" 
+       class="card-link"
+       onclick="openPopup(
+       '{{ log.lead_name }}',
+       '{{ log.call_date }}',
+       '{{ log.call_time }}',
+       '{{ log.duration }}',
+       '{{ log.call_outcome }}',
+       '{{ log.notes }}',
+       '{{ log.next_followup_date }}')">
 
-                <div style="display:flex; align-items:center; gap:10px;">
-                    <span class="time">
-                        {{ log.call_date }} • {{ log.duration }}m
-                    </span>
+        <div class="card-header">
 
-                
-                <form method="POST" action="{% url 'delete_call' log.id %}" onsubmit="return confirm('Do you want to delete this call history?')">
-                 {% csrf_token %}
-                <button type="submit" class="delete-btn" onclick="event.stopPropagation();">
-                   🗑
-                </button>
-                </form>
-                
-                </div>
-            </div>
+            <h4>{{ log.lead_name }}</h4>
 
-            <span class="badge {{ log.call_outcome|slugify }}">
-                {{ log.call_outcome }}
+            <span class="time">
+                {{ log.call_date }} • {{ log.duration }}m
             </span>
 
-            <p>{{ log.notes }}</p>
+        </div>
 
-           {% if log.next_followup_date and log.call_outcome != "Not Interested" %}
+        <span class="badge {{ log.call_outcome|slugify }}">
+            {{ log.call_outcome }}
+        </span>
 
-    <div class="follow">
+        <p>{{ log.notes }}</p>
 
-        followup date: {{ log.next_followup_date }}
-    </div>
-     {% endif %}
-      
-    </div>
+        {% if log.next_followup_date and log.call_outcome != "Not Interested" %}
+            <div class="follow">
+                followup date: {{ log.next_followup_date }}
+            </div>
+        {% endif %}
+
     </a>
+
+    <form method="POST" action="{% url 'delete_call' log.id %}"   onsubmit="return confirm('Do you want to delete this call history?')">
+        {% csrf_token %}
+
+        <button type="submit" class="delete-btn">
+            🗑
+        </button>
+    </form>
+
+</div>
+
      {% endfor %}
 
     </div>

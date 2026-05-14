@@ -1,113 +1,141 @@
 document.addEventListener("DOMContentLoaded", function () {
 
-    //=== ELEMENTS ===
+    // ELEMENTS
+
     const form = document.getElementById("filterForm");
     const pipelineData = document.getElementById("pipelineData");
 
     const searchBtn = document.getElementById("searchBtn");
     const clearBtn = document.getElementById("clearBtn");
+
     const staffSelect = document.getElementById("staffSelect");
     const searchInput = document.getElementById("searchInput");
 
     if (!form || !pipelineData) return;
 
-    // === AJAX LOAD ===
+
+    // EXPORT URL UPDATE
+
+    function updateExportUrl() {
+
+        const exportBtn = document.getElementById("exportBtn");
+
+        if (!exportBtn) return;
+
+        const baseUrl = exportBtn.dataset.url;
+
+        const params = new URLSearchParams({
+            search: searchInput.value,
+            assigned_to: staffSelect.value
+        });
+
+        exportBtn.href = `${baseUrl}?${params.toString()}`;
+    }
+
+
+    // AJAX LOAD DATA
+
     async function loadData() {
 
         const formData = new FormData(form);
+
         const params = new URLSearchParams(formData);
 
-        const response = await fetch(`?${params.toString()}`, {
-            headers: {
-                "X-Requested-With": "XMLHttpRequest"
+        try {
+
+            const response = await fetch(`?${params.toString()}`, {
+                headers: {
+                    "X-Requested-With": "XMLHttpRequest"
+                }
+            });
+
+            const html = await response.text();
+
+            const parser = new DOMParser();
+
+            const doc = parser.parseFromString(html, "text/html");
+
+            const newData = doc.getElementById("pipelineData");
+
+            if (newData) {
+
+                pipelineData.innerHTML = newData.innerHTML;
+
+                updateExportUrl();
+
+                bindKanban();
             }
-        });
 
-        const html = await response.text();
+            history.replaceState(
+                null,
+                "",
+                "?" + params.toString()
+            );
 
-        const parser = new DOMParser();
-        const doc = parser.parseFromString(html, "text/html");
+        } catch (error) {
 
-        const newData = doc.getElementById("pipelineData");
-
-        if (newData) {
-            pipelineData.innerHTML = newData.innerHTML;
-
-            bindKanban();
+            console.log("AJAX ERROR:", error);
         }
     }
 
-    //=== SEARCH BUTTON ===
+
+    // SEARCH BUTTON
+
     searchBtn.addEventListener("click", function (e) {
+
         e.preventDefault();
+
+        updateExportUrl();
+
         loadData();
     });
 
-    // === STAFF FILTER ===
+
+    // STAFF FILTER
+
     staffSelect.addEventListener("change", function () {
+
+        updateExportUrl();
+
         loadData();
     });
 
-    //=== CLEAR BUTTON LOGIC ===
 
-    let clearIntervalRef = null;
-    let clearTimeoutRef = null;
+    // CLEAR BUTTON
 
-    // 1 CLICK = ONE LETTER DELETE
-    clearBtn.addEventListener("click", function () {
+    clearBtn.addEventListener("click", function (e) {
 
-        // if long press is running, ignore click
-        if (clearIntervalRef) return;
+        e.preventDefault();
 
-        searchInput.value = searchInput.value.slice(0, -1);
+        searchInput.value = "";
+        staffSelect.value = "";
 
-        if (searchInput.value.length === 0) {
-            loadData();
-        }
+        updateExportUrl();
+
+        loadData();
+
+        history.replaceState(
+            null,
+            "",
+            window.location.pathname
+        );
     });
 
-    // === LONG PRESS CLEAR ===
-    clearBtn.addEventListener("mousedown", function () {
 
-        clearTimeoutRef = setTimeout(() => {
+    // KANBAN SCROLL
+    
 
-            clearIntervalRef = setInterval(() => {
-
-                if (searchInput.value.length > 0) {
-                    searchInput.value = searchInput.value.slice(0, -1);
-                }
-
-                if (searchInput.value.length === 0) {
-                    stopClear();
-                    loadData();
-                }
-
-            }, 70);
-
-        }, 400);
-
-    });
-
-    clearBtn.addEventListener("mouseup", stopClear);
-    clearBtn.addEventListener("mouseleave", stopClear);
-    clearBtn.addEventListener("touchend", stopClear);
-
-    function stopClear() {
-        clearTimeout(clearTimeoutRef);
-        clearInterval(clearIntervalRef);
-        clearTimeoutRef = null;
-        clearIntervalRef = null;
-    }
-
-    // === KANBAN FIX ===
     function bindKanban() {
 
         function getKanban() {
+
             return document.getElementById("kanbanContainer");
         }
 
         window.moveLeft = function () {
+
             const kanban = getKanban();
+
             if (!kanban) return;
 
             kanban.scrollBy({
@@ -117,7 +145,9 @@ document.addEventListener("DOMContentLoaded", function () {
         };
 
         window.moveRight = function () {
+
             const kanban = getKanban();
+
             if (!kanban) return;
 
             kanban.scrollBy({
@@ -127,6 +157,10 @@ document.addEventListener("DOMContentLoaded", function () {
         };
     }
 
+
+
     bindKanban();
+
+    updateExportUrl();
 
 });

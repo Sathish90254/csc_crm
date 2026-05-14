@@ -62,6 +62,7 @@
             <section class="followup-section tab-content active" id="tab-all">
                 <div class="section-header">
                     <h2 class="section-title">All Follow-Ups</h2>
+                     <span class="tab-count"> {{ overdue_count|add:due_today|add:this_week }}</span>
                 </div>
 
                 {% if overdue or today_followups or week_followups %}

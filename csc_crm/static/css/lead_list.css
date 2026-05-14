@@ -165,7 +165,7 @@
 /* SELECT DROPDOWN */
 .form-group select{
     width: 100%;
-    height: 33px;
+    height: 44px;
     padding: 0 14px;
     border: 1px solid var(--border);
     border-radius: 12px;
@@ -177,6 +177,13 @@
     appearance: auto;
     -webkit-appearance: auto;
     -moz-appearance: auto;
+}
+/* Specifically for Date */
+.form-group input[type="date"]{
+    height: 44px;
+    padding: 0 14px;
+    appearance: none;
+    -webkit-appearance: none;
 }
 .form-group input:focus,
 .form-group select:focus,

@@ -88,10 +88,13 @@ body {
     font-weight: bold;
 }
 
-.summary-card:nth-child(1) .summary-count { color:#dc2626; }
-.summary-card:nth-child(2) .summary-count { color:rgb(231, 112, 8); }
-.summary-card:nth-child(3) .summary-count { color: rgb(0, 153, 255); }
-.summary-card:nth-child(4) .summary-count { color: #16a34a;; }
+.summary-card:nth-child(1){ border-left: 2px solid #dc2626;}
+
+.summary-card:nth-child(2){ border-left: 2px solid #f59e0b;}
+
+.summary-card:nth-child(3){ border-left: 2px solid #2563eb;}
+
+.summary-card:nth-child(4){border-left: 2px solid #16a34a;}
 
 .tabs-container {
     display: flex;
@@ -282,7 +285,6 @@ body {
     background: #3a358c;
 }
 
-
 .col-notes {
     max-width: 220px;   
     word-break: break-word;
@@ -309,10 +311,6 @@ html, body {
     overflow-x: hidden;
 }
 
-html, body {
-    width: 100%;
-    overflow-x: hidden;
-}
 
 @media screen and (max-width: 1024px) {
 
