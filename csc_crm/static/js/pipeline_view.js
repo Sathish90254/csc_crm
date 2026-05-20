@@ -32,6 +32,15 @@ document.addEventListener("DOMContentLoaded", function () {
         exportBtn.href = `${baseUrl}?${params.toString()}`;
     }
 
+    // NO DATA MESSAGE
+    function showNoDataMessage() {
+        pipelineData.innerHTML = `
+            <div class="no-search-results">
+                No leads available for this filter.
+            </div>
+        `;
+    }
+
 
     // AJAX LOAD DATA
 

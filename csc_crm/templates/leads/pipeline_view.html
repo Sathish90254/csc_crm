@@ -57,7 +57,7 @@
 </section>
 
     <div id="pipelineData">
-
+        {% if not no_results %}
         <!-- Funnel Summary -->
         <section class="funnel-summary">
             <h3 class="summary-title">📊 Lead Funnel — {% now "F Y" %}</h3>
@@ -382,6 +382,13 @@
              </div>
         
        </section>
+        {% else %}
+
+        <div class="no-search-results">
+            No leads available for this filter.
+        </div>
+
+        {% endif %}
         </div>
 
     </div>

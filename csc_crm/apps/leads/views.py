@@ -206,6 +206,10 @@ def lead_pipeline_view(request):
 
     staffs = User.objects.all()
 
+    no_results = False
+    if (search_query or assigned_to) and leads.count() == 0:
+        no_results = True
+
     leads_by_status = {}
 
     for value, label in LeadCapture.STATUS_CHOICES:
@@ -240,6 +244,7 @@ def lead_pipeline_view(request):
         'assigned_to': assigned_to,
         'staffs': staffs,
         'leads': leads,
+        'no_results': no_results,
     }
 
     return render(request, 'leads/pipeline_view.html', context)

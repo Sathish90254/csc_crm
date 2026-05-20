@@ -549,6 +549,19 @@ body{
     font-weight:700;
 }
 
+/* search no leads */
+
+.no-search-results{
+    text-align: center;
+    padding: 40px;
+    font-size: 20px;
+    font-weight: bold;
+    color: #b42626;
+    background: white;
+    border-radius: 10px;
+    margin-top: 20px;
+}
+
 /* =========================================
    RESPONSIVE DESIGN
 ========================================= */
