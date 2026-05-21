@@ -49,7 +49,8 @@ def lead_capture_list(request):
         'form': form,
         'recent_leads': recent_leads,
         'status_counts': status_counts,
-        'search_query': search_query
+        'search_query': search_query,
+        'page_title': 'New Lead Entry'
     }
 
     return render(request, 'leads/lead_list.html', context)
