@@ -42,6 +42,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'csc_crm.apps.leads.apps.LeadsConfig',
+    'csc_crm.apps.staff.apps.StaffConfig',
 ]
 
 MIDDLEWARE = [
