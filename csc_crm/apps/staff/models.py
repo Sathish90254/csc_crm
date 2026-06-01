@@ -2,6 +2,8 @@ from django.db import models
 from django.core.validators import MinValueValidator, MaxValueValidator
 from django.utils import timezone
 from django.conf import settings
+import uuid
+
 
 class Department(models.Model):
     """Department reference data"""
@@ -51,7 +53,7 @@ class StaffRole(models.Model):
     updated_at = models.DateTimeField(auto_now=True)
 
     class Meta:
-        db_table = 'staff roles'
+        db_table = 'staff_roles'
         verbose_name_plural = 'Staff Roles'
 
     def __str__(self):
@@ -84,7 +86,7 @@ class Staff(models.Model):
     # Status & Dates
     status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='active', db_index=True)
     date_of_joining = models.DateField()
-    date_of_birth = models.DateTimeField(null=True, blank=True)
+    date_of_birth = models.DateField(null=True, blank=True)
 
     # Log-in Tracking
     last_login = models.DateTimeField(null=True, blank=True)
@@ -151,3 +153,271 @@ class Staff(models.Model):
     def get_performance_star_count(self):
         """Return Performance rating as stars (1-5)"""
         return self.performance_rating
+    
+# ===== Overview =====
+
+# Lead
+class Lead(models.Model):
+
+    STATUS_CHOICES = [
+        ('new', 'New'),
+        ('assigned', 'Assigned'),
+        ('in_progress', 'In Progress'),
+        ('converted', 'Converted'),
+        ('lost', 'Lost'),
+    ]
+
+    staff = models.ForeignKey(
+        'Staff',
+        on_delete=models.CASCADE,
+        related_name='leads'
+    )
+
+    name = models.CharField(max_length=150)
+
+    phone = models.CharField(
+        max_length=15,
+        db_index=True
+    )
+
+    email = models.EmailField(
+        blank=True,
+        null=True
+    )
+
+    status = models.CharField(
+        max_length=20,
+        choices=STATUS_CHOICES,
+        default='new',
+        db_index=True
+    )
+
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    updated_at = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        db_table = 'leads'
+        ordering = ['-created_at']
+
+    def __str__(self):
+        return self.name
+
+
+# LEAD ACTIVITIES
+class LeadActivity(models.Model):
+
+    ACTIVITY_TYPES = [
+        ('created', 'Created'),
+        ('call', 'Call'),
+        ('meeting', 'Meeting'),
+        ('follow_up', 'Follow Up'),
+        ('converted', 'Converted'),
+    ]
+
+    lead = models.ForeignKey(
+        Lead,
+        on_delete=models.CASCADE,
+        related_name='activities'
+    )
+
+    staff = models.ForeignKey(
+        'Staff',
+        on_delete=models.CASCADE,
+        related_name='lead_activities'
+    )
+
+    activity_type = models.CharField(
+        max_length=20,
+        choices=ACTIVITY_TYPES,
+        default='created'
+    )
+
+    title = models.CharField(max_length=200)
+
+    description = models.TextField(blank=True)
+
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        db_table = 'lead_activities'
+        ordering = ['-created_at']
+
+    def __str__(self):
+        return self.title
+
+
+# REVENUE
+class Revenue(models.Model):
+
+    staff = models.ForeignKey(
+        'Staff',
+        on_delete=models.CASCADE,
+        related_name='revenues'
+    )
+
+    lead = models.ForeignKey(
+        Lead,
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        related_name='revenues'
+    )
+
+    amount = models.DecimalField(
+        max_digits=12,
+        decimal_places=2
+    )
+
+    source = models.CharField(
+        max_length=100,
+        default='CRM'
+    )
+
+    notes = models.TextField(blank=True)
+
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    updated_at = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        db_table = 'revenues'
+        ordering = ['-created_at']
+
+    def __str__(self):
+        return f"{self.amount} - {self.staff}"
+
+
+# SKILLS
+class Skill(models.Model):
+
+    staff = models.ForeignKey(
+        'Staff',
+        on_delete=models.CASCADE,
+        related_name='skills'
+    )
+
+    skill_name = models.CharField(max_length=100)
+
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        db_table = 'skills'
+
+    def __str__(self):
+        return self.skill_name
+    
+# ============================================== ATTENDANCE MODEL ==============================================
+
+class Attendance(models.Model):
+
+
+    STATUS_CHOICES = (
+
+        ('Present', 'Present'),
+
+        ('Absent', 'Absent'),
+
+        ('Leave', 'Leave'),
+
+        ('Late', 'Late'),
+
+    )
+
+
+    # STAFF CONNECT
+
+    staff = models.ForeignKey(
+
+        Staff,
+
+        on_delete=models.CASCADE,
+
+        related_name='attendances',
+
+        null=True,
+
+        blank=True
+
+    )
+
+
+    # DATE
+
+    date = models.DateField(default=timezone.now)
+
+
+    # LOG IN
+
+    log_in = models.DateTimeField(null=True,blank=True)
+
+
+    # LOG OUT
+
+    log_out = models.DateTimeField(null=True,blank=True)
+
+
+    # TOTAL HOURS
+
+    total_hours = models.CharField(max_length=20, null=True,blank=True)
+
+
+    # STATUS
+
+    status = models.CharField(
+        max_length=20,
+        choices=STATUS_CHOICES,
+        default='Absent')
+
+
+
+    # SAVE METHOD
+
+    def save(self, *args, **kwargs):
+
+
+        # TOTAL HOURS
+
+        if self.log_in and self.log_out:
+
+
+            total = self.log_out - self.log_in
+
+
+            hours = total.seconds // 3600
+
+
+            minutes = (
+                total.seconds % 3600
+            ) // 60
+
+
+            self.total_hours = (
+                f"{hours}h {minutes}m"
+            )
+
+
+        super().save(*args, **kwargs)
+
+
+
+
+    def __str__(self):
+
+
+        if self.staff:
+
+            return f"{self.staff.full_name()} - {self.date}"
+
+
+        return f"{self.date}"
+
+
+
+
+    class Meta:
+
+        db_table = "staff_attendance"
+
+# ================================ DOCUMENT ================================
+
