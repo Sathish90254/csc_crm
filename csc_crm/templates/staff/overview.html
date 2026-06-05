@@ -12,27 +12,74 @@
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"/>
 
 </head>
+
 <body>
+
 
 <!-- ===== HEADER ===== -->
 <div class="over-top-header">
 
 <div>
-<h1>Staff Profile / <span>Overview</span></h1>
+<h1>Overview</h1>
 <p>Staff Performance Dashboard</p>
 </div>
 
 <div class="over-header-buttons">
     
-<a href="/staff/edit/{{ staff.id }}/" class="over-edit-btn">
-    <i class="fa fa-pen"></i> Edit Profile
-</a>
 
-<a href="/staff/export/{{ staff.id }}/" class="over-more-btn">
-    <i class="fa fa-download"></i> Export
+<a href="{% url 'staff_export' staff.id %}" class="over-export-btn">
+     Export
 </a>
 
 </div>
+
+</div>
+
+<!-- Main navbar -->
+ <div class="main-nav">
+
+<!-- Module Navigation Tabs -->
+     <!-- Mobile Hamburger -->
+<button class="nav-toggle" id="navToggle">
+    <i class="fas fa-bars"></i>
+</button>
+
+<!-- Module Navigation Tabs -->
+<nav class="nav-tabs" id="navTabs">
+
+    <a href="#" 
+       class="nav-tab-link {% if request.resolver_match.url_name == 'overview' %}active-nav-tab{% endif %}">
+       Overview
+    </a>
+
+    <a href="#"
+       class="nav-tab-link {% if request.resolver_match.url_name == 'Attendance' %}active-nav-tab{% endif %}">
+       Attendance
+    </a>
+
+    <a href="#" 
+       class="nav-tab-link {% if request.resolver_match.url_name == 'Performance' %}active-nav-tab{% endif %}">
+       Performance
+    </a>
+
+    <a href="#"
+       class="nav-tab-link {% if request.resolver_match.url_name == 'Documents' %}active-nav-tab{% endif %}">
+       Documents
+    </a>
+
+    <a href="#"
+       class="nav-tab-link {% if request.resolver_match.url_name == 'Activity Logs' %}active-nav-tab{% endif %}">
+       Activity Logs
+    </a>
+
+    <div class="nav-header-right">
+        <a href="{% url 'edit_staff' staff.id %}" class="over-edit-btn">
+            Edit
+        </a>
+    </div>
+
+
+</nav>
 
 </div>
 
@@ -47,7 +94,8 @@
 <img src="https://th.bing.com/th/id/OIP.dDKYQqVBsG1tIt2uJzEJHwHaHa?w=180&h=180&c=7&r=0&o=7&dpr=1.5&pid=1.7&rm=3">
 {% endif %}
 
-{% if staff.is_online %}
+
+{% if staff.status == 'active' %}
 <div class="over-online"></div>
 {% else %}
 <div class="over-offline"></div>
@@ -57,27 +105,27 @@
 
 <div>
 
-<h1 class="over-name">{{ staff.name }}</h1>
+<h1 class="over-name">{{ staff.first_name }} {{ staff.last_name }}</h1>
 
 <div class="over-badges">
 <div class="over-badge over-badge-blue">{{ staff.department }}</div>
-<div class="over-badge over-badge-green">
-{% if staff.is_online %}Active{% else %}Inactive{% endif %}
-</div>
+<div class="over-badge over-badge-green">{{ staff.get_status_display }}</div>
 </div>
 
 <div class="over-info">
 <p><strong>EMP ID:</strong> {{ staff.employee_id }}</p>
-<p><strong>Email:</strong> {{ staff.email }}</p>
+<p><strong>Role:</strong> {{ staff.role }}</p>
 <p><strong>Phone:</strong> {{ staff.phone }}</p>
-<p><strong>Joining:</strong> {{ staff.joining_date }}</p>
 </div>
 
 </div>
 
 <div class="over-info">
-<p><strong>Manager:</strong> {{ staff.reporting_manager }}</p>
+<p><strong>Joining:</strong> {{ staff.date_of_joining }}</p>
+<p><strong>Email:</strong> {{ staff.email }}</p>
+<!-- <p><strong>Manager:</strong> {{ permission.permission.manager }}</p> -->
 <p><strong>Performance:</strong> {{ staff.performance_rating }}/5</p>
+<p><strong>Date Of Birth:</strong> {{ staff.date_of_birth }}</p>
 </div>
 
 </div>
@@ -129,13 +177,8 @@
 <!-- PERFORMANCE GRAPH -->
 <div class="over-chart">
 
-<div class="over-chart-sub">
-
 <h2 class="over-chart-title">Performance Overview</h2>
-<h4 class="over-chart-title-this"><span><i class="fa-solid fa-circle"></i></span> This Month</h4>
-<h4 class="over-chart-title-last"><span><i class="fa-solid fa-circle"></i></span> Last Month</h4>
 
-</div>
 <!-- CHART -->
     <div class="over-chart-area">
 
@@ -172,38 +215,15 @@
             <!-- THIS MONTH LINE -->
             <polyline
                 class="over-performance-blueline"
-                points="
-                50,250
-                180,170
-                310,140
-                440,120
-                620,170"
+                points=""
             />
 
             <!-- LAST MONTH LINE -->
             <polyline
                 class="over-performance-greenline"
-                points="
-                50,290
-                180,230
-                310,210
-                440,190
-                620,250"
+                points=""
             />
 
-            <!-- BLUE DOTS -->
-            <circle cx="50" cy="250" r="4" class="over-dot-blue"/>
-            <circle cx="180" cy="170" r="4" class="over-dot-blue"/>
-            <circle cx="310" cy="140" r="4" class="over-dot-blue"/>
-            <circle cx="440" cy="120" r="4" class="over-dot-blue"/>
-            <circle cx="620" cy="170" r="4" class="over-dot-blue"/>
-
-            <!-- GREEN DOTS -->
-            <circle cx="50" cy="290" r="4" class="over-dot-green"/>
-            <circle cx="180" cy="230" r="4" class="over-dot-green"/>
-            <circle cx="310" cy="210" r="4" class="over-dot-green"/>
-            <circle cx="440" cy="190" r="4" class="over-dot-green"/>
-            <circle cx="620" cy="250" r="4" class="over-dot-green"/>
 
             <!-- BOTTOM WEEK TEXT -->
             <text x="42" y="355" class="over-week-text">W1</text>
@@ -213,6 +233,15 @@
             <text x="612" y="355" class="over-week-text">W5</text>
 
         </svg>
+        {{ week_data_this|json_script:"week-data-this" }}
+        {{ week_data_last|json_script:"week-data-last" }}
+
+        <div class="over-chart-para">
+
+            <p class="over-chart-para1"><span>This Month</span> <i class="fa-solid fa-chart-line"></i> : {{ week_data_this }}</p>
+        <p class="over-chart-para2"><span>Last Month</span> <i class="fa-solid fa-chart-line"></i> : {{ week_data_last }}</p>
+
+        </div>
 
     </div>
 
@@ -230,24 +259,19 @@
 
 <div>
 <p>Completed</p>
-<h3>{{ converted_leads }}</h3>
+<h3>₹{{ total_revenue }}</h3>
 </div>
 
 <div>
 <p>Progress</p>
-<h3>
-{% if staff.monthly_target %}
-{{ converted_leads|floatformat:0 }}%
-{% else %}0%
-{% endif %}
-</h3>
+<h3>{{ progress_percentage }}%</h3>
 </div>
 
 </div>
 
 <div class="over-progress">
 <div class="over-progress-bar"
-style="width:{% widthratio converted_leads staff.monthly_target 100 %}%">
+style="width:{{ progress_percentage }}%;">
 </div>
 </div>
 
@@ -262,83 +286,127 @@ style="width:{% widthratio converted_leads staff.monthly_target 100 %}%">
 
 {% if attendance %}
 
-<p><b>Date:</b> {{ attendance.date }}</p>
 
 <div class="over-attendance-grid">
 
 <div class="over-attendance-item">
 <p>Login</p>
-<h3>{{ attendance.login_time|time:"H:i A" }}</h3>
+<h3>{% if today_attendance %}
+                {{ today_attendance.log_in|time:"h:i A" }}
+            {% else %}
+                --
+            {% endif %}</h3>
 </div>
 
 <div class="over-attendance-item">
 <p>Logout</p>
-<h3>{{ attendance.logout_time|time:"H:i A" }}</h3>
+<h3>{% if today_attendance %}
+                {{ today_attendance.log_out|time:"h:i A" }}
+            {% else %}
+                --
+            {% endif %}</h3>
 </div>
 
 <div class="over-attendance-item">
 <p>Working Hours</p>
-<h3>{{ attendance.working_hours }} hrs</h3>
+<h3> {% if today_attendance %}
+                {{ today_attendance.total_hours }}
+            {% else %}
+                --
+            {% endif %}</h3>
 </div>
 
-<div class="over-attendance-item">
+<!-- <div class="over-attendance-item">
 <p>Break</p>
 <h3>{{ attendance.break_minutes }} min</h3>
-</div>
+</div> -->
 
 </div>
 
 {% else %}
-<p>No attendance today</p>
+<p class="over-no-attendance">No attendance today</p>
 {% endif %}
 
 </div>
 
 </div>
 
-<!-- ===== SKILLS =====-->
-<div class="over-bottom-grid">
+<!--==================== Recent Lead ==========================-->
 
-<div class="over-box-slill">
-
-<h2>Skills</h2>
-
-<div class="over-skills">
-
-{% for skill in skills %}
-<div class="over-skill">{{ skill.skill_name }}</div>
-{% empty %}
-<p>No skills found</p>
-{% endfor %}
-
-</div>
-
-</div>
-
-<div class="over-box-Recent">
+{% if staff.department.dept_name == "sales" or staff.department.dept_name == "telecall" %}
+<div class="over-box-recent">
 
 <h2>Recent Leads</h2>
 
-<table style="width:100%; margin-top:10px;">
+<table>
 <tr>
-<th>Name :</th>
-<th>Phone :</th>
-<th>Status :</th>
+<th>Name</th>
+<th>Phone</th>
+<th>Status</th>
 </tr>
 
-{% for lead in recent_leads %}
+{% if recent_leads %}
+    {% for lead in recent_leads %}
+        <tr>
+            <td>{{ lead.name }}</td>
+            <td>{{ lead.phone }}</td>
+            <td>{{ lead.status }}</td>
+        </tr>
+    {% endfor %}
+{% else %}
 <tr>
-<td>{{ lead.name }}</td>
-<td>{{ lead.phone }}</td>
-<td>{{ lead.status }}</td>
+    <td colspan="3" class="over-recent-no">No recent leads found</td>
 </tr>
-{% endfor %}
+{% endif %}
 
 </table>
 
 </div>
+{% endif %}
 
+<!--==================== Meeting & Class Schedule ==========================-->
+
+{% if staff.department.dept_name == "trainers" %}
+<div class="over-box-trainers">
+
+    <h2>Meeting & Class Schedule</h2>
+
+    <table>
+        <thead>
+            <tr>
+                <th>Date</th>
+                <th>Time</th>
+                <th>Class / Meeting</th>
+                <th>Topic</th>
+                <th>Status</th>
+            </tr>
+        </thead>
+
+        <tbody>
+            {% for item in schedules %}
+            <tr>
+                <td>{{ item.date }}</td>
+                <td>{{ item.time }}</td>
+                <td>{{ item.get_type_display }}</td>
+                <td>{{ item.topic }}</td>
+
+                {% if item.status == "upcoming" %}
+                    <td class="upcoming">Upcoming</td>
+                {% else %}
+                    <td class="completed">Completed</td>
+                {% endif %}
+            </tr>
+            {% empty %}
+            <tr>
+                <td colspan="5" class="over-trainers-no">No schedules available</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+
+    </table>
 </div>
+{% endif %}
+
 
 </body>
 <script src="{% static 'js/staff_js/overview.js' %}"></script>

@@ -10,8 +10,7 @@ urlpatterns = [
     path('export/', export_staff, name='export_staff'), 
     # STAFF OVERVIEW URLS
     path('overview/<int:staff_id>', overview, name='overview'),
-    path('staff/edit/<int:id>/', staff_edit, name='staff_edit'),
-    path('export/', staff_export, name='staff_export'),
+    path('overview/<int:id>/export/', staff_export, name='staff_export'),
     # STAFF ATTENDANCE
     path('attendance/', attendance_page, name='attendance'),
     path('staff-checkin/', staff_checkin, name='staff_checkin'),

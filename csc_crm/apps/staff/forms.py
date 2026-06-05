@@ -343,17 +343,6 @@ class RevenueForm(forms.ModelForm):
         return amount
 
 
-# ===== SKILL FORM ======
-class SkillForm(forms.ModelForm):
-
-    class Meta:
-        model = Skill
-        fields = ["staff", "skill_name"]
-
-        widgets = {
-            "staff": forms.Select(attrs={"class": "form-control"}),
-            "skill_name": forms.TextInput(attrs={"class": "form-control"}),
-        }
 
 # ================================= DOCUMENT FORM =====================================
 

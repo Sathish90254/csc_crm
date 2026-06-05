@@ -291,25 +291,47 @@ class Revenue(models.Model):
     def __str__(self):
         return f"{self.amount} - {self.staff}"
 
+# Trainer
+class TrainerSchedule(models.Model):
 
-# SKILLS
-class Skill(models.Model):
-
-    staff = models.ForeignKey(
-        'Staff',
-        on_delete=models.CASCADE,
-        related_name='skills'
+    TYPE_CHOICES = (
+        ('class', 'Class'),
+        ('meeting', 'Meeting'),
     )
 
-    skill_name = models.CharField(max_length=100)
+    STATUS_CHOICES = (
+        ('upcoming', 'Upcoming'),
+        ('completed', 'Completed'),
+    )
+
+    staff = models.ForeignKey(
+        Staff,
+        on_delete=models.CASCADE,
+        related_name="schedules"
+    )
+
+    date = models.DateField()
+
+    time = models.TimeField()
+
+    type = models.CharField(max_length=20, choices=TYPE_CHOICES)
+
+    topic = models.CharField(max_length=200)
+
+    status = models.CharField(
+        max_length=20,
+        choices=STATUS_CHOICES,
+        default='upcoming'
+    )
 
     created_at = models.DateTimeField(auto_now_add=True)
 
     class Meta:
-        db_table = 'skills'
+        db_table = "trainer_schedule"
+        ordering = ['date', 'time']
 
     def __str__(self):
-        return self.skill_name
+        return f"{self.staff.full_name()} - {self.topic}"
     
 # ============================================== ATTENDANCE MODEL ==============================================
 

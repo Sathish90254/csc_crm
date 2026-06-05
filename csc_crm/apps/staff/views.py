@@ -336,25 +336,49 @@ def export_staff(request):
 
 def overview(request, staff_id=None):
 
-    staff = None
+    # staff
 
     if staff_id:
         staff = get_object_or_404(Staff, id=staff_id)
     else:
         staff = Staff.objects.filter(status="active").first()
 
-    # SAFE CHECK (IMPORTANT)
     if not staff:
-        return render(request, "staff/overview.html", {
-            "error": "No staff found"
-        })
+        return render(request, "staff/overview.html", {"error": "No staff found"})
 
+
+    # trainers scedule
+
+    if request.method == "POST":
+        date = request.POST.get("date")
+        time = request.POST.get("time")
+        type_value = request.POST.get("type")
+        topic = request.POST.get("topic")
+        status = request.POST.get("status", "upcoming")
+
+        if date and time and type_value and topic:
+
+            TrainerSchedule.objects.create(
+                staff=staff,
+                date=date,
+                time=time,
+                type=type_value,
+                topic=topic,
+                status=status
+            )
+
+
+    # leads
     leads = Lead.objects.filter(staff=staff)
 
     assigned_leads = leads.filter(status="assigned").count()
     converted_leads = leads.filter(status="converted").count()
     pending_leads = leads.filter(status__in=["new", "assigned", "in_progress"]).count()
 
+    recent_leads = leads.order_by('-created_at')
+
+
+    # revenue
     revenue_qs = Revenue.objects.filter(staff=staff)
 
     total_revenue = revenue_qs.aggregate(total=Sum("amount"))["total"] or 0
@@ -362,64 +386,204 @@ def overview(request, staff_id=None):
     now = timezone.now()
 
     this_month_revenue = revenue_qs.filter(
-        created_at__month=now.month,
-        created_at__year=now.year
+        created_at__year=now.year,
+        created_at__month=now.month
     ).aggregate(total=Sum("amount"))["total"] or 0
+
+    # last month
+    if now.month == 1:
+        last_month = 12
+        last_year = now.year - 1
+    else:
+        last_month = now.month - 1
+        last_year = now.year
 
     last_month_revenue = revenue_qs.filter(
-        created_at__month=(now.month - 1 if now.month > 1 else 12),
-        created_at__year=now.year
+        created_at__year=last_year,
+        created_at__month=last_month
     ).aggregate(total=Sum("amount"))["total"] or 0
 
-    skills = Skill.objects.filter(staff=staff)
+
+    # graph
+    week_data_this = []
+    week_data_last = []
+
+    for week in range(5):
+
+        start_day = (week * 7) + 1
+        end_day = start_day + 6
+
+        current_revenue = revenue_qs.filter(
+            created_at__year=now.year,
+            created_at__month=now.month,
+            created_at__day__range=(start_day, end_day)
+        ).aggregate(total=Sum("amount"))["total"] or 0
+
+        previous_revenue = revenue_qs.filter(
+            created_at__year=last_year,
+            created_at__month=last_month,
+            created_at__day__range=(start_day, end_day)
+        ).aggregate(total=Sum("amount"))["total"] or 0
+
+        week_data_this.append(float(current_revenue))
+        week_data_last.append(float(previous_revenue))
+
+
+    # target
+    target_amount = staff.monthly_target or 0
+    completed_amount = total_revenue
+
+    if target_amount > 0:
+        progress_percentage = round((completed_amount / target_amount) * 100)
+    else:
+        progress_percentage = 0
+
+    progress_percentage = min(progress_percentage, 100)
+
+
+    # attendance
+    today = timezone.now().date()
+
+    today_attendance = Attendance.objects.filter(
+        staff=staff,
+        date=today
+    ).first()
+
+    attendance = today_attendance is not None
+
+
+    schedules = TrainerSchedule.objects.filter(
+        staff=staff
+    ).order_by('-date', '-time')
+
 
     context = {
         "staff": staff,
         "assigned_leads": assigned_leads,
         "converted_leads": converted_leads,
         "pending_leads": pending_leads,
+        "recent_leads": recent_leads,
         "total_revenue": total_revenue,
         "this_month_revenue": this_month_revenue,
         "last_month_revenue": last_month_revenue,
-        "skills": skills,
+        "week_data_this": week_data_this,
+        "week_data_last": week_data_last,
+        "completed_amount": completed_amount,
+        "progress_percentage": progress_percentage,
+        "attendance": attendance,
+        "today_attendance": today_attendance,
+        "schedules": schedules,
     }
 
     return render(request, "staff/overview.html", context)
 
-
-# ============================== EDIT ==============================
- 
-def staff_edit(request, id):
-
-    staff = get_object_or_404(Staff, id=id)
-
-    return render(request, "staff/edit.html", {
-        "staff": staff
-    })
+# ============================== EXPORT OVERVIEW CSV ==============================
 
 
-# ============================== EXPORT CSV ==============================
+import csv
+from django.http import HttpResponse
+from django.shortcuts import get_object_or_404
 
 def staff_export(request, id):
 
     staff = get_object_or_404(Staff, id=id)
 
     response = HttpResponse(content_type='text/csv')
-    response['Content-Disposition'] = f'attachment; filename="{staff.name}_report.csv"'
+    response['Content-Disposition'] = (
+        f'attachment; filename="{staff.employee_id}_report.csv"'
+    )
 
     writer = csv.writer(response)
 
+    
+    # STAFF DETAILS
+   
+    writer.writerow(['STAFF DETAILS'])
+
     writer.writerow([
-        'Name', 'Email', 'Phone', 'Department', 'Rating'
+        'Employee ID',
+        'Name',
+        'Email',
+        'Phone',
+        'Role',
+        'Department',
+        'Status',
+        'Monthly Target',
+        'Performance Rating',
+        'Date Of Joining'
     ])
 
     writer.writerow([
-        staff.name,
+        staff.employee_id,
+        staff.full_name(),
         staff.email,
         staff.phone,
-        staff.department,
-        staff.performance_rating
+        staff.role.get_role_name_display(),
+        staff.department.get_dept_name_display(),
+        staff.get_status_display(),
+        staff.monthly_target,
+        staff.performance_rating,
+        staff.date_of_joining.strftime('%d-%m-%Y')
+        if staff.date_of_joining else ''
     ])
+
+    writer.writerow([])
+
+    role_name = staff.role.role_name
+
+    
+    # SALES EXECUTIVE & TELECALLER
+   
+    if role_name in ['sales_executive', 'telecaller']:
+
+        leads = Lead.objects.filter(staff=staff)
+
+        writer.writerow(['LEADS DATA'])
+
+        writer.writerow([
+            'Lead Name',
+            'Phone',
+            'Email',
+            'Status',
+            'Created At'
+        ])
+
+        for lead in leads:
+            writer.writerow([
+                lead.name,
+                lead.phone,
+                lead.email or '',
+                lead.get_status_display(),
+                lead.created_at.strftime('%d-%m-%Y %H:%M')
+            ])
+
+    
+    # TRAINER
+   
+    elif role_name == 'trainer':
+
+        schedules = TrainerSchedule.objects.filter(
+            staff=staff
+        ).order_by('-date', '-time')
+
+        writer.writerow(['TRAINING SCHEDULE'])
+
+        writer.writerow([
+            'Date',
+            'Time',
+            'Class / Meeting',
+            'Topic',
+            'Status'
+        ])
+
+        for schedule in schedules:
+            writer.writerow([
+                schedule.date.strftime('%d-%m-%Y'),
+                schedule.time.strftime('%I:%M %p'),
+                schedule.get_type_display(),
+                schedule.topic,
+                schedule.get_status_display(),
+            ])
 
     return response
     
