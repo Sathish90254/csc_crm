@@ -121,12 +121,22 @@
                             placeholder="Search staff..."
                             value="{{ request.GET.search|default:'' }}">
                         <button type="submit" class="btn-search">Search</button>
-                        <a href="{% url 'export_staff' %}" class="btn-export">
-                            <span class="export-icon">⬇</span>
-                            Export
+                        <a href="{% url 'export_staff' %}?{{ request.GET.urlencode }}"
+                           class="btn-export">
+                                Export
                         </a>
                     </div>
                 </form>
+
+                    {% if messages %}
+                        <div class="messages">
+                            {% for message in messages %}
+                                <div class="alert alert-{{ message.tags }}">
+                                    {{ message }}
+                                </div>
+                            {% endfor %}
+                        </div>
+                    {% endif %}
 
                 <!-- STAFF TABLE -->
                 <div class="staff-table-wrapper">
@@ -187,7 +197,7 @@
                                 </td>
                                 <td class="actions-cell">
                                     <div class="action-buttons">
-                                        <a href="#" class="action-btn view-btn" title="View">
+                                        <a href="{% url 'overview' staff.id %}" class="action-btn view-btn" title="View">
                                             <span class="action-icon">👁</span>
                                         </a>
                                         <a href="{% url 'edit_staff' staff.id %}" class="action-btn edit-btn" title="Edit">
@@ -213,8 +223,8 @@
                 <div class="pagination-wrapper">
                     <div class="pagination">
                         {% if page_obj.has_previous %}
-                        <a href="?page=1" class="pagination-link">First</a>
-                        <a href="?page={{ page_obj.previous_page_number }}" class="pagination-link">Previous</a>
+                        <a href="?page=1&search={{ search_query }}" class="pagination-link">First</a>
+                        <a href="?page={{ page_obj.previous_page_number }}&search={{ search_query }}" class="pagination-link">Previous</a>
                         {% endif %}
 
                         <span class="pagination-info">
@@ -222,8 +232,8 @@
                         </span>
 
                         {% if page_obj.has_next %}
-                        <a href="?page={{ page_obj.next_page_number }}" class="pagination-link">Next</a>
-                        <a href="?page={{ page_obj.paginator.num_pages }}" class="pagination-link">Last</a>
+                        <a href="?page={{ page_obj.next_page_number }}&search={{ search_query }}" class="pagination-link">Next</a>
+                        <a href="?page={{ page_obj.paginator.num_pages }}&search={{ search_query }}" class="pagination-link">Last</a>
                         {% endif %}
                     </div>
                 </div>

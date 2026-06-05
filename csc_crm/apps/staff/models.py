@@ -79,9 +79,13 @@ class Staff(models.Model):
     role = models.ForeignKey(StaffRole, on_delete=models.PROTECT, related_name='staff_members')
     department = models.ForeignKey(Department, on_delete=models.PROTECT, related_name='staff_members')
 
+    # Photos & Documents
+    profile_photo = models.ImageField(upload_to='staff/photos/', blank=True, null=True)
+    documents = models.FileField(upload_to='staff/documents/', blank=True, null=True)
+
     # Performance & Target
     monthly_target = models.DecimalField(max_digits=12, decimal_places=2, default=0, validators=[MinValueValidator(0)])
-    performance_rating = models.IntegerField(default=3, validators=[MinValueValidator(0), MaxValueValidator(5)])
+    performance_rating = models.IntegerField(default=3, validators=[MinValueValidator(0), MaxValueValidator(5)], blank=True, null=True)
 
     # Status & Dates
     status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='active', db_index=True)

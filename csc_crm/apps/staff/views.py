@@ -118,8 +118,20 @@ def staff_management(request):
         'page_obj': staff_list,
         'is_paginated': staff_list.has_other_pages(),
         'page_obj_number': staff_list.number,
+        'search_query': search,
     }
     return render(request, 'staff/management.html', context)
+
+# ========================== AUTO GENERATE EMP ID ==========================
+
+def generate_employee_id():
+    last_staff = Staff.objects.order_by('-id').first()
+
+    if last_staff:
+        last_id = int(last_staff.employee_id.replace('EMP',''))
+        return f"EMP{last_id + 1:03d}"
+    
+    return "EMP001"
 
 # ========================== CREATE NEW STAFF ==============================
 
@@ -127,20 +139,57 @@ def add_staff(request):
     """Add new staff member"""
 
     if request.method == 'POST':
-        form = StaffForm(request.POST)
+        form = StaffForm(request.POST, request.FILES)
         if form.is_valid():
             staff = form.save()
-            messages.success(request, f"Staff member '{staff.full_name()}' added sucessfully!")
-        else:
-            messages.error(request, "Please correct the errors below.")
+            messages.success(request, f"Staff member '{staff.full_name()}' added successfully!")
+            return redirect('staff_management')
     else:
-        form = StaffForm()
+        form = StaffForm(
+            initial = {
+                'employee_id': generate_employee_id()
+            }
+        )
 
     context = {
         'page_title':'Add New Staff',
         'form': form
     }
     return render(request, 'staff/add_staff.html', context)
+
+# ============================= CHECK EMAIL EXISTING (FOR VALIDATION) ===============================
+
+def check_email(request):
+
+    email = request.GET.get('email')
+    staff_id = request.GET.get('staff_id')
+
+    email_exists = Staff.objects.filter(
+        email=email
+    ).exclude(
+        id=staff_id
+    ).exists()
+
+    return JsonResponse({
+        'exists': email_exists
+    })
+
+# ======================= CHECK PHONE NO EXISTING (FOR VALIDATION) ====================
+
+def check_phone(request):
+
+    phone = request.GET.get('phone','').strip()
+    staff_id = request.GET.get('staff_id')
+
+    phone_exists = Staff.objects.filter(
+        phone = phone
+    ).exclude(
+        id=staff_id
+    ).exists()
+
+    return JsonResponse({
+        'exists':phone_exists
+    })
 
 # ========================== UPDATING STAFF ===================================
 
@@ -150,12 +199,14 @@ def edit_staff(request, id):
     staff = get_object_or_404(Staff, id=id)
 
     if request.method == 'POST':
-        form = StaffForm(request.POST, instance=staff)
+        form = StaffForm(request.POST, request.FILES, instance=staff)
         if form.is_valid():
             form.save()
             messages.success(request, f"Staff member '{staff.full_name()}' Updated sucessfully!")
-        else:
-            messages.error(request, 'Please correct the errors below.')
+        # else:
+        #     messages.error(request, 'Please correct the errors below.')
+        
+        return redirect('staff_management')
     else:
         form = StaffForm(instance=staff)
 
@@ -242,14 +293,36 @@ def export_staff(request):
     # Get all staff
     staff_list = Staff.objects.select_related('role', 'department').all()
 
+    department = request.GET.get('department')
+    role = request.GET.get('role')
+    search = request.GET.get('search', '').strip()
+
+    if department:
+        staff_list = staff_list.filter(
+            department__dept_name=department
+        )
+
+    if role:
+        staff_list = staff_list.filter(
+            role_id=role
+        )
+
+    if search:
+        staff_list = staff_list.filter(
+            Q(first_name__icontains=search) |
+            Q(last_name__icontains=search) |
+            Q(email__icontains=search) |
+            Q(employee_id__icontains=search)
+        )
+
     for staff in staff_list:
         writer.writerow([
             staff.employee_id,
-            staff.full_name,
+            staff.full_name(),
             staff.email,
             staff.phone,
-            staff.role.get_name_display(),
-            staff.department.get_name_display(),
+            staff.role.get_role_name_display(),
+            staff.department.get_dept_name_display(),
             staff.get_status_display(),
             staff.monthly_target,
             staff.performance_rating,

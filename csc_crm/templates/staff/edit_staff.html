@@ -15,8 +15,14 @@
             <h1 class="staff-mgmt-form-title">Edit {{ staff.first_name }} {{ staff.last_name }}</h1>
         </div>
 
-        <form method="POST" class="staff-mgmt-form" id="staffMgmtForm">
+        <form method="POST" class="staff-mgmt-form" id="staffMgmtForm" enctype="multipart/form-data">
             {% csrf_token %}
+
+            <input
+                type="hidden"
+                id="staffId"
+                value="{{ staff.id }}"
+            >
 
             <!-- PERSONAL INFORMATION SECTION -->
              <fieldset class="staff-mgmt-form-section">
@@ -93,6 +99,44 @@
                 </div>
               </fieldset>
 
+              <!-- FILES AND DOCUMENTS SECTION -->
+               <fieldset class="staff-mgmt-form-section">
+
+                    <legend class="section-title">Documents</legend>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label class="form-label" for="{{ form.profile_photo.id_for_label }}">Passport Size Photo</label>
+                            <div class="file-upload-wrapper">
+                                {{ form.profile_photo }}
+                                <button type="button" id="removePhotoBtn" class="remove-file-btn">X</button>
+                            </div>
+                            {% if staff.profile_photo %}
+                                    <div class="current-file-info">
+                                        <label class="file-label">Current Photo</label>
+
+                                        <div class="file-row">
+                                            <span class="file-name">
+                                                📷 {{ staff.profile_photo.name|cut:"staff_photos/" }}
+                                            </span>
+
+                                            <!-- <a href="{{ staff.profile_photo.     }}"
+                                            target="_blank"
+                                            class="view-file-btn">
+                                                View
+                                            </a> -->
+                                        </div>
+                                    </div>
+                                {% endif %}
+                            <div class="upload-progress">
+                                <div class="progress-bar" id="photoProgressBar"></div>
+                            </div>
+                            <span id="progressText">No file selected</span>
+                            <span class="form-error" id="profilePhotoError"></span>
+                        </div>
+                    </div>
+                </fieldset>
+
               <!-- PERFORMANCE SECTION -->
                <fieldset class="staff-mgmt-form-section">
                 <legend class="section-title">Performance</legend>
@@ -111,23 +155,13 @@
                 </div>
                </fieldset>
 
-               <!-- FORM MESSAGES -->
-                {% if messages %}
-                <div class="messages">
-                    {% for message in messages %}
-                    <div class="alert alert-{{ message.tags }}">
-                        {{ message }}
-                    </div>
-                    {% endfor %}
-                </div>
-                {% endif %}
-
                 <!-- FORM ACTIONS -->
                  <div class="form-actions">
                     <a href="{% url 'staff_management' %}" class="btn btn-cancel">Cancel</a>
-                    <button type="submit" class="btn btn-primary">Update Staff</button>
+                    <button type="submit" class="btn btn-primary" id="updateStaffBtn" disabled>Update Staff</button>
                  </div>
         </form>
     </div>
 </body>
+<script src="{% static 'js/staff_js/edit_staff.js' %}"></script>
 </html>

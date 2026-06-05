@@ -1,6 +1,7 @@
 from django import forms
 from django.core.exceptions import ValidationError
 from .models import *
+from datetime import date
 
 class StaffForm(forms.ModelForm):
     """Form Adding/Editing Staff members"""
@@ -10,35 +11,51 @@ class StaffForm(forms.ModelForm):
         fields = [
             'employee_id', 'first_name', 'last_name', 'email', 'phone',
             'role', 'department', 'monthly_target', 'performance_rating',
-            'status', 'date_of_joining', 'date_of_birth'
+            'status', 'date_of_joining', 'date_of_birth', 'profile_photo',
+            'documents',
         ]
         widgets = {
             'employee_id' : forms.TextInput(attrs={
                 'class': 'form-control',
-                'placeholder': 'e.g., EMP-001'
+                'placeholder': 'Auto-generated'
             }),
             'first_name' : forms.TextInput(attrs={
                 'class': 'form-control',
-                'placeholder': 'Fisrt Name'
+                'placeholder': 'Fisrt Name',
+                'id': 'firstNameInput',
             }),
             'last_name': forms.TextInput(attrs={
                 'class' : 'form-control',
-                'placeholder': 'Last Name'
+                'placeholder': 'Last Name',
+                'id': 'lastNameInput',
             }),
             'email': forms.EmailInput(attrs={
                 'class' : 'form-control',
-                'placeholder': 'example@gmail.com'
+                'placeholder': 'example@gmail.com',
+                'id': 'emailInput',
             }),
             'phone': forms.TextInput(attrs={
                 'class' : 'form-control',
-                'placeholder': '+91 XXXXX XXXXX'
+                'placeholder': '+91 XXXXX XXXXX',
+                'id': 'phoneInput',
             }),
             'role': forms.Select(attrs={'class':'form-control'}),
             'department': forms.Select(attrs={'class':'form-control'}),
             'monthly_target': forms.NumberInput(attrs={
                 'class' : 'form-control',
                 'placeholder' : '500000',
-                'step' : '0.01'
+                'step' : '0.01',
+                'min': '0',
+            }),
+            'profile_photo': forms.FileInput(attrs={
+                'class': 'form-control',
+                'accept': 'image/*',
+                'id': 'profilePhotoInput'
+            }),
+
+            'documents': forms.ClearableFileInput(attrs={
+                'class': 'form-control',
+                'id': 'documentInput'
             }),
             'performance_rating': forms.NumberInput(attrs={
                 'class': 'form-control',
@@ -48,13 +65,21 @@ class StaffForm(forms.ModelForm):
             'status' : forms.Select(attrs={'class':'form-control'}),
             'date_of_joining': forms.DateInput(attrs={
                 'class':'form-control',
-                'type':'date'
+                'type':'date',
+                'id': 'dateOfJoiningInput',
             }),
             'date_of_birth': forms.DateInput(attrs={
                 'class':'form-control',
-                'type':'date'
+                'type':'date',
+                'id': 'dateOfBirthInput',
             }),
         }
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+
+        self.fields['employee_id'].widget.attrs.update({
+            'readonly': True
+        })
 
     def clean_employee_id(self):
         employee_id = self.cleaned_data.get('employee_id')
@@ -81,6 +106,16 @@ class StaffForm(forms.ModelForm):
                 raise ValidationError('This email is already exists!')
         return email
     
+    def clean_phone(self):
+        phone = self.cleaned_data.get('phone')
+
+        if not phone.isdigit():
+            raise ValidationError("Phone number must contain only digits.")
+        
+        if len(phone) !=10:
+            raise ValidationError("Phone number must be exactly 10 digits.")
+        return phone
+    
     def clean(self):
         cleaned_data = super().clean()
 
@@ -89,8 +124,69 @@ class StaffForm(forms.ModelForm):
 
         if date_of_birth and date_of_joining:
             if date_of_birth >= date_of_joining:
-                raise ValidationError('Date of birth must be before date of joining.')
+                raise ValidationError(
+                    'Date of birth must be before date of joining.'
+                )
+
+        today = date.today()
+
+        if date_of_birth:
+
+            if date_of_birth > today:
+                raise ValidationError(
+                    'Date of birth cannot be in the future.'
+                )
+
+            age = today.year - date_of_birth.year
+
+            if (
+                (today.month, today.day)
+                <
+                (date_of_birth.month, date_of_birth.day)
+            ):
+                age -= 1
+
+            if age < 18:
+                raise ValidationError(
+                    'Employee must be at least 18 years old.'
+                )
+
         return cleaned_data
+    
+    def clean_profile_photo(self):
+        photo = self.cleaned_data.get('profile_photo')
+
+        if photo:
+
+            if photo.size > 2 * 1024 * 1024:
+                raise ValidationError('Photo must be less than 2 MB.')
+            
+        return photo
+    
+    def clean_documents(self):
+        document = self.cleaned_data.get('documents')
+
+        if(document):
+
+            allowed = ['.pdf', '.doc', '.docx']
+
+            import os
+
+            ext = os.path.splitext(document.name)[1].lower()
+
+            if ext not in allowed:
+
+                raise ValidationError('Only PDF, DOC and DOCX files allowed.')
+        return document
+
+    def clean_monthly_target(self):
+        target = self.cleaned_data['monthly_target']
+
+        if target < 0:
+            raise forms.ValidationError(
+                "Monthly target cannot be negative."
+            )
+        return target
     
 class StaffFilterForm(forms.Form):
     """Form for filtering staff"""

@@ -12,6 +12,12 @@ function applyFilters(){
 
     const params = new URLSearchParams();
 
+    const search = searchInput.value.trim();
+
+    if(search){
+        params.append('search', search);
+    }
+
     if(department){
         params.append('department', department);
     }
@@ -26,16 +32,62 @@ function applyFilters(){
 departmentFilter.addEventListener('change', applyFilters);
 roleFilter.addEventListener('change', applyFilters);
 
-// ============================ PREVENT EMPTY SEARCH ============================
+// ============================ SEARCH INPUT VALIDATION ============================
+
+document.querySelectorAll('.pagination-link').forEach(link=>{
+    link.addEventListener('click', function(e){
+        e.preventDefault;
+
+        const searchValue = searchInput.value.trim()
+
+        const url = new URL(this.href);
+
+        if(searchValue){
+            url.searchParams.set('search', searchValue);
+        }
+
+        window.location.href = url.toString()
+    });
+});
+
+// ============================= SEARCH & FILTER VALIDATION =============================
 
 searchForm.addEventListener('submit', function(e){
     const searchValue = searchInput.value.trim();
 
-    if(searchValue === ''){
-        e.preventDefault();
+    e.preventDefault();
 
-        alert('Please enter a staff name to search');
+    const department = departmentFilter.value;
+    const role = roleFilter.value;
 
-        searchInput.focus();
+    const params = new URLSearchParams();
+
+    if(searchValue){
+        params.append('search', searchValue)
     }
+    if(department){
+        params.append('department', department)
+    }
+    if(role){
+        params.append('role', role)
+    }
+
+    window.location.href = `?${params.toString()}`;
+})
+
+// ==================== STAFF ADDED SUCCESS MESSAGE HIDE ===========================
+
+document.addEventListener('DOMContentLoaded', function(){
+    const alerts = document.querySelectorAll('.alert');
+
+    alerts.forEach(alert => {
+        setTimeout(() => {
+            alert.style.transition = 'opacity 0.5s ease';
+            alert.style.opacity = '0';
+
+            setTimeout(()=>{
+                alert.remove()
+            }, 500);
+        }, 3000)
+    });
 });
