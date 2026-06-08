@@ -199,14 +199,16 @@ def edit_staff(request, id):
     staff = get_object_or_404(Staff, id=id)
 
     if request.method == 'POST':
-        form = StaffForm(request.POST, request.FILES, instance=staff)
+        form = EditStaffForm(request.POST, request.FILES, instance=staff)
         if form.is_valid():
             form.save()
             messages.success(request, f"Staff member '{staff.full_name()}' Updated sucessfully!")
         # else:
         #     messages.error(request, 'Please correct the errors below.')
         
-        return redirect('staff_management')
+            return redirect('staff_management')
+        else:
+            print(form.errors)
     else:
         form = StaffForm(instance=staff)
 

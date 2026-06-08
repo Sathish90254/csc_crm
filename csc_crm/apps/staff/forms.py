@@ -46,6 +46,7 @@ class StaffForm(forms.ModelForm):
                 'placeholder' : '500000',
                 'step' : '0.01',
                 'min': '0',
+                'id': 'monthlyTargetInput',
             }),
             'profile_photo': forms.FileInput(attrs={
                 'class': 'form-control',
@@ -55,7 +56,7 @@ class StaffForm(forms.ModelForm):
 
             'documents': forms.ClearableFileInput(attrs={
                 'class': 'form-control',
-                'id': 'documentInput'
+                'id': 'documentInput',
             }),
             'performance_rating': forms.NumberInput(attrs={
                 'class': 'form-control',
@@ -80,6 +81,8 @@ class StaffForm(forms.ModelForm):
         self.fields['employee_id'].widget.attrs.update({
             'readonly': True
         })
+
+        self.fields['documents'].required = True
 
     def clean_employee_id(self):
         employee_id = self.cleaned_data.get('employee_id')
@@ -182,11 +185,18 @@ class StaffForm(forms.ModelForm):
     def clean_monthly_target(self):
         target = self.cleaned_data['monthly_target']
 
-        if target < 0:
+        if target <= 0:
             raise forms.ValidationError(
                 "Monthly target cannot be negative."
             )
         return target
+    
+class EditStaffForm(forms.ModelForm):
+
+    class Meta:
+        model = Staff
+
+        exclude = ['documents']
     
 class StaffFilterForm(forms.Form):
     """Form for filtering staff"""

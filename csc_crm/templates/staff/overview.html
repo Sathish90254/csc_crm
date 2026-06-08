@@ -26,9 +26,14 @@
 
 <div class="over-header-buttons">
     
-
+<!-- Edite Button -->
 <a href="{% url 'staff_export' staff.id %}" class="over-export-btn">
      Export
+</a>
+
+<!-- Back Button -->
+<a href="{% url 'staff_management' %}" class="over-back-btn">
+     Back
 </a>
 
 </div>
@@ -88,10 +93,11 @@
 
 <div class="over-profile-image">
 
-{% if staff.profile_image %}
-<img src="{{ staff.profile_image.url }}">
+<!-- PROFILE IMAGE -->
+{% if staff.profile_photo %}
+    <img src="{{ staff.profile_photo.url }}" alt="Profile Image">
 {% else %}
-<img src="https://th.bing.com/th/id/OIP.dDKYQqVBsG1tIt2uJzEJHwHaHa?w=180&h=180&c=7&r=0&o=7&dpr=1.5&pid=1.7&rm=3">
+    <img src="https://th.bing.com/th/id/OIP.dDKYQqVBsG1tIt2uJzEJHwHaHa?w=180&h=180&c=7&r=0&o=7&dpr=1.5&pid=1.7&rm=3" alt="Default Image">
 {% endif %}
 
 
@@ -109,7 +115,7 @@
 
 <div class="over-badges">
 <div class="over-badge over-badge-blue">{{ staff.department }}</div>
-<div class="over-badge over-badge-green">{{ staff.get_status_display }}</div>
+<div class="over-badge status-{{ staff.status }}">{{ staff.get_status_display }}</div>
 </div>
 
 <div class="over-info">

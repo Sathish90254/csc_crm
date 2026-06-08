@@ -286,3 +286,50 @@ document.addEventListener('DOMContentLoaded', ()=>{
     })
 
 });
+
+// ====================== MONTHLY TARGET VALIDATION ======================
+
+document.addEventListener('DOMContentLoaded', () => {
+
+    const form = document.getElementById('staffMgmtForm');
+    const monthlyTargetInput = document.getElementById('monthlyTargetInput');
+    const monthlyTargetError = document.getElementById('monthlyTargetError');
+
+    monthlyTargetInput.addEventListener('input', () => {
+
+        const target = parseFloat(monthlyTargetInput.value);
+
+        if (target <= 0) {
+
+            monthlyTargetError.textContent =
+                'Monthly target must be greater than 0';
+
+            monthlyTargetInput.classList.add('error-input');
+
+        } else {
+
+            monthlyTargetError.textContent = '';
+            monthlyTargetInput.classList.remove('error-input');
+
+        }
+
+    });
+
+    form.addEventListener('submit', (e) => {
+
+        const target = parseFloat(monthlyTargetInput.value);
+
+        if (!target || target <= 0) {
+
+            e.preventDefault();
+
+            monthlyTargetError.textContent =
+                'Monthly target must be greater than 0';
+
+            monthlyTargetInput.classList.add('error-input');
+
+        }
+
+    });
+
+});

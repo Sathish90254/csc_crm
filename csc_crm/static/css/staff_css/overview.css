@@ -73,6 +73,18 @@ a{
     color: var(--text);
 }
 
+.over-back-btn{
+    padding:10px 18px;
+    border-radius:10px;
+    text-decoration:none;
+    font-weight:bold;
+    font-size:14px;
+    border:none;
+    cursor:pointer;
+    background: var(--secondary);
+    color: var(--text);
+}
+
 /*====== MAIN NAV =======*/
 .main-nav{
     background:linear-gradient(135deg,#262170,#1b174f);
@@ -257,9 +269,25 @@ a{
     color:#2563eb;
 }
 
-.over-badge-green{
-    background:#dcfce7;
-    color:#16a34a;
+/* Badge color */
+.status-active{
+    background:#31ff7d;
+    color: #11843b;
+}
+
+.status-inactive{
+    background:#9ea5b3ac;
+    color: #000000;
+}
+
+.status-on_leave{
+    background:#fab915;
+    color:#5b4610;
+}
+
+.status-terminated{
+    background:#ff2807;
+    color: rgb(19, 14, 14);
 }
 
 /* Info */
