@@ -407,8 +407,8 @@ def overview(request, staff_id=None):
 
 
     # graph
-    week_data_this = []
-    week_data_last = []
+    week_data_this = [10,20,6,22,12]
+    week_data_last = [90,21,35,25,63]
 
     for week in range(5):
 

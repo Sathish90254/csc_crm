@@ -1,19 +1,8 @@
-  {% load static %}
-<!DOCTYPE html>
-<html lang="en">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>CRM Staff Overview</title>
+{% extends 'staff/base.html' %}
+{% load static %}
+{% block content %}
 
-<link rel="stylesheet" href="{% static 'css/staff_css/overview.css' %}">
-
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"/>
-
-</head>
-
-<body>
 
 
 <!-- ===== HEADER ===== -->
@@ -57,7 +46,7 @@
        Overview
     </a>
 
-    <a href="#"
+    <a href="{% url 'attendance' staff.id %}"
        class="nav-tab-link {% if request.resolver_match.url_name == 'Attendance' %}active-nav-tab{% endif %}">
        Attendance
     </a>
@@ -413,7 +402,9 @@ style="width:{{ progress_percentage }}%;">
 </div>
 {% endif %}
 
+{% block extra_js %}
+    <script src="{% static 'js/staff_js/overview.js' %}"></script>
+{% endblock %}
 
-</body>
-<script src="{% static 'js/staff_js/overview.js' %}"></script>
-</html>
+
+{% endblock %}

@@ -1,19 +1,9 @@
+
+{% extends 'staff/base.html' %}
 {% load static %}
-<!DOCTYPE html>
-<html lang="en">
+{% block content %}
 
-<head>
 
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-    <title>Attendance</title>
-
-    <link rel="stylesheet" href="{% static 'css/staff_css/attendance.css' %}">
-
-</head>
-
-<body>
 
 <div class="attendance-container">
 {% if messages %}
@@ -274,61 +264,9 @@
     </div>
 </div>
 </div>
- <script>
 
-setTimeout(function(){
+{% block extra_js %}
+<script src="{% static 'js/staff_js/attendance.js' %}"></script>
+{% endblock %}
 
-    const messages = document.querySelectorAll('.success-message');
-
-    messages.forEach(function(msg){
-
-        msg.style.transition = "opacity 0.3s";
-
-        msg.style.opacity = "0";
-
-        setTimeout(function(){
-
-            msg.remove();
-
-        },300);
-
-    });
-
-},1000);
-</script>
-<script>
-
-document.getElementById('attendance-filter-form').addEventListener('submit', function(e){
-
-    e.preventDefault();
-
-    const params = new URLSearchParams(
-        new FormData(this)
-    );
-
-    fetch(window.location.pathname + '?' + params.toString())
-    .then(response => response.text())
-    .then(html => {
-
-        const parser = new DOMParser();
-
-        const doc = parser.parseFromString(
-            html,
-            'text/html'
-        );
-
-        const newDashboard =
-            doc.querySelector('#attendance-dashboard');
-
-        document.querySelector('#attendance-dashboard').innerHTML =
-            newDashboard.innerHTML;
-
-    });
-
-});
-
-
-
-</script>
-</body>
-</html>
+{% endblock %}

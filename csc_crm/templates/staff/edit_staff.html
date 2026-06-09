@@ -1,13 +1,7 @@
+
+{% extends 'staff/base.html' %}
 {% load static %}
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Edit staff - CSC CRM</title>
-    <link rel="stylesheet" href="{% static 'css/staff_css/add_staff.css' %}">
-</head>
-<body>
+{% block content %}
     
     <div class="staff-mgmt-form-container">
         <div class="staff-mgmt-form-header">
@@ -162,6 +156,9 @@
                  </div>
         </form>
     </div>
-</body>
-<script src="{% static 'js/staff_js/edit_staff.js' %}"></script>
-</html>
+
+{% block extra_js %}
+    <script src="{% static 'js/staff_js/edit_staff.js' %}"></script>
+{% endblock %}
+
+{% endblock %}

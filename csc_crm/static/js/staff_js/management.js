@@ -1,93 +1,109 @@
 
-const departmentFilter = document.getElementById('departmentFilter');
-const roleFilter = document.getElementById('roleFilter');
-const searchForm = document.getElementById('searchForm');
-const searchInput = document.getElementById('staffSearch')
+document.addEventListener('DOMContentLoaded', ()=>{
+    const departmentFilter = document.getElementById('departmentFilter');
+    const roleFilter = document.getElementById('roleFilter');
+    const searchForm = document.getElementById('searchForm');
+    const searchInput = document.getElementById('staffSearch')
 
-// ================== FORM VALIDATION (PAGE LOADING BUG) =======================
+    // ================== FORM VALIDATION (PAGE LOADING BUG) =======================
 
-function applyFilters(){
-    const department = departmentFilter.value;
-    const role = roleFilter.value;
+    function applyFilters(){
+        const department = departmentFilter.value;
+        const role = roleFilter.value;
 
-    const params = new URLSearchParams();
+        const params = new URLSearchParams();
 
-    const search = searchInput.value.trim();
+        const search = searchInput.value.trim();
 
-    if(search){
-        params.append('search', search);
-    }
-
-    if(department){
-        params.append('department', department);
-    }
-
-    if(role){
-        params.append('role', role)
-    }
-
-    window.location.href = `?${params.toString()}`;
-}
-
-departmentFilter.addEventListener('change', applyFilters);
-roleFilter.addEventListener('change', applyFilters);
-
-// ============================ SEARCH INPUT VALIDATION ============================
-
-document.querySelectorAll('.pagination-link').forEach(link=>{
-    link.addEventListener('click', function(e){
-        e.preventDefault;
-
-        const searchValue = searchInput.value.trim()
-
-        const url = new URL(this.href);
-
-        if(searchValue){
-            url.searchParams.set('search', searchValue);
+        if(search){
+            params.append('search', search);
         }
 
-        window.location.href = url.toString()
+        if(department){
+            params.append('department', department);
+        }
+
+        if(role){
+            params.append('role', role)
+        }
+
+        window.location.href = `?${params.toString()}`;
+    }
+
+    departmentFilter.addEventListener('change', applyFilters);
+    roleFilter.addEventListener('change', applyFilters);
+
+    // ============================ PAGINATION WITH SEARCH & FILTER ============================
+
+    document.querySelectorAll('.pagination-link').forEach(link => {
+
+        link.addEventListener('click', function(e){
+
+            e.preventDefault();
+
+            const url = new URL(this.href);
+
+            const search = searchInput.value.trim();
+            const department = departmentFilter.value;
+            const role = roleFilter.value;
+
+            if(search){
+                url.searchParams.set('search', search);
+            }
+
+            if(department){
+                url.searchParams.set('department', department);
+            }
+
+            if(role){
+                url.searchParams.set('role', role);
+            }
+
+            window.location.href = url.toString();
+
+        });
+
     });
-});
 
-// ============================= SEARCH & FILTER VALIDATION =============================
+    // ============================= SEARCH & FILTER VALIDATION =============================
 
-searchForm.addEventListener('submit', function(e){
-    const searchValue = searchInput.value.trim();
+    searchForm.addEventListener('submit', function(e){
+        const searchValue = searchInput.value.trim();
 
-    e.preventDefault();
+        e.preventDefault();
 
-    const department = departmentFilter.value;
-    const role = roleFilter.value;
+        const department = departmentFilter.value;
+        const role = roleFilter.value;
 
-    const params = new URLSearchParams();
+        const params = new URLSearchParams();
 
-    if(searchValue){
-        params.append('search', searchValue)
-    }
-    if(department){
-        params.append('department', department)
-    }
-    if(role){
-        params.append('role', role)
-    }
+        if(searchValue){
+            params.append('search', searchValue)
+        }
+        if(department){
+            params.append('department', department)
+        }
+        if(role){
+            params.append('role', role)
+        }
 
-    window.location.href = `?${params.toString()}`;
-})
+        window.location.href = `?${params.toString()}`;
+    })
 
-// ==================== STAFF ADDED SUCCESS MESSAGE HIDE ===========================
+    // ==================== STAFF ADDED SUCCESS MESSAGE HIDE ===========================
 
-document.addEventListener('DOMContentLoaded', function(){
-    const alerts = document.querySelectorAll('.alert');
 
-    alerts.forEach(alert => {
-        setTimeout(() => {
-            alert.style.transition = 'opacity 0.5s ease';
-            alert.style.opacity = '0';
+        const alerts = document.querySelectorAll('.alert');
 
-            setTimeout(()=>{
-                alert.remove()
-            }, 500);
-        }, 3000)
+        alerts.forEach(alert => {
+            setTimeout(() => {
+                alert.style.transition = 'opacity 0.5s ease';
+                alert.style.opacity = '0';
+
+                setTimeout(()=>{
+                    alert.remove()
+                }, 500);
+            }, 3000)
+        });
     });
-});
+

@@ -1,14 +1,8 @@
-{% load static %}
 
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Add New Staff - CSC CRM</title>
-    <link rel="stylesheet" href="{% static 'css/staff_css/add_staff.css' %}">
-</head>
-<body>
+{% extends 'staff/base.html' %}
+{% load static %}
+{% block content %}
+
     <div class="staff-mgmt-form-container">
         <div class="staff-mgmt-form-header">
             <a href="{% url 'staff_management' %}" class="back-link">← Back to Staff Management</a>
@@ -156,6 +150,10 @@
                 </div>
         </form>
     </div>
-</body>
-<script src="{% static 'js/staff_js/add_staff.js' %}"></script>
-</html>
+
+{% block extra_js %}
+    <script src="{% static 'js/staff_js/add_staff.js' %}"></script>
+{% endblock %}
+
+
+{% endblock %}

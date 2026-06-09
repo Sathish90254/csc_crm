@@ -1,15 +1,8 @@
-    {% load static %}
-    
-    <!DOCTYPE html>
-    <html lang="en">
-    <head>
-        <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>Staff Management - CSC CRM</title>
-        <link rel="stylesheet" href="{% static 'css/staff_css/management.css' %}">
-    </head>
 
-    <body>
+{% extends 'staff/base.html' %} 
+{% load static %}   
+{% block content %}
+
         <div class="management-container">
             <!-- HEADER SECTION -->
             <div class="management-header">
@@ -240,7 +233,10 @@
                 {% endif %}
             </section>
         </div>
-    </body>
 
-    <script src="{% static 'js/staff_js/management.js' %}"></script>
-    </html>
+
+{% block extra_js %}
+<script src="{% static 'js/staff_js/management.js' %}"></script>
+{% endblock %}
+
+{% endblock %}
