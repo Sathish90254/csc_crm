@@ -11,124 +11,115 @@
     <title>Staff Attendance Entry</title>
 
     <style>
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+    font-family:Arial, Helvetica, sans-serif;
+}
 
-        *{
-            margin:0;
-            padding:0;
-            box-sizing:border-box;
-            font-family:Arial, Helvetica, sans-serif;
-        }
+body{
+    background:#eef4ff;
+    padding:40px;
+}
 
-        body{
-            background:#f4f7fc;
-            padding:40px;
-        }
+.container{
 
-        .container{
+    width:100%;
+    max-width:700px;
 
-            width:100%;
-            max-width:600px;
+    margin:auto;
 
-            margin:auto;
+    background:white;
 
-            background:white;
+    padding:35px;
 
-            padding:35px;
+    border-radius:20px;
 
-            border-radius:15px;
+    box-shadow:0 10px 30px rgba(37,99,235,0.15);
+}
 
-            box-shadow:0 5px 20px rgba(0,0,0,0.1);
-        }
+.title{
 
-        .title{
+   background:#043297;
+    color:white;
+    padding:15px;
+    border-radius:12px;
+    text-align:center;
+    margin-bottom:20px;
+    box-shadow:0 4px 12px rgba(37,99,235,0.2);
+}
 
-            text-align:center;
+.input-group{
+    margin-bottom:20px;
+}
 
-            margin-bottom:30px;
+label{
 
-            color:#222;
+    display:block;
 
-            font-size:30px;
+    margin-bottom:8px;
 
-            font-weight:bold;
-        }
+    font-weight:600;
 
-        .input-group{
-            margin-bottom:20px;
-        }
+    color:#444;
+}
 
-        label{
+input{
 
-            display:block;
+    width:100%;
 
-            margin-bottom:8px;
+    padding:12px;
 
-            font-weight:600;
+    border:1px solid #d1d5db;
 
-            color:#444;
-        }
+    border-radius:10px;
 
-        input{
+    outline:none;
 
-            width:100%;
+    font-size:15px;
+}
 
-            padding:12px;
+input:focus{
 
-            border:1px solid #ccc;
+    border-color:#779df0;
 
-            border-radius:10px;
+    box-shadow:0 0 5px rgba(37,99,235,0.2);
+}
 
-            outline:none;
+input[readonly]{
 
-            font-size:15px;
-        }
+    background:#f8fbff;
 
-        .btn-group{
+    border:1px solid #8caef8;
 
-            display:flex;
-            gap:20px;
-            margin-top:20px;
-        }
+    font-weight:bold;
 
-        .checkin-btn{
+    color:#052acf;
+}
 
-            flex:1;
+#currentDateTime,
+#liveTimer{
 
-            padding:14px;
+    text-align:center;
 
-            border:none;
+    font-size:18px;
 
-            background:green;
+    padding:15px;
+}
 
-            color:white;
+.btn-group{
 
-            font-size:16px;
+    display:flex;
 
-            border-radius:10px;
+    gap:15px;
 
-            cursor:pointer;
-        }
+    margin-top:20px;
 
-        .checkout-btn{
+    flex-wrap:wrap;
+}
 
-            flex:1;
-
-            padding:14px;
-
-            border:none;
-
-            background:red;
-
-            color:white;
-
-            font-size:16px;
-
-            border-radius:10px;
-
-            cursor:pointer;
-        }
-
-        .leave-btn{
+.checkin-btn{
 
     flex:1;
 
@@ -136,7 +127,7 @@
 
     border:none;
 
-    background:orange;
+    background:#16a34a;
 
     color:white;
 
@@ -145,7 +136,52 @@
     border-radius:10px;
 
     cursor:pointer;
+
+    transition:0.3s ease;
 }
+
+.checkout-btn{
+
+    flex:1;
+
+    padding:14px;
+
+    border:none;
+
+    background:#dc2626;
+
+    color:white;
+
+    font-size:16px;
+
+    border-radius:10px;
+
+    cursor:pointer;
+
+    transition:0.3s ease;
+}
+
+.leave-btn{
+
+    flex:1;
+
+    padding:14px;
+
+    border:none;
+
+    background:#facc15;
+
+    color:#222;
+
+    font-size:16px;
+
+    border-radius:10px;
+
+    cursor:pointer;
+
+    transition:0.3s ease;
+}
+
 .absent-btn{
 
     flex:1;
@@ -154,7 +190,7 @@
 
     border:none;
 
-    background:#df5252;
+    background:#ef4444;
 
     color:white;
 
@@ -163,18 +199,110 @@
     border-radius:10px;
 
     cursor:pointer;
+
+    transition:0.3s ease;
 }
-    </style>
+
+/* Hover Effects */
+
+.checkin-btn:hover{
+
+    background:#b9ea5e;
+
+    transform:translateY(-3px);
+}
+
+.checkout-btn:hover{
+
+    background:#f17272;
+
+    transform:translateY(-3px);
+}
+
+.leave-btn:hover{
+
+    background:#d97706;
+
+    color:white;
+
+    transform:translateY(-3px);
+}
+
+.absent-btn:hover{
+
+    background:#991b1b;
+
+    transform:translateY(-3px);
+}
+
+/* Mobile Responsive */
+
+@media(max-width:768px){
+
+    .container{
+        padding:20px;
+    }
+
+    .btn-group{
+        flex-direction:column;
+    }
+
+    .checkin-btn,
+    .checkout-btn,
+    .leave-btn,
+    .absent-btn{
+
+        width:100%;
+    }
+}
+.alert-message{
+
+    background:#dcfce7;
+
+    color:#166534;
+
+    padding:12px;
+
+    border-radius:8px;
+
+    margin-bottom:15px;
+
+    text-align:center;
+
+    font-weight:600;
+
+    transition: opacity 0.5s ease;
+}
+
+button:disabled {
+    background-color: #bdbdbd !important;
+    color: #555 !important;
+    cursor: not-allowed !important;
+    opacity: 0.5;
+    filter: grayscale(100%);
+}
+
+
+</style>
 
 </head>
 
 <body>
 
+{% if messages %}
+    {% for message in messages %}
+        <div class="alert-message">
+            {{ message }}
+        </div>
+    {% endfor %}
+{% endif %}
 <div class="container">
 
     <h1 class="title">
         Staff Attendance
     </h1>
+
+    
 
     <form method="POST">
 
@@ -182,28 +310,48 @@
 
         <div class="input-group">
 
-            <label>
-                Staff Name
-            </label>
+    <label>Employee ID</label>
 
-            <input
-                type="text"
-                name="staff_name"
-                placeholder="Enter Staff Name"
-                required
-            >
+    <input type="text" value="{{ staff.employee_id }}" readonly>
+
+</div>
+
+<div class="input-group">
+
+    <label>Staff Name</label>
+
+    <input type="text"value="{{ staff.first_name }} {{ staff.last_name }}" readonly>
+
+</div>
+
+        <div class="input-group">
+
+            <label>Today's Date & Time</label>
+
+            <input type="text" id="currentDateTime" readonly>
 
         </div>
 
-        <div class="btn-group">
+        <div class="input-group">
+
+            <label>
+                ⏱ Working Timer
+            </label>
+
+            <input type="text" id="liveTimer" value="00:00:00" readonly>
+
+        </div>
+
+        <div class="btn-group" disabled class="disabled-btn">
 
             <button
                 type="submit"
                 name="action"
                 value="checkin"
-                class="checkin-btn">
+                class="checkin-btn"
+                {% if is_checkin_done or is_leave_or_absent %}disabled{% endif %}>
 
-                Log In
+                Check-In
 
             </button>
 
@@ -211,35 +359,150 @@
                 type="submit"
                 name="action"
                 value="checkout"
-                class="checkout-btn">
+                class="checkout-btn"
+                 {% if not is_checkin_done or is_checkout_done or is_leave_or_absent %}disabled{% endif %}>
 
-                Log Out
+                Check-Out
 
             </button>
-            <br><br>
+
             <button
-    type="submit"
-    name="action"
-    value="leave"
-    class="leave-btn">
+                type="submit"
+                name="action"
+                value="leave"
+                class="leave-btn"
+                
+                onclick="return confirmLeave();"
+                {% if is_checkin_done or is_leave_or_absent %}disabled{% endif %} >
 
-    Leave
+                Leave
 
-</button>
-              <button
-    type="submit"
-    name="action"
-    value="absent"
-    class="absent-btn">
+            </button>
 
-    Absent
+            <button
+                type="submit"
+                name="action"
+                value="absent"
+                class="absent-btn"
+                
+                onclick="return confirmLeave();"
+                {% if is_checkin_done or is_leave_or_absent %}disabled{% endif %}>
 
-</button>
+                Absent
+
+            </button>
+
         </div>
 
     </form>
 
 </div>
 
+<script>
+
+function updateDateTime(){
+
+    let now = new Date();
+
+    document.getElementById(
+        "currentDateTime"
+    ).value = now.toLocaleString();
+
+}
+updateDateTime();
+
+setInterval(
+    updateDateTime,
+    1000
+);
+
+
+</script>
+
+{% if active_attendance %}
+<script>
+
+
+const loginTime = new Date(
+    "{{ active_attendance.log_in|date:'Y-m-d H:i:s' }}"
+);
+
+function updateTimer(){
+
+    let now = new Date();
+
+    let diff = Math.floor((now - loginTime) / 1000);
+
+    let hrs = Math.floor(
+        diff / 3600
+    );
+
+    let mins = Math.floor(
+        (diff % 3600) / 60
+    );
+
+    let secs = diff % 60;
+
+    document.getElementById(
+        "liveTimer"
+    ).value =
+
+        String(hrs).padStart(2,'0')
+        + ":"
+        + String(mins).padStart(2,'0')
+        + ":"
+        + String(secs).padStart(2,'0');
+
+}
+
+updateTimer();
+
+setInterval(
+    updateTimer,
+    1000
+);
+
+
+</script>
+
+{% endif %}
+<script>
+
+window.onload = function(){
+
+    setTimeout(function(){
+
+        let alertBox = document.querySelector(".alert-message");
+
+        if(alertBox){
+
+            alertBox.style.opacity = "0";
+
+            setTimeout(function(){
+
+                alertBox.style.display = "none";
+
+            },500);
+
+        }
+
+    },3000);
+
+}
+
+
+</script>
+
+<script>
+
+function confirmLeave() {
+    return confirm("Do you want to take Leave?");
+}
+
+function confirmAbsent() {
+    return confirm("Do you want to mark Absent?");
+}
+
+</script>
 </body>
 </html>

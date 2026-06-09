@@ -12,8 +12,8 @@ urlpatterns = [
     path('overview/<int:staff_id>', overview, name='overview'),
     path('overview/<int:id>/export/', staff_export, name='staff_export'),
     # STAFF ATTENDANCE
-    path('attendance/', attendance_page, name='attendance'),
-    path('staff-checkin/', staff_checkin, name='staff_checkin'),
+    path('attendance/<int:id>/', attendance_page, name='attendance'),
+    path('staff-checkin/<int:id>/', staff_checkin, name='staff_checkin'),
 
     # VALIDATION (EMAIL)
     path('check-email/', check_email, name='check_email'),

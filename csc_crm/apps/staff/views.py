@@ -589,264 +589,164 @@ def staff_export(request, id):
 
     return response
     
-# ==================================================== ATTENDANCE PAGE ====================================================
+#============================================================Attendance page=======================================================================   
+def attendance_page(request, id):
 
-def attendance_page(request):
+    staff = get_object_or_404(Staff, id=id)
 
-
-    # FILTER VALUES
-
-    date = request.GET.get('date')
-
-    month = request.GET.get('month')
-
-    year = request.GET.get('year')
-
-
-
-    # ALL DATA
-
-    attendance_data = Attendance.objects.all().order_by('-date')
-
-
-
-    # DATE FILTER
-
-    if date:
-
-        attendance_data = attendance_data.filter(date=date)
-
-
-
-    # MONTH FILTER
-
-    if month:
-
-        attendance_data = attendance_data.filter(date__month=month)
-
-
-
-    # YEAR FILTER
-
-    if year:
-
-        attendance_data = attendance_data.filter(date__year=year)
-
-
-
-    # TOTAL DAYS
-
-    total_working_days = attendance_data.count()
-
-
-
-    # PRESENT
-
-    present_days = attendance_data.filter(status='Present').count()
-
-
-
-    # ABSENT
-
-    absent_days = attendance_data.filter(status='Absent').count()
-
-
-
-    # LEAVE
-
-    leave_days = attendance_data.filter(status='Leave').count()
-
-
-
-    # LATE
-
-    late_days = attendance_data.filter(status='Late').count()
-
-
-
-    # ATTENDANCE %
-
-    if total_working_days > 0:
-
-        attendance_percentage = int(
-
-            (present_days + late_days)
-
-            / total_working_days * 100
-
-        )
-
-    else:
-
-        attendance_percentage = 0
-
-
-
-    # TODAY STATUS
-
+    # ================= TODAY =================
     today = timezone.localdate()
 
+    today_attendance = Attendance.objects.filter(staff=staff,date=today ).first()
 
+    today_status = today_attendance.status if today_attendance else 'Absent'
 
-    today_attendance = Attendance.objects.filter(date=today).order_by('-id').first()
+    # ================= HISTORY =================
+    attendance_data = Attendance.objects.filter( staff=staff).order_by('-date')
 
+    filter_date = request.GET.get('date')
+    month = request.GET.get('month')
+    year = request.GET.get('year')
 
+    if filter_date:
+        attendance_data = attendance_data.filter(date=filter_date)
+
+    if month:
+        attendance_data = attendance_data.filter(date__month=month)
+
+    if year:
+        attendance_data = attendance_data.filter(date__year=year)
+
+    # ================= COUNTS =================
+    total_working_days = attendance_data.count()
+    present_days = attendance_data.filter(status__in=['Present', 'Late']).count()
+    absent_days = attendance_data.filter(status='Absent').count()
+    leave_days = attendance_data.filter(status='Leave').count()
+    late_days = attendance_data.filter(status='Late').count()
+
+    attendance_score = (attendance_data.filter(status='Present').count() +(late_days * 0.5))
+
+    if total_working_days > 0:
+        attendance_percentage = int(attendance_score / total_working_days * 100)
+    else:
+        attendance_percentage = 0
+
+    # ================= CONTEXT =================
+    context = {
+        'attendance_data': attendance_data,
+        'total_working_days': total_working_days,
+        'present_days': present_days,
+        'absent_days': absent_days,
+        'leave_days': leave_days,
+        'late_days': late_days,
+        'attendance_percentage': attendance_percentage,
+        'today_status': today_status,
+        'today_attendance': today_attendance,
+        'staff': staff,
+    }
+
+    return render(request, 'staff/attendance.html', context)
+
+#==================================================================staff-checkin page===============================================
+def staff_checkin(request, id):
+
+    staff = Staff.objects.get(id=id)
+    today = timezone.localdate()
+
+    old_attendance = Attendance.objects.filter( staff=staff, log_out__isnull=True).order_by('-date').first()
+
+    if old_attendance and old_attendance.date < today:
+        old_attendance.log_out = old_attendance.log_in
+        old_attendance.total_hours = "0h 0m"
+        old_attendance.save()
+
+    # ================= TODAY ATTENDANCE =================
+    today_attendance = Attendance.objects.filter(staff=staff, date=today).first()
+
+    # ===== SMART FLAGS =====
+    is_checkin_done = False
+    is_checkout_done = False
+    is_leave_or_absent = False
 
     if today_attendance:
 
-        today_status = today_attendance.status
+        if today_attendance.log_in:
+            is_checkin_done = True
 
-    else:
+        if today_attendance.log_out:
+            is_checkout_done = True
 
-        today_status = 'Absent'
+        if today_attendance.status in ['Leave', 'Absent']:
+            is_leave_or_absent = True
 
-
-
-    context = {
-
-        'attendance_data': attendance_data,
-
-        'total_working_days': total_working_days,
-
-        'present_days': present_days,
-
-        'absent_days': absent_days,
-
-        'leave_days': leave_days,
-
-        'late_days': late_days,
-
-        'attendance_percentage': attendance_percentage,
-
-        'today_status': today_status,
-
-        'today_attendance': today_attendance,
-
-    }
-
-
-
-    return render(
-
-        request,
-
-        'staff/attendance.html',
-
-        context
-
-    )
-
-
-# ========================== STAFF ATTENDANCE ENTRY ============================
-
-
-def staff_checkin(request):
-
-
+    # ================= POST =================
     if request.method == 'POST':
 
-
-        # STAFF NAME
-
-        staff_name = request.POST.get('staff_name')
-
-
-        # BUTTON ACTION
-
         action = request.POST.get('action')
-
-
-        # FIND STAFF
-
-        staff = Staff.objects.filter(first_name=staff_name).first()
-
-
-        if not staff:
-
-            return redirect('staff_checkin')
-
-
-        # TODAY DATE
-
-        today = timezone.localdate()
-
-
-        # CURRENT TIME
-
         current_time = timezone.localtime(timezone.now())
 
-
-        # FIND TODAY ATTENDANCE
-
-        attendance = Attendance.objects.filter(staff=staff, date=today).first()
-
-
-        # CREATE ENTRY
+        attendance = Attendance.objects.filter(
+            staff=staff,
+            date=today
+        ).first()
 
         if not attendance:
+            attendance = Attendance(staff=staff, date=today)
 
-            attendance = Attendance(staff=staff,date=today)
-
-
-        # CHECK IN
-
+        # -------- CHECKIN --------
         if action == 'checkin':
+            if not attendance.log_in:
+                attendance.log_in = current_time
 
+                office_time = datetime.strptime("09:15", "%H:%M").time()
 
-            attendance.log_in = current_time
+                if current_time.time() > office_time:
+                    attendance.status = 'Late'
+                else:
+                    attendance.status = 'Present'
 
-            office_time = datetime.strptime(
-                "09:15",
-                "%H:%M"
-            ).time()
+                attendance.save()
+                messages.success(request, "Check-In completed successfully.")
 
-
-            if current_time.time() > office_time:
-
-                attendance.status = 'Late'
-
-            else:
-
-                attendance.status = 'Present'
-        
-
-        # CHECK OUT
-
+        # -------- CHECKOUT --------
         elif action == 'checkout':
+            if attendance.log_in:
+                attendance.log_out = current_time
+                attendance.save()
+                messages.success(request, "Check-Out completed successfully.")
 
-
-            attendance.log_out = current_time
-        # leave
+        # -------- LEAVE --------
         elif action == 'leave':
-
             attendance.status = 'Leave'
             attendance.log_in = None
             attendance.log_out = None
             attendance.total_hours = None
+            attendance.save()
+            messages.success(request, "Leave marked successfully.")
 
-
-         #absent
+        # -------- ABSENT --------
         elif action == 'absent':
-
             attendance.status = 'Absent'
-
             attendance.log_in = None
-
             attendance.log_out = None
-
             attendance.total_hours = None
-        attendance.save()
+            attendance.save()
+            messages.success(request, "Absent marked successfully.")
 
+        return redirect('attendance', id=staff.id)
 
-        return redirect('attendance')
+    return render(request, 'staff/staff_checkin.html', {
+        'active_attendance': Attendance.objects.filter(
+            staff=staff,
+            log_in__isnull=False,
+            log_out__isnull=True
+        ).order_by('-id').first(),
+        'staff': staff,
 
-
-    return render(
-
-        request,
-
-        'staff/staff_checkin.html'
-
-    )
+        #  IMPORTANT FLAGS
+        'is_checkin_done': is_checkin_done,
+        'is_checkout_done': is_checkout_done,
+        'is_leave_or_absent': is_leave_or_absent,
+    })
 
 #======================================== DOCUMENT =========================================
