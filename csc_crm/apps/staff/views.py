@@ -6,6 +6,7 @@ from django.db.models import Q, Sum
 from django.http import JsonResponse, HttpResponse
 from django.core.paginator import Paginator
 from datetime import datetime
+from datetime import timedelta
 import csv
 
 from .models import *
@@ -338,19 +339,18 @@ def export_staff(request):
 
 def overview(request, staff_id=None):
 
-    # staff
-
+    # ======= STAFF =======
     if staff_id:
         staff = get_object_or_404(Staff, id=staff_id)
     else:
         staff = Staff.objects.filter(status="active").first()
 
     if not staff:
-        return render(request, "staff/overview.html", {"error": "No staff found"})
+        return render(request, "staff/overview.html", {
+            "error": "No staff found"
+        })
 
-
-    # trainers scedule
-
+    # ======= TRAINER SCHEDULE =======
     if request.method == "POST":
         date = request.POST.get("date")
         time = request.POST.get("time")
@@ -358,8 +358,7 @@ def overview(request, staff_id=None):
         topic = request.POST.get("topic")
         status = request.POST.get("status", "upcoming")
 
-        if date and time and type_value and topic:
-
+        if all([date, time, type_value, topic]):
             TrainerSchedule.objects.create(
                 staff=staff,
                 date=date,
@@ -369,21 +368,23 @@ def overview(request, staff_id=None):
                 status=status
             )
 
-
-    # leads
+    # ======= LEADS =======
     leads = Lead.objects.filter(staff=staff)
 
     assigned_leads = leads.filter(status="assigned").count()
     converted_leads = leads.filter(status="converted").count()
-    pending_leads = leads.filter(status__in=["new", "assigned", "in_progress"]).count()
+    pending_leads = leads.filter(
+        status__in=["new", "assigned", "in_progress"]
+    ).count()
 
-    recent_leads = leads.order_by('-created_at')
+    recent_leads = leads.order_by("-created_at")[:10]
 
-
-    # revenue
+    # ======= REVENUE =======
     revenue_qs = Revenue.objects.filter(staff=staff)
 
-    total_revenue = revenue_qs.aggregate(total=Sum("amount"))["total"] or 0
+    total_revenue = revenue_qs.aggregate(
+        total=Sum("amount")
+    )["total"] or 0
 
     now = timezone.now()
 
@@ -392,7 +393,7 @@ def overview(request, staff_id=None):
         created_at__month=now.month
     ).aggregate(total=Sum("amount"))["total"] or 0
 
-    # last month
+    # Previous Month
     if now.month == 1:
         last_month = 12
         last_year = now.year - 1
@@ -405,60 +406,66 @@ def overview(request, staff_id=None):
         created_at__month=last_month
     ).aggregate(total=Sum("amount"))["total"] or 0
 
+    # ======= WEEKLY GRAPH =======
+    week_data_this = []
+    week_data_last = []
 
-    # graph
-    week_data_this = [10,20,6,22,12]
-    week_data_last = [90,21,35,25,63]
+    start_of_month = now.replace(day=1)
 
     for week in range(5):
 
-        start_day = (week * 7) + 1
-        end_day = start_day + 6
+        start = start_of_month + timedelta(days=week * 7)
+        end = start + timedelta(days=6)
 
         current_revenue = revenue_qs.filter(
-            created_at__year=now.year,
-            created_at__month=now.month,
-            created_at__day__range=(start_day, end_day)
+            created_at__date__range=(start.date(), end.date())
         ).aggregate(total=Sum("amount"))["total"] or 0
 
         previous_revenue = revenue_qs.filter(
-            created_at__year=last_year,
-            created_at__month=last_month,
-            created_at__day__range=(start_day, end_day)
+            created_at__date__range=(
+                (start.replace(year=last_year)).date(),
+                (end.replace(year=last_year)).date()
+            )
         ).aggregate(total=Sum("amount"))["total"] or 0
 
         week_data_this.append(float(current_revenue))
         week_data_last.append(float(previous_revenue))
 
-
-    # target
+    # ======= TARGET PROGRESS =======
     target_amount = staff.monthly_target or 0
-    completed_amount = total_revenue
+
+    # Monthly target => this month revenue
+    completed_amount = this_month_revenue
 
     if target_amount > 0:
-        progress_percentage = round((completed_amount / target_amount) * 100)
+        progress_percentage = round(
+            (completed_amount / target_amount) * 100
+        )
     else:
         progress_percentage = 0
 
     progress_percentage = min(progress_percentage, 100)
 
-
-    # attendance
+    # ======= ATTENDANCE =======
     today = timezone.now().date()
 
     today_attendance = Attendance.objects.filter(
         staff=staff,
         date=today
-    ).first()
+    ).order_by("-id").first()
 
-    attendance = today_attendance is not None
+    today_status = (
+        today_attendance.status
+        if today_attendance
+        else "Absent"
+    )
 
-
+    # ======= TRAINER SCHEDULES =======
     schedules = TrainerSchedule.objects.filter(
         staff=staff
-    ).order_by('-date', '-time')
+    ).order_by("-date", "-time")
 
-
+    # ======= CONTEXT =======
     context = {
         "staff": staff,
         "assigned_leads": assigned_leads,
@@ -472,8 +479,8 @@ def overview(request, staff_id=None):
         "week_data_last": week_data_last,
         "completed_amount": completed_amount,
         "progress_percentage": progress_percentage,
-        "attendance": attendance,
         "today_attendance": today_attendance,
+        "today_status": today_status,
         "schedules": schedules,
     }
 

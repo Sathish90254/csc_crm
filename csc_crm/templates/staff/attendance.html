@@ -37,35 +37,35 @@
     <!-- TOP CARDS -->
     <div class="top-cards">
 
-        <div class="card blue">
+        <div class="att-card att-blue">
             <div class="card-content">
                 <p>Total Working Days</p>
                 <h2>{{ total_working_days }}</h2>
             </div>
         </div>
 
-        <div class="card green">
+        <div class="att-card att-green">
             <div class="card-content">
                 <p>Present Days</p>
                 <h2>{{ present_days }}</h2>
             </div>
         </div>
 
-        <div class="card red">
+        <div class="att-card att-red">
             <div class="card-content">
                 <p>Absent Days</p>
                 <h2>{{ absent_days }}</h2>
             </div>
         </div>
 
-        <div class="card yellow">
+        <div class="att-card att-yellow">
             <div class="card-content">
                 <p>Leave Days</p>
                 <h2>{{ leave_days }}</h2>
             </div>
         </div>
 
-        <div class="card orange">
+        <div class="att-card att-orange">
             <div class="card-content">
                 <p>Late Days</p>
                 <h2>{{ late_days }}</h2>
@@ -125,15 +125,15 @@
     </div>
 
     <!-- PERCENTAGE -->
-    <div class="percentage-card">
+    <div class="att-percentage-card">
 
-        <div class="percentage-top">
+        <div class="att-percentage-top">
             <h2>Attendance Percentage</h2>
             <span>{{ attendance_percentage }}%</span>
         </div>
 
-        <div class="progress-bar">
-            <div class="progress-fill"style="width:{{ attendance_percentage }}%;"></div>
+        <div class="att-progress-bar">
+            <div class="att-progress-fill"style="width:{{ attendance_percentage }}%;"></div>
         </div>
 
     </div>

@@ -28,6 +28,7 @@ a{
 }
 
 
+
 /* ===== HEADER ===== */
 
 .over-top-header{
@@ -178,10 +179,10 @@ a{
 
 .over-profile-card{
     background: #ffffff;
-    padding: 20px;
+    padding: 20px 20px 20px 40px;
     border-radius: 16px;
     display: grid;
-    grid-template-columns: 150px 1fr 1fr;
+    grid-template-columns: auto 1fr 1fr 1fr;
     gap: 22px;
     box-shadow: 0 10px 25px rgba(0,0,0,0.08);
     margin-bottom: 20px;
@@ -194,13 +195,12 @@ a{
 .over-profile-image{
     position: relative;
     width:120px;
-    margin:0 auto;
-
+    margin:auto auto auto 40px;
 }
 
 .over-profile-image img{
-    width:120px;
-    height:120px;
+    width:130px;
+    height:130px;
     border-radius:50%;
     object-fit:cover;
     border:1px solid #fff;
@@ -238,11 +238,13 @@ a{
 
 /* Name*/
 .over-name{
-    font-size:24px;
+    font-size:28px;
     font-weight:700;
     color:#111827;
-    margin-bottom:10px;
+    margin-bottom:15px;
     letter-spacing:0.9px;
+    margin-left: 50px;
+    margin-top: 5px;
 }
 
 /* Badge*/
@@ -253,15 +255,17 @@ a{
     flex-wrap:wrap;
     justify-content:flex-start;
     align-items:center;
+    margin-left: 50px;
 }
 
 .over-badge{
-    padding:6px 14px;
+    padding:8px 20px;
     border-radius:20px;
     font-size:12px;
     font-weight:600;
     letter-spacing:0.3px;
     white-space:nowrap;
+
 }
 
 .over-badge-blue{
@@ -296,9 +300,23 @@ a{
     font-size:14px;
     color:#374151;
     line-height:1.5;
+    margin-top: 10px;
 }
 
 .over-info p strong{
+    color:#111827;
+}
+
+.over-info2 p{
+    margin-bottom:6px;
+    margin-left: -80px;
+    margin-top: 10px;
+    font-size:14px;
+    color:#374151;
+    line-height:1.5;
+}
+
+.over-info2 p strong{
     color:#111827;
 }
 /* ===== KPI CARDS ===== */
@@ -470,34 +488,111 @@ a{
 
 /* ===== ATTENDANCE ===== */
 
-.over-box-attendance{
-    background:#fff;
-    padding:20px;
-    border-radius:12px;
-    box-shadow:0 3px 8px rgba(0,0,0,0.06);
+.over-box-attendance {
+    background: #ffffff;
+    padding: 20px;
+    border-radius: 14px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.08);
 }
 
-.over-box-attendance-title{
-    font-size:18px;
-    margin-bottom:10px;
+
+.over-box-attendance-title {
+    font-size: 20px;
+    font-weight: 600;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 18px;
     color: var(--primary);
 }
 
-.over-attendance-grid{
-    display:grid;
-    grid-template-columns:1fr 1fr;
-    gap:10px;
+.status-badge-over {
+    padding: 5px 12px;
+    border-radius: 20px;
+    font-size: 14px;
+    font-weight: 600;
+    color: #fff;
 }
 
-.over-attendance-item{
-    background:#f9fafb;
-    padding:10px;
-    border-radius:8px;
+.present-badge-over {
+    background: #28a745;
+    border: 1px solid var(--secondary);
 }
 
-.over-no-attendance{
+.absent-badge-over{
+    background:#ef4444;
+    color:#fff;
+}
+
+.leave-badge-over{
+    background:#f59e0b;
+    color:#fff;
+}
+
+.late-badge-over{
+    background:#8b5cf6;
+    color:#fff;
+}
+
+
+.over-attendance-grid {
+    margin-top: 40px;
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 10px;
+}
+
+.over-attendance-item {
+    background: #f9f9f9;
+    padding: 60px 50px;
+    border-radius: 20px;
     text-align: center;
-    color: red;
+    transition: 0.3s ease;
+    border: 1px solid #eee;
+   
+}
+
+.over-attendance-item2{
+    background: #f9f9f9;
+    padding: 60px 50px;
+    font-size: larger;
+    width: 100%   ;
+    border-radius: 20px;
+    text-align: center;
+    transition: 0.3s ease;
+    border: 1px solid #eee;
+    margin-top: 10px;
+}
+
+.over-attendance-item2 p{
+    padding-bottom: 8px;
+}
+
+.over-attendance-item:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 6px 15px rgba(0,0,0,0.08);
+    border: 1px solid var(--secondary);
+}
+
+.over-attendance-item p {
+    margin: 0;
+    font-size: 20px;
+    color: #777;
+    padding: 5px;
+}
+
+.over-attendance-item h3 {
+    margin-top: 8px;
+    font-size: 25px;
+    color: #222;
+}
+
+
+.over-no-attendance {
+    text-align: center;
+    color: #ef0b0b;
+    font-size: 14px;
+    padding: 20px;
 }
 
 
@@ -508,24 +603,37 @@ a{
     padding:20px;
     border-radius:12px;
     overflow-x:auto;
-    margin-bottom: 20px;
     box-shadow:0 3px 8px rgba(0,0,0,0.06);
+    margin-bottom: 10px;
+}
+
+.over-box-recent h2{
+    color: var(--primary);
 }
 
 .over-box-recent table{
     width:100%;
     min-width:500px;
-    margin-top: 0px;
+    margin-top: 10px;
     border-collapse:collapse;
 }
 
-.over-box-recent th,td{
+.over-box-recent th{
     padding:8px;
     text-align:left;
     border-bottom:1px solid #e5e7eb;
+    background-color: rgb(244, 244, 242);
+}
+
+.over-box-recent td{
+    padding:8px;
+    text-align:left;
+    border-bottom:1px solid #e5e7eb;
+    background-color: rgb(252, 252, 252);
+   
 }
 .over-recent-no{
-    text-align: center;
+    text-align: center !important;
     color: red;
 }
 
@@ -536,21 +644,35 @@ a{
     padding:20px;
     border-radius:12px;
     overflow-x:auto;
-    margin-bottom: 20px;
     box-shadow:0 3px 8px rgba(0,0,0,0.06);
+    margin-bottom: 10px;
+}
+
+.over-box-trainers h2{
+    color: var(--primary);
+    font-size: 20px;
 }
 
 .over-box-trainers table{
     width:100%;
     min-width:500px;
-    margin-top: 0px;
+    margin-top: 10px;
     border-collapse:collapse;
 }
 
-.over-box-trainers th,td{
+.over-box-trainers th{
     padding:8px;
     text-align:left;
     border-bottom:1px solid #e5e7eb;
+    background-color: rgb(244, 244, 242);
+}
+
+.over-box-trainers td{
+    padding:8px;
+    text-align:left;
+    border-bottom:1px solid #e5e7eb;
+    background-color: rgb(252, 252, 252);
+   
 }
 
 .upcoming{
@@ -564,7 +686,7 @@ a{
 }
 
 .over-trainers-no{
-    text-align: center;
+    text-align: center !important;
     color: red;
 }
 
@@ -614,6 +736,10 @@ a{
     .over-profile-image img{
         margin:0 auto;
         display:block;
+    }
+
+    .over-badges{
+    justify-content:center;
     }
 }
 
@@ -668,6 +794,10 @@ a{
         grid-template-columns:1fr;
     }
 
+    .over-attendance-item{
+    padding:25px;
+    }
+
     .nav-header-right{
         width:100%;
         margin-left:0;
@@ -682,6 +812,10 @@ a{
 
     .over-badges{
         justify-content:center;
+    }
+    
+    .over-chart-area svg{
+    height:300px;
     }
 }
 

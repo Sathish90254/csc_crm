@@ -54,7 +54,7 @@ body{
     margin-bottom:20px;
 }
 
-label{
+.st-label{
 
     display:block;
 
@@ -65,7 +65,7 @@ label{
     color:#444;
 }
 
-input{
+.st-input{
 
     width:100%;
 
@@ -80,14 +80,14 @@ input{
     font-size:15px;
 }
 
-input:focus{
+.st-input:focus{
 
     border-color:#779df0;
 
     box-shadow:0 0 5px rgba(37,99,235,0.2);
 }
 
-input[readonly]{
+.st-input[readonly]{
 
     background:#f8fbff;
 
@@ -310,35 +310,35 @@ button:disabled {
 
         <div class="input-group">
 
-    <label>Employee ID</label>
+    <label class="st-label">Employee ID</label>
 
-    <input type="text" value="{{ staff.employee_id }}" readonly>
+    <input type="text" value="{{ staff.employee_id }}" class="st-input" readonly>
 
 </div>
 
 <div class="input-group">
 
-    <label>Staff Name</label>
+    <label class="st-label">Staff Name</label>
 
-    <input type="text"value="{{ staff.first_name }} {{ staff.last_name }}" readonly>
+    <input type="text" value="{{ staff.first_name }} {{ staff.last_name }}" class="st-input" readonly>
 
 </div>
 
         <div class="input-group">
 
-            <label>Today's Date & Time</label>
+            <label class="st-label">Today's Date & Time</label>
 
-            <input type="text" id="currentDateTime" readonly>
+            <input type="text" id="currentDateTime" class="st-input" readonly>
 
         </div>
 
         <div class="input-group">
 
-            <label>
+            <label class="st-label">
                 ⏱ Working Timer
             </label>
 
-            <input type="text" id="liveTimer" value="00:00:00" readonly>
+            <input type="text" id="liveTimer" class="st-input" value="00:00:00" readonly>
 
         </div>
 

@@ -70,8 +70,8 @@ class Staff(models.Model):
 
     # Basic Information
     employee_id = models.CharField(unique=True, max_length=20, db_index=True)
-    first_name = models.CharField(max_length=100)
-    last_name = models.CharField(max_length=100)
+    first_name = models.CharField(max_length=20)
+    last_name = models.CharField(max_length=20)
     email = models.EmailField(unique=True, db_index=True)
     phone = models.CharField(max_length=10, unique=True)
 
