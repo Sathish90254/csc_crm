@@ -135,6 +135,12 @@ body{
     box-shadow:0 4px 12px rgba(38,33,112,0.25);
 }
 
+.action-btn:disabled{
+    opacity: 0.5;
+    cursor: not-allowed;
+    pointer-events: none;
+}
+
 /*============================= SECTION CARDS ==========================*/
 
 .permission-matrix-section,

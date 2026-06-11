@@ -196,9 +196,21 @@
                                         <a href="{% url 'edit_staff' staff.id %}" class="action-btn edit-btn" title="Edit">
                                             <span class="action-icon">✏</span>
                                         </a>
-                                        <a href="{% url 'delete_staff' staff.id %} " class="action-btn delete-btn" title="Delete">
-                                            <span class="action-icon">🗑</span>
-                                        </a>
+                                        {% if staff.status == 'terminated' %}
+                                            <button
+                                                type="button"
+                                                class="action-btn delete-btn"
+                                                title="Already Terminated"
+                                                disabled>
+                                                <span class="action-icon">🗑</span>
+                                            </button>
+                                        {% else %}
+                                            <a href="{% url 'delete_staff' staff.id %}"
+                                            class="action-btn delete-btn"
+                                            title="Terminate">
+                                                <span class="action-icon">🗑</span>
+                                            </a>
+                                        {% endif %}
                                     </div>
                                 </td>
                             </tr>

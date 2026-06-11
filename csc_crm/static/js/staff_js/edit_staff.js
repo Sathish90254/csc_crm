@@ -265,72 +265,111 @@ document.addEventListener('DOMContentLoaded', ()=>{
 
 });
 
+// =========================== DATE OF JOINING VALIDATION ==================================
+
+document.addEventListener('DOMContentLoaded', () => {
+
+    const dateOfJoiningInput = document.getElementById('dateOfJoiningInput');
+    const dateOfJoiningError = document.getElementById('dateOfJoiningError');
+
+    function validateDOJ() {
+        if (!dateOfJoiningInput.value) {
+            dateOfJoiningError.textContent = "Date of Joining is required";
+            dateOfJoiningInput.classList.add("error-input");
+        } else {
+            dateOfJoiningError.textContent = "";
+            dateOfJoiningInput.classList.remove("error-input");
+        }
+    }
+
+    validateDOJ();
+
+    dateOfJoiningInput.addEventListener("change", validateDOJ);
+});
+
 // ======================== DATE OF BIRTH VALIDATION ============================
 
 document.addEventListener('DOMContentLoaded', () => {
+
+    const form = document.getElementById('staffMgmtForm');
     const dateOfBirthInput = document.getElementById('dateOfBirthInput');
-const dateOfBirthError = document.getElementById('dateOfBirthError');
-const originalDob = dateOfBirthInput.value;
+    const dateOfBirthError = document.getElementById('dateOfBirthError');
 
-const today = new Date().toISOString().split('T')[0];
-dateOfBirthInput.setAttribute('max', today);
+    const originalDob = dateOfBirthInput.value;
 
-dateOfBirthInput.addEventListener('change', () => {
+    const today = new Date().toISOString().split('T')[0];
+    dateOfBirthInput.setAttribute('max', today);
 
-    if (!dateOfBirthInput.value) {
+    function validateDOB() {
 
-    if (originalDob === '') {
+        if (!dateOfBirthInput.value) {
+
             dateOfBirthError.textContent = '';
             dateOfBirthInput.classList.remove('error-input');
-            return;
+
+            if (typeof checkChanges === 'function') {
+                checkChanges();
+            }
+
+            return true;
         }
 
-        dateOfBirthError.textContent =
-            'Date of Birth is required';
+        const dob = new Date(dateOfBirthInput.value);
+        const currentDate = new Date();
 
-        dateOfBirthInput.classList.add('error-input');
-        return;
+        if (dob > currentDate) {
+            dateOfBirthError.textContent = 'Date of birth cannot be in the future';
+            dateOfBirthInput.classList.add('error-input');
+
+            if (typeof checkChanges === 'function') {
+                checkChanges();
+            }
+
+            return false;
+        }
+
+        let age = currentDate.getFullYear() - dob.getFullYear();
+
+        const monthDiff = currentDate.getMonth() - dob.getMonth();
+
+        if (
+            monthDiff < 0 ||
+            (monthDiff === 0 && currentDate.getDate() < dob.getDate())
+        ) {
+            age--;
+        }
+
+        if (age < 18) {
+            dateOfBirthError.textContent = 'Employee must be at least 18 years old';
+            dateOfBirthInput.classList.add('error-input');
+
+            if (typeof checkChanges === 'function') {
+                checkChanges();
+            }
+
+            return false;
+        }
+
+        dateOfBirthError.textContent = '';
+        dateOfBirthInput.classList.remove('error-input');
+
+        if (typeof checkChanges === 'function') {
+            checkChanges();
+        }
+
+        return true;
     }
-    
-    const dob = new Date(dateOfBirthInput.value)
-    const currentDate = new Date()
 
-    if(dob > currentDate){
-        dateOfBirthError.textContent = 'Date of birth cannot be in the future';
-        dateOfBirthInput.classList.add('error-input');
-        return;
-    }
+    dateOfBirthInput.addEventListener('change', validateDOB);
+    dateOfBirthInput.addEventListener('input', validateDOB);
 
-    let age = currentDate.getFullYear() - dob.getFullYear();
+    form.addEventListener('submit', (e) => {
+        if (!validateDOB()) {
+            e.preventDefault();
+        }
+    });
 
-    const monthDiff = currentDate.getMonth() - dob.getMonth();
-
-    if(
-        monthDiff < 0 ||
-        (monthDiff === 0 &&
-        currentDate.getDate() < dob.getDate())
-    ){
-        age--;
-    }
-
-    if(age<18){
-        dateOfBirthError.textContent = 'Employee must be at least 18 years old';
-        dateOfBirthInput.classList.add('error-input');
-        return;
-    }
-
-    dateOfBirthError.textContent = '';
-    dateOfBirthInput.classList.remove('error-input');
-
-    if (!dateOfBirthInput.value) {
-        dateOfBirthError.textContent = 'Date of Birth is required';
-        dateOfBirthInput.classList.add('error-input');
-        return;
-    }
-    
-
-})
-})
+});
 
 // ==================================== IMAGE PROGRESS BAR ====================================
 

@@ -18,4 +18,6 @@ urlpatterns = [
     # VALIDATION (EMAIL)
     path('check-email/', check_email, name='check_email'),
     path('check-phone/', check_phone, name='check_phone'),
+
+    # DOCUMENT URLS
 ]

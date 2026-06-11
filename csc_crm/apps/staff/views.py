@@ -231,7 +231,7 @@ def delete_staff(request, id):
     if request.method == 'POST':
         staff.status = 'terminated'
         staff.save()
-        messages.success(request, f"Staff member '{staff.full_name}' terminated!")
+        messages.success(request, f"Staff member '{staff.full_name()}' terminated!")
         return redirect('staff_management')
         
     context = {
