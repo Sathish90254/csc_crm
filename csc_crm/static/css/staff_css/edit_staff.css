@@ -239,6 +239,14 @@ input[readonly]{
     box-shadow: none;
 }
 
+/* ========================= DEPARTMENT SELECT DESIGN ========================= */
+
+#departmentInput {
+    pointer-events: none;
+    background-color: #f3f4f6;
+    cursor: not-allowed;
+}
+
 /* ============================== IMAGE DELETE AND DOCUMENT DELETE BTN ============================== */
 /* ================= FILE UPLOAD ================= */
 

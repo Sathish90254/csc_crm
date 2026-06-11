@@ -360,8 +360,7 @@ button:disabled {
                 name="action"
                 value="checkout"
                 class="checkout-btn"
-                 {% if not is_checkin_done or is_checkout_done or is_leave_or_absent %}disabled{% endif %}>
-
+                {% if not is_checkin_done or is_checkout_done or is_leave_or_absent or is_checkout_closed %}disabled{% endif %} >
                 Check-Out
 
             </button>

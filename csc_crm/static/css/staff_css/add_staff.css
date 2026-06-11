@@ -286,6 +286,14 @@ input[readonly]{
     
 }
 
+/* ============================= DEPARTMENT HIDE DESIGN ========================== */
+
+#departmentInput {
+    pointer-events: none;
+    background-color: #f3f4f6;
+    cursor: not-allowed;
+}
+
 /* ================================== FOR EDIT PAGE IMAGE FIELD =============================== */
 
 .current-file-info {

@@ -7,6 +7,7 @@ from django.http import JsonResponse, HttpResponse
 from django.core.paginator import Paginator
 from datetime import datetime
 from datetime import timedelta
+from datetime import datetime, time
 import csv
 
 from .models import *
@@ -144,7 +145,7 @@ def add_staff(request):
         if form.is_valid():
             staff = form.save()
             messages.success(request, f"Staff member '{staff.full_name()}' added successfully!")
-            return redirect('staff_management')
+            return redirect('overview', staff_id=staff.id)
     else:
         form = StaffForm(
             initial = {
@@ -204,10 +205,8 @@ def edit_staff(request, id):
         if form.is_valid():
             form.save()
             messages.success(request, f"Staff member '{staff.full_name()}' Updated sucessfully!")
-        # else:
-        #     messages.error(request, 'Please correct the errors below.')
         
-            return redirect('staff_management')
+            return redirect('overview', staff_id=staff.id)
         else:
             print(form.errors)
     else:
@@ -597,7 +596,36 @@ def staff_export(request, id):
     return response
     
 #============================================================Attendance page=======================================================================   
+def auto_checkout_pending_attendance():
+
+    today = timezone.localdate()
+
+    pending_attendance = Attendance.objects.filter(
+        log_in__isnull=False,
+        log_out__isnull=True
+    )
+
+    for attendance in pending_attendance:
+
+        if attendance.date < today:
+
+            auto_logout_time = datetime.combine(
+                attendance.date,
+                time(18, 30)   # 6:30 PM
+            )
+
+            auto_logout_time = timezone.make_aware(
+                auto_logout_time
+            )
+
+            attendance.log_out = auto_logout_time
+
+            attendance.save()
+
+#======attendance=========
 def attendance_page(request, id):
+
+    auto_checkout_pending_attendance()
 
     staff = get_object_or_404(Staff, id=id)
 
@@ -657,15 +685,14 @@ def attendance_page(request, id):
 #==================================================================staff-checkin page===============================================
 def staff_checkin(request, id):
 
+    auto_checkout_pending_attendance()
+
     staff = Staff.objects.get(id=id)
     today = timezone.localdate()
+    
+    current_time = timezone.localtime(timezone.now())
 
-    old_attendance = Attendance.objects.filter( staff=staff, log_out__isnull=True).order_by('-date').first()
-
-    if old_attendance and old_attendance.date < today:
-        old_attendance.log_out = old_attendance.log_in
-        old_attendance.total_hours = "0h 0m"
-        old_attendance.save()
+    is_checkout_closed = current_time.time() >= time(19, 0)
 
     # ================= TODAY ATTENDANCE =================
     today_attendance = Attendance.objects.filter(staff=staff, date=today).first()
@@ -717,10 +744,22 @@ def staff_checkin(request, id):
 
         # -------- CHECKOUT --------
         elif action == 'checkout':
-            if attendance.log_in:
+
+            if current_time.time() >= time(19, 0):
+
+                messages.error(
+                request,
+                "Checkout is allowed only until 7:00 PM." )
+
+            elif attendance.log_in:
+
                 attendance.log_out = current_time
+
                 attendance.save()
-                messages.success(request, "Check-Out completed successfully.")
+
+                messages.success(
+                request,
+                "Check-Out completed successfully.")
 
         # -------- LEAVE --------
         elif action == 'leave':
@@ -754,6 +793,9 @@ def staff_checkin(request, id):
         'is_checkin_done': is_checkin_done,
         'is_checkout_done': is_checkout_done,
         'is_leave_or_absent': is_leave_or_absent,
+
+        'is_checkout_closed': is_checkout_closed,
     })
+
 
 #======================================== DOCUMENT =========================================

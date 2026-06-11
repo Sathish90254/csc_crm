@@ -8,12 +8,10 @@ import uuid
 class Department(models.Model):
     """Department reference data"""
     DEPT_CHOICES = [
-        ('sales', 'Sales'),
-        ('telecall', 'Telecall'),
-        ('support', 'Support'),
-        ('trainers', 'Trainers'),
-        ('hr', 'HR'),
-        ('management', 'Management'),
+        ('Technical', 'Technical'),
+        ('Management', 'Management'),
+        ('Sales', 'Sales Department'),
+        ('Marketing', 'Marketing'),
     ]
 
     dept_name = models.CharField(max_length=100, unique=True, choices=DEPT_CHOICES)
@@ -31,13 +29,17 @@ class Department(models.Model):
 class StaffRole(models.Model):
     """Staff role with permissions"""
     ROLE_CHOICES = [
-        ('admin', 'Admin'),
-        ('manager', 'Manager'),
-        ('sales_executive', 'Sales Executive'),
-        ('telecaller', 'Telecaller'),
-        ('support', 'Support Staff'),
-        ('hr', 'HR'),
-        ('trainer', 'Trainer'),
+        ('Developer', 'Developer'),
+        ('Trainer', 'Trainer'),
+        ('Admin', 'Admin'),
+        ('Manager', 'Manager'),
+        ('HR', 'HR'),
+        ('BDE', 'BDE'),
+        ('Telecall', 'Telecall'),
+        ('Sales Exec', 'Sales Exec'),
+        ('Digital Marketing', 'Digital Marketing'),
+        ('Content Creator', 'Content Creator'),
+
     ]
 
     role_name = models.CharField(max_length=100, unique=True, choices=ROLE_CHOICES)

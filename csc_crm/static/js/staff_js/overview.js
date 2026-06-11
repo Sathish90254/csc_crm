@@ -55,6 +55,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
 
 // ====== NAVBAR ======
+
 document.addEventListener("DOMContentLoaded", function () {
 
     const navToggle = document.getElementById("navToggle");
@@ -62,7 +63,45 @@ document.addEventListener("DOMContentLoaded", function () {
 
     if (!navToggle || !navTabs) return;
 
-    navToggle.addEventListener("click", function () {
-        navTabs.classList.toggle("show");
+    let isOpen = false;
+
+    navToggle.addEventListener("click", function (e) {
+        e.stopPropagation();
+
+        isOpen = !isOpen;
+
+        navTabs.classList.toggle("show", isOpen);
+        document.body.classList.toggle("menu-open", isOpen);
     });
+
+    navTabs.addEventListener("click", function (e) {
+        e.stopPropagation();
+    });
+
+    document.addEventListener("click", function () {
+        isOpen = false;
+        navTabs.classList.remove("show");
+        document.body.classList.remove("menu-open");
+    });
+
+});
+
+// ==================== STAFF ADDED SUCCESS MESSAGE HIDE ===========================
+
+document.addEventListener('DOMContentLoaded', () => {
+
+    const alerts = document.querySelectorAll('.alert');
+
+    alerts.forEach(alert => {
+        setTimeout(() => {
+            alert.style.transition = 'opacity 0.5s ease';
+            alert.style.opacity = '0';
+
+            setTimeout(() => {
+                alert.remove();
+            }, 500);
+
+        }, 3000);
+    });
+
 });

@@ -39,8 +39,14 @@ class StaffForm(forms.ModelForm):
                 'placeholder': '+91 XXXXX XXXXX',
                 'id': 'phoneInput',
             }),
-            'role': forms.Select(attrs={'class':'form-control'}),
-            'department': forms.Select(attrs={'class':'form-control'}),
+            'role': forms.Select(attrs={
+                'class':'form-control',
+                'id':'roleInput',
+                }),
+            'department': forms.Select(attrs={
+                'class':'form-control',
+                'id':'departmentInput',
+                }),
             'monthly_target': forms.NumberInput(attrs={
                 'class' : 'form-control',
                 'placeholder' : '500000',

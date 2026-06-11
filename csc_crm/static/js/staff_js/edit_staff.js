@@ -371,31 +371,70 @@ document.addEventListener('DOMContentLoaded', () => {
 
 });
 
-// ==================================== IMAGE PROGRESS BAR ====================================
+// ============================== DEPARTMENT & ROLE AUTOMATICALLY SELECTED ==============================
 
 document.addEventListener('DOMContentLoaded', () => {
-    const photoInput = document.getElementById('profilePhotoInput');
-    const progressBar = document.getElementById('photoProgressBar');
-    const progressText = document.getElementById('progressText');
+    const roleInput = document.getElementById('roleInput');
+    const departmentInput = document.getElementById('departmentInput');
 
-    photoInput.addEventListener('change', () => {
-        let progress = 0;
-        const interval = setInterval(() => {
-            progress += 10;
+    if (!roleInput || !departmentInput) return;
 
-            progressBar.style.width = progress + '%'
-            progressText.textContent = '% Uploaded'
+    const roleDepartmentMap = {
+        'Developer': 'Technical',
+        'Trainer': 'Technical',
 
-            if(progress >= 100){
-                clearInterval(interval);
+        'Admin': 'Management',
+        'Manager': 'Management',
+        'HR': 'Management',
 
-                progressText.textContent = '✓ Image Uploaded'
+        'BDE': 'Sales Department',
+        'Telecall': 'Sales Department',
+        'Sales Exec': 'Sales Department',
+
+        'Digital Marketing': 'Marketing',
+        'Content Creator': 'Marketing'
+    };
+
+    function autoSelectDepartment() {
+        const selectedRoleText =
+            roleInput.options[roleInput.selectedIndex].text.trim();
+
+        const departmentName = roleDepartmentMap[selectedRoleText];
+
+        if (!departmentName) {
+            departmentInput.value = '';
+            return;
+        }
+
+        for (let option of departmentInput.options) {
+            if (option.text.trim() === departmentName) {
+                departmentInput.value = option.value;
+                break;
             }
-        },50)
-    })
-})
+        }
 
-// ================================== REMOVE-BUTTON FOR PHOTOS ==================================
+        if (typeof checkChanges === 'function') {
+            checkChanges();
+        }
+    }
+
+    roleInput.addEventListener('change', autoSelectDepartment);
+
+    // Block user from manually changing department
+    departmentInput.addEventListener('mousedown', (e) => {
+        e.preventDefault();
+    });
+
+    departmentInput.addEventListener('keydown', (e) => {
+        e.preventDefault();
+    });
+
+    departmentInput.addEventListener('focus', () => {
+        departmentInput.blur();
+    });
+});
+
+// ============================== IMAGE UPLOAD HANDLING ==============================
 
 document.addEventListener('DOMContentLoaded', () => {
 
@@ -403,52 +442,114 @@ document.addEventListener('DOMContentLoaded', () => {
     const removePhotoBtn = document.getElementById('removePhotoBtn');
     const progressBar = document.getElementById('photoProgressBar');
     const progressText = document.getElementById('progressText');
-
-    photoInput.addEventListener('change', () => {
-        if(photoInput.files.length > 0){
-
-            removePhotoBtn.style.display = 'flex';
-            progressBar.style.width = '100%'
-            progressText.textContent = 'Image uploaded successfully!'
-
-        }
-        else{
-            removePhotoBtn.style.display = 'none';
-            progressBar.style.width = '0%'
-            progressText.textContent = 'No file selected'
-        }
-    })
-
-    removePhotoBtn.addEventListener('click', ()=>{
-        photoInput.value = '';
-        removePhotoBtn.style.display = 'none'
-        progressBar.style.width = '0%'
-        progressText.textContent = 'No file selected'
-    })
-
-});
-
-// ============================== IMAGE SELECTION ================================= 
-
-document.addEventListener('DOMContentLoaded', () => {
-
-    const photoInput = document.getElementById('profilePhotoInput');
     const currentPhotoSection = document.getElementById('currentPhotoSection');
 
-    if (!photoInput || !currentPhotoSection) return;
+    if (!photoInput || !removePhotoBtn || !progressBar || !progressText) return;
 
-    photoInput.addEventListener('change', () => {
+    let previousFiles = [];
+    let interval = null;
 
-        // New image selected
-        if (photoInput.files.length > 0) {
-            currentPhotoSection.style.display = 'none';
-        }
+    function resetUploadUI() {
+        progressBar.style.width = '0%';
+        progressText.textContent = 'No file selected';
+        removePhotoBtn.style.display = 'none';
 
-        // Image selection cleared
-        else {
+        if (currentPhotoSection) {
             currentPhotoSection.style.display = '';
         }
 
+        if (typeof checkChanges === 'function') {
+            checkChanges();
+        }
+    }
+
+    function showUploadedUI(message = '✓ Image Uploaded') {
+        progressBar.style.width = '100%';
+        progressText.textContent = message;
+        removePhotoBtn.style.display = 'flex';
+
+        if (currentPhotoSection) {
+            currentPhotoSection.style.display = 'none';
+        }
+
+        if (typeof checkChanges === 'function') {
+            checkChanges();
+        }
+    }
+
+    function startProgress() {
+        let progress = 0;
+
+        if (interval) {
+            clearInterval(interval);
+        }
+
+        progressBar.style.width = '0%';
+        progressText.textContent = '0% Uploaded';
+
+        interval = setInterval(() => {
+            progress += 10;
+
+            progressBar.style.width = progress + '%';
+            progressText.textContent = progress + '% Uploaded';
+
+            if (progress >= 100) {
+                clearInterval(interval);
+                progressText.textContent = '✓ Image Uploaded';
+            }
+
+        }, 50);
+    }
+
+    photoInput.addEventListener('click', () => {
+        previousFiles = Array.from(photoInput.files);
+    });
+
+    photoInput.addEventListener('change', () => {
+
+        // User opened file explorer and clicked Cancel
+        if (photoInput.files.length === 0) {
+
+            if (previousFiles.length > 0) {
+                const dataTransfer = new DataTransfer();
+
+                previousFiles.forEach(file => {
+                    dataTransfer.items.add(file);
+                });
+
+                photoInput.files = dataTransfer.files;
+                showUploadedUI('✓ Image Uploaded');
+                return;
+            }
+
+            resetUploadUI();
+            return;
+        }
+
+        previousFiles = Array.from(photoInput.files);
+
+        if (currentPhotoSection) {
+            currentPhotoSection.style.display = 'none';
+        }
+
+        removePhotoBtn.style.display = 'flex';
+
+        startProgress();
+
+        if (typeof checkChanges === 'function') {
+            checkChanges();
+        }
+    });
+
+    removePhotoBtn.addEventListener('click', () => {
+        photoInput.value = '';
+        previousFiles = [];
+
+        if (interval) {
+            clearInterval(interval);
+        }
+
+        resetUploadUI();
     });
 
 });
