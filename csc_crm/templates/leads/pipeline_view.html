@@ -50,7 +50,7 @@
 
 </form>
 
-<a href="{% url 'export_leads_csv' %}" data-url="{% url 'export_leads_csv' %}" class="download-btn" id="exportBtn">
+<a href="{% url 'leads:export_leads_csv' %}" data-url="{% url 'leads:export_leads_csv' %}" class="download-btn" id="exportBtn">
    Export
 </a>
 
@@ -133,7 +133,7 @@
                                     </div>
                                     <div class="card-footer">
                                         <span class="card-date">{{ lead.created_at|date:"d M" }}</span>
-                                        <a href="{% url 'lead_capture_details' lead.id %}" class="card-link">→</a>
+                                        <a href="{% url 'leads:lead_capture_details' lead.id %}" class="card-link">→</a>
                                     </div>
                                 </div>
                             {% endfor %}
@@ -170,7 +170,7 @@
                                     </div>
                                     <div class="card-footer">
                                         <span class="card-date">{{ lead.created_at|date:"d M" }}</span>
-                                        <a href="{% url 'lead_capture_details' lead.id %}" class="card-link">→</a>
+                                        <a href="{% url 'leads:lead_capture_details' lead.id %}" class="card-link">→</a>
                                     </div>
                                 </div>
                             {% endfor %}
@@ -207,7 +207,7 @@
                                     </div>
                                     <div class="card-footer">
                                         <span class="card-date">{{ lead.created_at|date:"d M" }}</span>
-                                        <a href="{% url 'lead_capture_details' lead.id %}" class="card-link">→</a>
+                                        <a href="{% url 'leads:lead_capture_details' lead.id %}" class="card-link">→</a>
                                     </div>
                                 </div>
                             {% endfor %}
@@ -244,7 +244,7 @@
                                     </div>
                                     <div class="card-footer">
                                         <span class="card-date">{{ lead.created_at|date:"d M" }}</span>
-                                        <a href="{% url 'lead_capture_details' lead.id %}" class="card-link">→</a>
+                                        <a href="{% url 'leads:lead_capture_details' lead.id %}" class="card-link">→</a>
                                     </div>
                                 </div>
                             {% endfor %}
@@ -281,7 +281,7 @@
                                     </div>
                                     <div class="card-footer">
                                         <span class="card-date">{{ lead.created_at|date:"d M" }}</span>
-                                        <a href="{% url 'lead_capture_details' lead.id %}" class="card-link">→</a>
+                                        <a href="{% url 'leads:lead_capture_details' lead.id %}" class="card-link">→</a>
                                     </div>
                                 </div>
                             {% endfor %}
@@ -318,7 +318,7 @@
                                     </div>
                                     <div class="card-footer">
                                         <span class="card-date">{{ lead.created_at|date:"d M" }}</span>
-                                        <a href="{% url 'lead_capture_details' lead.id %}" class="card-link">→</a>
+                                        <a href="{% url 'leads:lead_capture_details' lead.id %}" class="card-link">→</a>
                                     </div>
                                 </div>
                             {% endfor %}
@@ -364,11 +364,11 @@
                         <td>{{ lead.initial_status|title }}</td>
                         <td>
 
-                                <a href="{% url 'lead_capture_details' lead.id %}" class="btn-view">
+                                <a href="{% url 'leads:lead_capture_details' lead.id %}" class="btn-view">
                                     View
                                 </a>
 
-                                <a href="{% url 'lead_capture_update' lead.id %}" class="btn-edit">
+                                <a href="{% url 'leads:lead_capture_update' lead.id %}" class="btn-edit">
                                     Edit
                                 </a>
 

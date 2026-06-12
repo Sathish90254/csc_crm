@@ -115,9 +115,16 @@
                         </div>
 
                         <div class="form-group">
-                            <label class="form-label" for="{{ form.documents.id_for_label }}">Upload Document *</label>
+                            <label class="form-label" for="documentInput">Upload Document *</label>
+
                             <div class="file-upload-wrapper">
-                                {{ form.documents }}
+                                <input
+                                    type="file"
+                                    name="documents"
+                                    id="documentInput"
+                                    class="form-control"
+                                    multiple
+                                >
                                 <button type="button" id="removeDocumentBtn" class="remove-file-btn">X</button>
                             </div>
                             <div class="upload-progress">

@@ -12,7 +12,6 @@ class StaffForm(forms.ModelForm):
             'employee_id', 'first_name', 'last_name', 'email', 'phone',
             'role', 'department', 'monthly_target', 'performance_rating',
             'status', 'date_of_joining', 'date_of_birth', 'profile_photo',
-            'documents',
         ]
         widgets = {
             'employee_id' : forms.TextInput(attrs={
@@ -60,10 +59,6 @@ class StaffForm(forms.ModelForm):
                 'id': 'profilePhotoInput'
             }),
 
-            'documents': forms.ClearableFileInput(attrs={
-                'class': 'form-control',
-                'id': 'documentInput',
-            }),
             'performance_rating': forms.NumberInput(attrs={
                 'class': 'form-control',
                 'min': '1',
@@ -81,14 +76,6 @@ class StaffForm(forms.ModelForm):
                 'id': 'dateOfBirthInput',
             }),
         }
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-
-        self.fields['employee_id'].widget.attrs.update({
-            'readonly': True
-        })
-
-        self.fields['documents'].required = True
 
     def clean_employee_id(self):
         employee_id = self.cleaned_data.get('employee_id')
@@ -172,21 +159,6 @@ class StaffForm(forms.ModelForm):
             
         return photo
     
-    def clean_documents(self):
-        document = self.cleaned_data.get('documents')
-
-        if(document):
-
-            allowed = ['.pdf', '.doc', '.docx']
-
-            import os
-
-            ext = os.path.splitext(document.name)[1].lower()
-
-            if ext not in allowed:
-
-                raise ValidationError('Only PDF, DOC and DOCX files allowed.')
-        return document
 
     def clean_monthly_target(self):
         target = self.cleaned_data['monthly_target']
@@ -206,32 +178,45 @@ class EditStaffForm(forms.ModelForm):
     
 class StaffFilterForm(forms.Form):
     """Form for filtering staff"""
+
     department = forms.ModelChoiceField(
         queryset=Department.objects.all(),
         empty_label='All Departments',
         required=False,
-        widget=forms.Select(attrs={'class': 'form-control'})
+        widget=forms.Select(attrs={
+            'class': 'form-control',
+            'id': 'departmentFilter'
+        })
     )
+
     role = forms.ModelChoiceField(
         queryset=StaffRole.objects.all(),
         empty_label='All Roles',
         required=False,
-        widget=forms.Select(attrs={'class': 'form-control'})
+        widget=forms.Select(attrs={
+            'class': 'form-control',
+            'id': 'roleFilter'
+        })
     )
+
     status = forms.ChoiceField(
         choices=[('', 'All Status')] + Staff.STATUS_CHOICES,
         required=False,
-        widget=forms.Select(attrs={'class': 'form-control'})
+        widget=forms.Select(attrs={
+            'class': 'form-control',
+            'id': 'statusFilter'
+        })
     )
+
     search = forms.CharField(
         max_length=100,
         required=False,
         widget=forms.TextInput(attrs={
             'class': 'form-control',
-            'placeholder': 'Search by name, email or ID...'
+            'placeholder': 'Search by name, email or ID...',
+            'id': 'staffSearch'
         })
     )
-
 class StaffQuickEditForm(forms.ModelForm):
     """Quick edit form for inline updates"""
     class Meta:

@@ -1,0 +1,48 @@
+Trainer ---- Technical
+developers ----- Technical
+Admin ---- Management
+Manager ----- Management
+HR ---------- Management
+BDE ----- Sales
+Telecall --- Sales
+Sales Executive --- Sales
+Digital marketing --- Marketing 
+Content creator --- Marketing 
+
+1.Trainer ======== Overview page
+
+	Presented Today and Rating
+	Attendance overview
+	Recent Classes
+	performance overview (pending)
+2.Developers ========= Overview page
+
+	Presented Today and rating
+	attendance overview
+	current project
+	performance overview (pending)
+3.Admin ======== Overview page 
+	
+	Details
+4.Manager ======== Overview page
+	
+	Reve & Presented Today & Rating
+	Attendance overview
+	Performance overview
+5. HR ===== Overview
+	
+	PT & Rating
+	attendance overview
+
+6. BDE, Telecall, Sales Ex ===== Overview page
+
+	AL, PL, CL, Reve, PT, Rating
+	attendance overview,
+	performance overview,
+	recent leads table
+7. Digital Marketing and content creator ====== Overview page
+
+	Reven, PT, Rating
+	attendance,
+	performance,
+	

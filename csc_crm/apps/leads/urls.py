@@ -1,6 +1,8 @@
 from django.urls import path
 from .views import *
 
+app_name = 'leads'
+
 urlpatterns = [
     path('', lead_capture_list, name='lead_capture_list'),
     path('lead/<int:id>/', lead_capture_details, name='lead_capture_details'),

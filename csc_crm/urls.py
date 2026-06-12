@@ -21,7 +21,7 @@ from django.conf.urls.static import static
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('',include('csc_crm.apps.leads.urls')),
+    path('leads/',include('csc_crm.apps.leads.urls')),
     path('staff/', include('csc_crm.apps.staff.urls'))
 ]
 if settings.DEBUG:

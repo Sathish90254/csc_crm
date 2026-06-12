@@ -35,33 +35,33 @@
 <!-- Module Navigation Tabs -->
 <nav class="module-tabs" id="moduleTabs">
 
-    <a href="{% url 'lead_capture_list' %}" 
+    <a href="{% url 'leads:lead_capture_list' %}" 
        class="tab-link {% if request.resolver_match.url_name == 'lead_capture_list' or request.resolver_match.url_name == 'lead_capture_create' %}active-tab{% endif %}">
        Lead Capture
     </a>
 
-    <a href="{% url 'lead_pipeline_view' %}"
+    <a href="{% url 'leads:lead_pipeline_view' %}"
        class="tab-link {% if request.resolver_match.url_name == 'lead_pipeline_view' %}active-tab{% endif %}">
        Pipeline View
     </a>
 
-    <a href="{% url 'call_logs' %}" 
+    <a href="{% url 'leads:call_logs' %}" 
        class="tab-link {% if request.resolver_match.url_name == 'call_logs' %}active-tab{% endif %}">
        Call-Log
     </a>
 
-    <a href="{% url 'followup_shedule' %}"
+    <a href="{% url 'leads:followup_shedule' %}"
        class="tab-link {% if request.resolver_match.url_name == 'followup_shedule' %}active-tab{% endif %}">
        Follow-Up
     </a>
 
-    <a href="{% url 'lead_conversion_report' %}"
+    <a href="{% url 'leads:lead_conversion_report' %}"
        class="tab-link {% if request.resolver_match.url_name == 'lead_conversion_report' %}active-tab{% endif %}">
        Conversion Report
     </a>
 
     <div class="header-right">
-        <a href="{% url 'lead_capture_create' %}" class="btn-primary">
+        <a href="{% url 'leads:lead_capture_create' %}" class="btn-primary">
             + New Lead
         </a>
     </div>

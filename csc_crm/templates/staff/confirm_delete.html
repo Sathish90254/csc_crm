@@ -30,7 +30,7 @@
                 <a href="{% url 'staff_management' %}" class="btn btn-secondary">Cancel</a>
                 <form method="POST" class="delete-form">
                     {% csrf_token %}
-
+                    <input type="hidden" name="next" value="{{ next_url }}">
                     <button type="submit" class="btn btn-danger">Terminate</button>
                 </form>
             </div>

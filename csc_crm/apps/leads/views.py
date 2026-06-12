@@ -8,7 +8,6 @@ from .models import *
 from .forms import *
 import csv
 from django.http import HttpResponse
-from django.contrib.auth.models import User
 from django.http import JsonResponse
 
 def lead_capture_list(request):
@@ -106,7 +105,7 @@ def lead_capture_create(request):
             lead.lead_id = f'LID-{lead_count:04d}'
             lead.save()
             messages.success(request, f'Lead {lead.lead_name} created successfully!')
-            return redirect('lead_capture_details', id=lead.id)
+            return redirect('leads:lead_capture_details', id=lead.id)
         else:
             print(form.errors) 
     else:
@@ -150,7 +149,7 @@ def lead_capture_update(request, id):
                 f'Lead {updated_lead.lead_name} updated successfully!'
             )
 
-            return redirect('lead_capture_details', id=updated_lead.id)
+            return redirect('leads:lead_capture_details', id=updated_lead.id)
 
         else:
             print(form.errors)
@@ -205,7 +204,7 @@ def lead_pipeline_view(request):
     if assigned_to:
         leads = leads.filter(assigned_to__id=assigned_to)
 
-    staffs = User.objects.all()
+    staffs = Staff.objects.filter(role__role_name__in=['BDE', 'Telecall', 'Sales Exec'], status='active')
 
     no_results = False
     if (search_query or assigned_to) and leads.count() == 0:
@@ -390,7 +389,7 @@ def call_log_view(request):
         form = CallLogForm(request.POST)
         if form.is_valid():
             form.save()
-            return redirect('call_logs')  
+            return redirect('leads:call_logs')  
     else:
         form = CallLogForm()
 
@@ -406,4 +405,4 @@ def delete_call_log(request, id):
     log = get_object_or_404(CallLog, id=id)
     log.delete()
     messages.success(request, f'Call-Log Deleted!')
-    return redirect('call_logs')
+    return redirect('leads:call_logs')

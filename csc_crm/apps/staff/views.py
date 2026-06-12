@@ -8,7 +8,11 @@ from django.core.paginator import Paginator
 from datetime import datetime
 from datetime import timedelta
 from datetime import datetime, time
+from django.http import HttpResponse
+from django.shortcuts import get_object_or_404
+from openpyxl import Workbook
 import csv
+import re
 
 from .models import *
 from .forms import *
@@ -29,7 +33,7 @@ def staff_management(request):
     search = request.GET.get('search', '').strip()
 
     if department:
-        queryset = queryset.filter(department__dept_name = department)
+        queryset = queryset.filter(department_id=department)
 
     if role:
         queryset = queryset.filter(role_id = role)
@@ -127,13 +131,20 @@ def staff_management(request):
 # ========================== AUTO GENERATE EMP ID ==========================
 
 def generate_employee_id():
-    last_staff = Staff.objects.order_by('-id').first()
+    staff_ids = Staff.objects.values_list('employee_id', flat=True)
 
-    if last_staff:
-        last_id = int(last_staff.employee_id.replace('EMP',''))
-        return f"EMP{last_id + 1:03d}"
-    
-    return "EMP001"
+    max_number = 0
+
+    for employee_id in staff_ids:
+        match = re.match(r'^EMP(\d+)$', employee_id)
+
+        if match:
+            number = int(match.group(1))
+
+            if number > max_number:
+                max_number = number
+
+    return f"EMP{max_number + 1:03d}"
 
 # ========================== CREATE NEW STAFF ==============================
 
@@ -142,21 +153,45 @@ def add_staff(request):
 
     if request.method == 'POST':
         form = StaffForm(request.POST, request.FILES)
+
         if form.is_valid():
+            documents = request.FILES.getlist('documents')
+
+            if not documents:
+                form.add_error(None, 'At least one document is required.')
+
+                return render(request, 'staff/add_staff.html', {
+                    'page_title': 'Add New Staff',
+                    'form': form
+                })
+
             staff = form.save()
-            messages.success(request, f"Staff member '{staff.full_name()}' added successfully!")
+
+            for document in documents:
+                StaffDocument.objects.create(
+                    staff=staff,
+                    document=document
+                )
+
+            messages.success(
+                request,
+                f"Staff member '{staff.full_name()}' added successfully!"
+            )
+
             return redirect('overview', staff_id=staff.id)
+
     else:
         form = StaffForm(
-            initial = {
+            initial={
                 'employee_id': generate_employee_id()
             }
         )
 
     context = {
-        'page_title':'Add New Staff',
+        'page_title': 'Add New Staff',
         'form': form
     }
+
     return render(request, 'staff/add_staff.html', context)
 
 # ============================= CHECK EMAIL EXISTING (FOR VALIDATION) ===============================
@@ -231,11 +266,17 @@ def delete_staff(request, id):
         staff.status = 'terminated'
         staff.save()
         messages.success(request, f"Staff member '{staff.full_name()}' terminated!")
+        next_url = request.POST.get('next')
+
+        if next_url:
+            return redirect(next_url)
+
         return redirect('staff_management')
         
     context = {
         'page_title': 'Delete Staff',
         'staff': staff,
+        'next_url': request.GET.get('next', ''),
     }
 
     return render(request, 'staff/confirm_delete.html', context)
@@ -301,7 +342,7 @@ def export_staff(request):
 
     if department:
         staff_list = staff_list.filter(
-            department__dept_name=department
+            department_id=department
         )
 
     if role:
@@ -596,6 +637,7 @@ def staff_export(request, id):
     return response
     
 #============================================================Attendance page=======================================================================   
+#=====attendance checkout pennding===================
 def auto_checkout_pending_attendance():
 
     today = timezone.localdate()
@@ -681,6 +723,42 @@ def attendance_page(request, id):
     }
 
     return render(request, 'staff/attendance.html', context)
+
+
+#================ export atttendance btn ===============
+
+def export_attendance(request, id):
+
+    staff = get_object_or_404(Staff, id=id)
+
+    attendance_data = Attendance.objects.filter(
+        staff=staff
+    ).order_by('-date')
+
+    wb = Workbook()
+    ws = wb.active
+    ws.title = "Attendance"
+
+    ws.append(["Date", "Log In", "Log Out", "Status", "Hours"])
+
+    for a in attendance_data:
+        ws.append([
+            str(a.date),
+            a.log_in.strftime("%I:%M %p") if a.log_in else "--",
+            a.log_out.strftime("%I:%M %p") if a.log_out else "--",
+            a.status,
+            str(a.total_hours) if a.total_hours else "--"
+        ])
+
+    response = HttpResponse(
+        content_type='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
+    )
+
+    response['Content-Disposition'] = f'attachment; filename=attendance_{staff.employee_id}.xlsx'
+
+    wb.save(response)
+
+    return response
 
 #==================================================================staff-checkin page===============================================
 def staff_checkin(request, id):

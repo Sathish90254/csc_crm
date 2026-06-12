@@ -32,6 +32,59 @@
 
     </div>
 
+
+    
+<!-- ===== PROFILE ===== -->
+<div class=" att-over-profile-card">
+
+<div class="att-over-profile-image">
+
+<!-- PROFILE IMAGE -->
+{% if staff.profile_photo %}
+    <img src="{{ staff.profile_photo.url }}" alt="Profile Image">
+{% else %}
+    <img src="https://th.bing.com/th/id/OIP.dDKYQqVBsG1tIt2uJzEJHwHaHa?w=180&h=180&c=7&r=0&o=7&dpr=1.5&pid=1.7&rm=3" alt="Default Image">
+{% endif %}
+
+
+{% if staff.status == 'active' %}
+<div class="att-over-online"></div>
+{% else %}
+<div class="att-over-offline"></div>
+{% endif %}
+
+</div>
+
+<div>
+
+<h1 class=" att-over-name">{{ staff.first_name }} {{ staff.last_name }}</h1>
+
+<div class=" att-over-badges">
+<div class="att-over-badge over-badge-blue">{{ staff.department }}</div>
+<div class="att-over-badge status-{{ staff.status }}">{{ staff.get_status_display }}</div>
+</div>
+
+<div class=" att-over-info">
+<p><strong>EMP ID:</strong> {{ staff.employee_id }}</p>
+<p><strong>Role:</strong> {{ staff.role }}</p>
+<p><strong>Phone:</strong> {{ staff.phone }}</p>
+</div>
+
+</div>
+
+<div class=" att-over-info">
+<p><strong>Joining:</strong> {{ staff.date_of_joining }}</p>
+<p><strong>Email:</strong> {{ staff.email }}</p>
+
+<!-- <p><strong>Manager:</strong> {{ permission.permission.manager }}</p> -->
+
+<p><strong>Performance:</strong> {{ staff.performance_rating }}/5</p>
+<p><strong>Date Of Birth:</strong> {{ staff.date_of_birth }}</p>
+</div>
+
+</div>
+
+
 <div id="attendance-dashboard" >
 
     <!-- TOP CARDS -->
@@ -137,6 +190,8 @@
         </div>
 
     </div>
+    
+
 
     <!-- HISTORY -->
     <div class="history-section">
@@ -185,9 +240,14 @@
             </form>
 
         </div>
+        <div class="history-header">
 
-        <h2>Attendance History</h2>
-        <br/>
+  <span>  <h2>Attendance History</h2></span>
+
+    <a href="{% url 'export_attendance' staff.id %}" class="attendance-submit">Export Excel</a>
+
+    </div>
+        
 
         <!-- TABLE -->
         <div class="table-wrapper">

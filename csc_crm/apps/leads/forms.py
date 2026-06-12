@@ -31,6 +31,14 @@ class LeadCaptureForm(forms.ModelForm):
             
         }
 
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+
+        self.fields['assigned_to'].queryset = Staff.objects.filter(
+            role__role_name__in=['BDE', 'Telecall', 'Sales Exec'],
+            status='active'
+        )
+
 # Call-log form
 class CallLogForm(forms.ModelForm):
     class Meta:

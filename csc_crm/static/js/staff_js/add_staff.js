@@ -1,3 +1,40 @@
+ // ====================== BLOCK EMPLOYEE ID EDITING ======================
+
+document.addEventListener('DOMContentLoaded', () => {
+    const employeeIdInput = document.querySelector('[name="employee_id"]');
+
+    if (!employeeIdInput) return;
+
+    const originalEmployeeId = employeeIdInput.value;
+
+    // Make it readonly
+    employeeIdInput.readOnly = true;
+
+    // Stop typing
+    employeeIdInput.addEventListener('keydown', (e) => {
+        e.preventDefault();
+    });
+
+    // Stop paste
+    employeeIdInput.addEventListener('paste', (e) => {
+        e.preventDefault();
+    });
+
+    // Stop drag/drop text
+    employeeIdInput.addEventListener('drop', (e) => {
+        e.preventDefault();
+    });
+
+    // If any extension like FakeFiller changes it, restore old value
+    employeeIdInput.addEventListener('input', () => {
+        employeeIdInput.value = originalEmployeeId;
+    });
+
+    employeeIdInput.addEventListener('change', () => {
+        employeeIdInput.value = originalEmployeeId;
+    });
+});
+    
     // ===================== EMAIL VALIDATION =============================
 
     document.addEventListener('DOMContentLoaded', () => {
@@ -339,13 +376,71 @@ document.addEventListener('DOMContentLoaded', () => {
         '✓ Image Uploaded'
     );
 
-    setupFileUpload(
-        'documentInput',
-        'removeDocumentBtn',
-        'documentProgressBar',
-        'documentprogressText',
-        '✓ File Uploaded'
-    );
+});
+
+// ====================== MULTIPLE DOCUMENT UPLOAD HANDLING ======================
+
+document.addEventListener('DOMContentLoaded', () => {
+
+    const documentInput = document.getElementById('documentInput');
+    const removeDocBtn = document.getElementById('removeDocumentBtn');
+    const progressBar = document.getElementById('documentProgressBar');
+    const progressText = document.getElementById('documentprogressText');
+
+    if (!documentInput || !removeDocBtn || !progressBar || !progressText) return;
+
+    let selectedFiles = new DataTransfer();
+
+    function updateDocumentUI() {
+        const fileCount = selectedFiles.files.length;
+
+        if (fileCount > 0) {
+            removeDocBtn.style.display = 'flex';
+            progressBar.style.width = '100%';
+            progressText.textContent = `${fileCount} document(s) selected`;
+        } else {
+            removeDocBtn.style.display = 'none';
+            progressBar.style.width = '0%';
+            progressText.textContent = 'No file selected';
+        }
+    }
+
+    documentInput.addEventListener('change', () => {
+
+        // If user opens file explorer and clicks Cancel
+        if (documentInput.files.length === 0) {
+            documentInput.files = selectedFiles.files;
+            updateDocumentUI();
+            return;
+        }
+
+        Array.from(documentInput.files).forEach(file => {
+
+            const alreadyExists = Array.from(selectedFiles.files).some(
+                existingFile =>
+                    existingFile.name === file.name &&
+                    existingFile.size === file.size &&
+                    existingFile.lastModified === file.lastModified
+            );
+
+            if (!alreadyExists) {
+                selectedFiles.items.add(file);
+            }
+
+        });
+
+        documentInput.files = selectedFiles.files;
+
+        updateDocumentUI();
+    });
+
+    removeDocBtn.addEventListener('click', () => {
+        selectedFiles = new DataTransfer();
+        documentInput.value = '';
+        progressBar.style.width = '0%';
+        progressText.textContent = 'No file selected';
+        removeDocBtn.style.display = 'none';
+    });
 
 });
     // ====================== MONTHLY TARGET VALIDATION ======================

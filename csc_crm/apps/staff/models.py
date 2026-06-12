@@ -160,6 +160,26 @@ class Staff(models.Model):
         """Return Performance rating as stars (1-5)"""
         return self.performance_rating
     
+# ======================= MULTIPLE FILE UPLOADED =========================
+
+class StaffDocument(models.Model):
+    staff = models.ForeignKey(
+        Staff,
+        on_delete=models.CASCADE,
+        related_name='staff_documents'
+    )
+
+    document = models.FileField(upload_to='staff/documents/')
+
+    uploaded_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        db_table = 'staff_documents'
+        ordering = ['-uploaded_at']
+
+    def __str__(self):
+        return f"{self.staff.full_name()} - {self.document.name}"
+    
 # ===== Overview =====
 
 # Lead

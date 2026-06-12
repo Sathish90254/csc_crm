@@ -1,5 +1,6 @@
 from django.db import models
 from django.contrib.auth.models import User
+from ..staff.models import Staff
 
 # Lead Model
 class LeadCapture(models.Model):
@@ -53,7 +54,7 @@ class LeadCapture(models.Model):
     phone_no = models.CharField(unique=True, max_length=10,)
     course_interested = models.CharField(max_length=100, choices=COURSE_CHOICES)
     lead_source = models.CharField(max_length=100, choices=SOURCE_CHOICES)
-    assigned_to = models.ForeignKey(User, on_delete=models.SET_NULL, null=True)
+    assigned_to = models.ForeignKey(Staff, on_delete=models.SET_NULL, null=True, blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)    
     initial_notes = models.TextField(null=True, blank=True)

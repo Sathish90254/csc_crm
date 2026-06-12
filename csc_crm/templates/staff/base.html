@@ -39,9 +39,9 @@
             <a href="#"
                class="{% if request.resolver_match.url_name == 'staff_profile' %}active{% endif %}">
                 Staff Profile
-            </a>
+            </a> 
 
-            <a href="#"
+            <a href="{% url 'leads:lead_capture_list' %}"
                class="{% if request.resolver_match.url_name == 'lead_assignment' %}active{% endif %}">
                 Lead Assignment
             </a>

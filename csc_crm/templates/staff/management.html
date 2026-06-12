@@ -15,8 +15,8 @@
                             <option value="">All Departments</option>
                             {% for dept in departments %}
                             <option 
-                                value="{{ dept.dept_name }}"
-                                {% if request.GET.department == dept.dept_name %}selected{% endif %}>
+                                value="{{ dept.id }}"
+                                {% if request.GET.department == dept.id|stringformat:"s" %}selected{% endif %}>
                                 {{ dept.get_dept_name_display }}
                             </option>
                             {% endfor %}
@@ -197,7 +197,7 @@
                                                 <span class="action-icon">🗑</span>
                                             </button>
                                         {% else %}
-                                            <a href="{% url 'delete_staff' staff.id %}"
+                                            <a href="{% url 'delete_staff' staff.id %}?next={{ request.get_full_path|urlencode }}"
                                             class="action-btn delete-btn"
                                             title="Terminate">
                                                 <span class="action-icon">🗑</span>

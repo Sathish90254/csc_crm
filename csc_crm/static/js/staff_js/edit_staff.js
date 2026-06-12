@@ -30,6 +30,43 @@ function isFormValid() {
     return true;
 }
 
+// ====================== BLOCK EMPLOYEE ID EDITING ======================
+
+document.addEventListener('DOMContentLoaded', () => {
+    const employeeIdInput = document.querySelector('[name="employee_id"]');
+
+    if (!employeeIdInput) return;
+
+    const originalEmployeeId = employeeIdInput.value;
+
+    // Make it readonly
+    employeeIdInput.readOnly = true;
+
+    // Stop typing
+    employeeIdInput.addEventListener('keydown', (e) => {
+        e.preventDefault();
+    });
+
+    // Stop paste
+    employeeIdInput.addEventListener('paste', (e) => {
+        e.preventDefault();
+    });
+
+    // Stop drag/drop text
+    employeeIdInput.addEventListener('drop', (e) => {
+        e.preventDefault();
+    });
+
+    // If any extension like FakeFiller changes it, restore old value
+    employeeIdInput.addEventListener('input', () => {
+        employeeIdInput.value = originalEmployeeId;
+    });
+
+    employeeIdInput.addEventListener('change', () => {
+        employeeIdInput.value = originalEmployeeId;
+    });
+});
+
 // ============================ EDIT FORM UPDATE BTN DISABLED ============================
 
 let checkChanges;
