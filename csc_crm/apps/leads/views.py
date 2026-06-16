@@ -9,6 +9,7 @@ from .forms import *
 import csv
 from django.http import HttpResponse
 from django.http import JsonResponse
+from django.core.paginator import Paginator
 
 def lead_capture_list(request):
 
@@ -235,6 +236,11 @@ def lead_pipeline_view(request):
             'count': count,
         })
 
+        # Pagination
+    paginator = Paginator(leads, 15)
+    page_number = request.GET.get('page')
+    leads = paginator.get_page(page_number)
+
     context = {
         'leads_by_status': leads_by_status,
         'funnel_data': funnel_data,
@@ -248,6 +254,7 @@ def lead_pipeline_view(request):
     }
 
     return render(request, 'leads/pipeline_view.html', context)
+
 
 # csv download
 def export_leads_csv(request):

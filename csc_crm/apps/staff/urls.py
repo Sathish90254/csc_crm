@@ -22,4 +22,7 @@ urlpatterns = [
     path('check-phone/', check_phone, name='check_phone'),
 
     # DOCUMENT URLS
+    path('<int:staff_id>/documents/', staff_documents, name='staff_documents'),
+    path('documents/<int:doc_id>/delete/', delete_document, name='delete_document'),
+    path('documents/<int:doc_id>/status/', update_document_status, name='update_document_status'),
 ]

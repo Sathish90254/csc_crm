@@ -35,6 +35,7 @@ class StaffForm(forms.ModelForm):
             }),
             'phone': forms.TextInput(attrs={
                 'class' : 'form-control',
+                'type': 'tel',
                 'placeholder': '+91 XXXXX XXXXX',
                 'id': 'phoneInput',
             }),
@@ -46,11 +47,13 @@ class StaffForm(forms.ModelForm):
                 'class':'form-control',
                 'id':'departmentInput',
                 }),
-            'monthly_target': forms.NumberInput(attrs={
+            'monthly_target': forms.TextInput(attrs={
                 'class' : 'form-control',
                 'placeholder' : '500000',
                 'step' : '0.01',
                 'min': '0',
+                'inputmode': 'decimal',
+                'autocomplete': 'off',
                 'id': 'monthlyTargetInput',
             }),
             'profile_photo': forms.FileInput(attrs={
@@ -64,7 +67,7 @@ class StaffForm(forms.ModelForm):
                 'min': '1',
                 'max': '5'
             }),
-            'status' : forms.Select(attrs={'class':'form-control'}),
+            'status' : forms.Select(attrs={'class':'form-control', 'id':'statusInput'}),
             'date_of_joining': forms.DateInput(attrs={
                 'class':'form-control',
                 'type':'date',
@@ -105,10 +108,10 @@ class StaffForm(forms.ModelForm):
     def clean_phone(self):
         phone = self.cleaned_data.get('phone')
 
-        if not phone.isdigit():
-            raise ValidationError("Phone number must contain only digits.")
+        # if not phone.isdigit():
+        #     raise ValidationError("Phone number must contain only digits.")
         
-        if len(phone) !=10:
+        if len(phone) !=13:
             raise ValidationError("Phone number must be exactly 10 digits.")
         return phone
     
@@ -117,6 +120,10 @@ class StaffForm(forms.ModelForm):
 
         date_of_birth = cleaned_data.get('date_of_birth')
         date_of_joining = cleaned_data.get('date_of_joining')
+        role = cleaned_data.get('role')
+        monthly_target = cleaned_data.get('monthly_target')
+
+        # ================= DATE VALIDATION =================
 
         if date_of_birth and date_of_joining:
             if date_of_birth >= date_of_joining:
@@ -147,8 +154,45 @@ class StaffForm(forms.ModelForm):
                     'Employee must be at least 18 years old.'
                 )
 
+        # ================= MONTHLY TARGET VALIDATION =================
+
+        roles_need_monthly_target = [
+            'manager',
+            'bde',
+            'telecall',
+            'telecaller',
+            'sales exec',
+            'sales executive',
+            'sales_exec',
+            'sales_executive',
+        ]
+
+        role_name = ''
+
+        if role:
+            if hasattr(role, 'role_name'):
+                role_name = role.role_name
+            else:
+                role_name = str(role)
+
+        role_name = role_name.strip().lower().replace('_', ' ')
+
+        if role_name in roles_need_monthly_target:
+            if monthly_target is None:
+                self.add_error(
+                    'monthly_target',
+                    'Monthly target is required for this role.'
+                )
+            elif monthly_target <= 0:
+                self.add_error(
+                    'monthly_target',
+                    'Monthly target must be greater than 0.'
+                )
+        else:
+            cleaned_data['monthly_target'] = None
+
         return cleaned_data
-    
+        
     def clean_profile_photo(self):
         photo = self.cleaned_data.get('profile_photo')
 
@@ -156,18 +200,18 @@ class StaffForm(forms.ModelForm):
 
             if photo.size > 2 * 1024 * 1024:
                 raise ValidationError('Photo must be less than 2 MB.')
-            
+                
         return photo
-    
+        
 
-    def clean_monthly_target(self):
-        target = self.cleaned_data['monthly_target']
+        # def clean_monthly_target(self):
+        #     target = self.cleaned_data['monthly_target']
 
-        if target <= 0:
-            raise forms.ValidationError(
-                "Monthly target cannot be negative."
-            )
-        return target
+        #     if target <= 0:
+        #         raise forms.ValidationError(
+        #             "Monthly target cannot be negative."
+        #         )
+        #     return target
     
 class EditStaffForm(forms.ModelForm):
 

@@ -50,10 +50,6 @@
     </a>
 
     <a href="#" class="nav-tab-link">
-        Performance
-    </a>
-
-    <a href="#" class="nav-tab-link">
         Documents
     </a>
 
@@ -69,63 +65,192 @@
 </nav>
 
 <!-- ===== PROFILE ===== -->
+ {% if staff.role.role_name == "BDE" or staff.role.role_name == "Telecall" or staff.role.role_name == "Sales Exec" or staff.role.role_name == "Manager" or staff.role.role_name == "Digital Marketing" or staff.role.role_name == "Content Creator" or staff.role.role_name == "HR" or staff.role.role_name == "Trainer" or staff.role.role_name == "Developer" %}
 <div class="over-profile-card">
 
-    <!-- PART 1 : PROFILE IMAGE -->
-    <div class="over-profile-image">
+    <!-- LEFT SIDE -->
+    <div class="over-profile-left">
 
-        {% if staff.profile_photo %}
-            <img src="{{ staff.profile_photo.url }}" alt="Profile Image">
-        {% else %}
-            <img src="https://th.bing.com/th/id/OIP.dDKYQqVBsG1tIt2uJzEJHwHaHa?w=180&h=180&c=7&r=0&o=7&dpr=1.5&pid=1.7&rm=3" alt="Default Image">
-        {% endif %}
+        <div class="over-profile-image">
 
-        {% if staff.status == 'active' %}
-            <div class="over-online"></div>
-        {% else %}
-            <div class="over-offline"></div>
-        {% endif %}
+            {% if staff.profile_photo %}
+                <img src="{{ staff.profile_photo.url }}" alt="Profile Image">
+            {% else %}
+                <img src="https://th.bing.com/th/id/OIP.dDKYQqVBsG1tIt2uJzEJHwHaHa?w=180&h=180&c=7&r=0&o=7&dpr=1.5&pid=1.7&rm=3" alt="Default Image">
+            {% endif %}
 
-    </div>
+            {% if staff.status == 'active' %}
+                <div class="over-online"></div>
+            {% else %}
+                <div class="over-offline"></div>
+            {% endif %}
 
-    <!-- PART 2 : NAME + BADGES -->
-    <div class="over-profile-details">
+        </div>
 
-        <h1 class="over-name">
-            {{ staff.first_name }} {{ staff.last_name }}
-        </h1>
+        <div class="over-profile-details">
 
-        <div class="over-badges">
-            <div class="over-badge over-badge-blue">
-                {{ staff.department }}
+            <h1 class="over-name">
+                {{ staff.first_name }} {{ staff.last_name }}
+            </h1>
+
+            <div class="over-badges">
+
+                <div class="over-badge over-badge-blue">
+                    {{ staff.department }}
+                </div>
+
+                <div class="over-badge status-{{ staff.status }}">
+                    {{ staff.get_status_display }}
+                </div>
+
             </div>
 
-            <div class="over-badge status-{{ staff.status }}">
-                {{ staff.get_status_display }}
-            </div>
         </div>
 
     </div>
 
-    <!-- PART 3 : INFO -->
-    <div class="over-info">
-        <p><strong>EMP ID:</strong> {{ staff.employee_id }}</p>
-        <p><strong>Role:</strong> {{ staff.role }}</p>
-        <p><strong>Phone:</strong> {{ staff.phone }}</p>
-        <p><strong>Date Of Birth:</strong> {{ staff.date_of_birth }}</p>
+    <!-- RIGHT SIDE -->
+    <div class="over-info-grid">
+
+    <!-- Row 1 -->
+    <div class="info-card">
+        <span>EMPLOYEE ID</span>
+        <h3>{{ staff.employee_id }}</h3>
     </div>
 
-    <!-- PART 4 : INFO2 -->
-    <div class="over-info2">
-        <p><strong>Joining:</strong> {{ staff.date_of_joining }}</p>
-        <p><strong>Email:</strong> {{ staff.email }}</p>
-        <p><strong>Performance:</strong> {{ staff.performance_rating }}/5</p>
+    <div class="info-card">
+        <span>ROLE</span>
+        <h3>{{ staff.role }}</h3>
+    </div>
+
+    <div class="info-card">
+        <span>PHONE</span>
+        <h3>{{ staff.phone }}</h3>
+    </div>
+
+    <!-- Row 2 -->
+    <div class="info-card">
+        <span>DATE OF BIRTH</span>
+        <h3>{{ staff.date_of_birth }}</h3>
+    </div>
+
+    <div class="info-card">
+        <span>JOINING DATE</span>
+        <h3>{{ staff.date_of_joining }}</h3>
+    </div>
+
+    <div class="info-card">
+        <span>EMAIL</span>
+        <h3>{{ staff.email }}</h3>
+    </div>
+
+    <!-- Last Row -->
+    <div class="info-card">
+        <span>PERFORMANCE</span>
+        <h3>{{ staff.performance_rating }}/5</h3>
     </div>
 
 </div>
+
+</div>
+{% endif %}
+
+<!-- ======== Admin Profile page ======= -->
+{% if staff.role.role_name == "Admin" %}
+<div class="over-add-profile-card">
+
+    <!-- LEFT SIDE -->
+    <div class="over-add-profile-left">
+
+        <div class="over-add-profile-image">
+
+            {% if staff.profile_photo %}
+                <img src="{{ staff.profile_photo.url }}" alt="Profile Image">
+            {% else %}
+                <img src="https://th.bing.com/th/id/OIP.dDKYQqVBsG1tIt2uJzEJHwHaHa?w=180&h=180&c=7&r=0&o=7&dpr=1.5&pid=1.7&rm=3" alt="Default Image">
+            {% endif %}
+
+            {% if staff.status == 'active' %}
+                <div class="over-online"></div>
+            {% else %}
+                <div class="over-offline"></div>
+            {% endif %}
+
+        </div>
+
+        <div class="over-add-profile-details">
+
+            <h1 class="over-add-name">
+                {{ staff.first_name }} {{ staff.last_name }}
+            </h1>
+
+            <div class="over-badges">
+
+                <div class="over-badge over-badge-blue">
+                    {{ staff.department }}
+                </div>
+
+                <div class="over-badge status-{{ staff.status }}">
+                    {{ staff.get_status_display }}
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+    <!-- RIGHT SIDE -->
+    <div class="over-add-info-grid">
+
+    <!-- Row 1 -->
+    <div class="info-card">
+        <span>EMPLOYEE ID</span>
+        <h3>{{ staff.employee_id }}</h3>
+    </div>
+
+    <div class="info-card">
+        <span>ROLE</span>
+        <h3>{{ staff.role }}</h3>
+    </div>
+
+    <div class="info-card">
+        <span>PHONE</span>
+        <h3>{{ staff.phone }}</h3>
+    </div>
+
+    <!-- Row 2 -->
+    <div class="info-card">
+        <span>DATE OF BIRTH</span>
+        <h3>{{ staff.date_of_birth }}</h3>
+    </div>
+
+    <div class="info-card">
+        <span>JOINING DATE</span>
+        <h3>{{ staff.date_of_joining }}</h3>
+    </div>
+
+    <div class="info-card">
+        <span>EMAIL</span>
+        <h3>{{ staff.email }}</h3>
+    </div>
+
+    <!-- Last Row -->
+    <div class="info-card">
+        <span>PERFORMANCE</span>
+        <h3>{{ staff.performance_rating }}/5</h3>
+    </div>
+
+</div>
+
+</div>
+{% endif %}
+
 <!-- ===== KPI CARDS ===== -->
 <div class="over-cards">
 
+
+{% if staff.role.role_name == "BDE" or staff.role.role_name == "Telecall" or staff.role.role_name == "Sales Exec" %}
 <div class="over-card">
 <div class="over-card-icon blue"><i class="fa fa-users"></i></div>
 <h3>Assigned Leads</h3>
@@ -143,13 +268,18 @@
 <h3>Pending Leads</h3>
 <h2>{{ pending_leads }}</h2>
 </div>
+{% endif %}
 
+{% if staff.role.role_name == "BDE" or staff.role.role_name == "Telecall" or staff.role.role_name == "Sales Exec" or staff.role.role_name == "Manager" or staff.role.role_name == "Digital Marketing" or staff.role.role_name == "Content Creator" %}
 <div class="over-card">
 <div class="over-card-icon purple"><i class="fa fa-indian-rupee-sign"></i></div>
 <h3>Revenue</h3>
 <h2>₹{{ total_revenue }}</h2>
 </div>
+{% endif %}
 
+
+{% if staff.role.role_name == "BDE" or staff.role.role_name == "Telecall" or staff.role.role_name == "Sales Exec" or staff.role.role_name == "Manager" or staff.role.role_name == "Digital Marketing" or staff.role.role_name == "Content Creator" %}
 <div class="over-card">
 <div class="over-card-icon cyan"><i class="fa fa-calendar"></i></div>
 <h3>Present Today</h3>
@@ -167,12 +297,39 @@ No
 <h3>Rating</h3>
 <h2>{{ staff.performance_rating }}/5</h2>
 </div>
+{% endif %}
 
+<!-- HR,TRainer,Developer KPI -->
+ 
+ {% if staff.role.role_name == "HR" or staff.role.role_name == "Trainer" or staff.role.role_name == "Developer" %}
+
+ <div class="over-cards-htd">
+<div class="over-card-htd">
+<div class="over-card-icon-htd cyan"><i class="fa fa-calendar"></i></div>
+<h3>Present Today</h3>
+<h2>
+{% if today_status == "Present" or today_status == "Late" %}
+Yes
+{% else %}
+No
+{% endif %}
+</h2>
+</div>
+
+<div class="over-card-htd">
+<div class="over-card-icon-htd red"><i class="fa fa-star"></i></div>
+<h3>Rating</h3>
+<h2>{{ staff.performance_rating }}/5</h2>
+</div>
+{% endif %}
+ </div>
 </div>
 
 <!-- ===== MAIN GRID ===== -->
 <div class="over-main-grid">
 
+
+{% if staff.role.role_name == "BDE" or staff.role.role_name == "Telecall" or staff.role.role_name == "Sales Exec" or staff.role.role_name == "Manager" or staff.role.role_name == "Digital Marketing" or staff.role.role_name == "Content Creator" %}
 <!-- PERFORMANCE GRAPH -->
 <div class="over-chart">
 
@@ -277,8 +434,11 @@ style="width:{{ progress_percentage }}%;">
 </div>
 
 </div>
+{% endif %}
 
 <!-- ================= ATTENDANCE =============== -->
+
+{% if staff.role.role_name == "BDE" or staff.role.role_name == "Telecall" or staff.role.role_name == "Sales Exec" or staff.role.role_name == "Manager" or staff.role.role_name == "Digital Marketing" or staff.role.role_name == "Content Creator" %}
 <div class="over-box-attendance">
 
     <h2 class="over-box-attendance-title">
@@ -332,11 +492,69 @@ style="width:{{ progress_percentage }}%;">
     {% endif %}
 
 </div>
+{% endif %}
+
+<!-- ============ Attendance page 2 ============-->
+ {% if staff.role.role_name == "HR" or staff.role.role_name == "Trainer" or staff.role.role_name == "Developer" %}
+ <div class="over-box-attendance-att">
+
+    <h2 class="over-box-attendance-title">
+        Attendance Overview
+
+    <span class="status-badge-over
+        {% if today_status == 'Present' %} present-badge-over
+        {% elif today_status == 'Absent' %} absent-badge-over
+        {% elif today_status == 'Leave' %} leave-badge-over
+        {% elif today_status == 'Late' %} late-badge-over
+        {% endif %}">
+       {{ today_status }}
+    </span>
+    </h2>
+
+    {% if today_attendance %}
+
+    <div class="over-attendance-grid">
+
+        <div class="over-attendance-item">
+            <p>Login</p>
+            <h3>{% if today_attendance %}
+                {{ today_attendance.log_in|time:"h:i A" }}
+            {% else %}
+                --
+            {% endif %}</h3>
+        </div>
+
+        <div class="over-attendance-item">
+            <p>Logout</p>
+            <h3>{% if today_attendance %}
+                {{ today_attendance.log_out|time:"h:i A" }}
+            {% else %}
+                --
+            {% endif %}</h3>
+        </div>
+        </div>
+
+        <div class="over-attendance-item2">
+            <p>Working Hours</p>
+            
+            <h3>{% if today_attendance %}
+                {{ today_attendance.total_hours }}
+            {% else %}
+                --
+            {% endif %}</h3>
+        </div>
+
+    {% else %}
+        <p class="over-no-attendance">No attendance today</p>
+    {% endif %}
+
+</div>
+{% endif %}
 </div>
 
 <!--==================== Recent Lead ==========================-->
 
-{% if staff.department.dept_name == "sales" or staff.department.dept_name == "telecall" %}
+{% if staff.role.role_name == "BDE" or staff.role.role_name == "Telecall" or staff.role.role_name == "Sales Exec" %}
 <div class="over-box-recent">
 
 <h2>Recent Leads</h2>
@@ -369,7 +587,7 @@ style="width:{{ progress_percentage }}%;">
 
 <!--==================== Meeting & Class Schedule ==========================-->
 
-{% if staff.department.dept_name == "trainers" %}
+{% if staff.role.role_name == "Trainer" %}
 <div class="over-box-trainers">
 
     <h2>Meeting & Class Schedule</h2>

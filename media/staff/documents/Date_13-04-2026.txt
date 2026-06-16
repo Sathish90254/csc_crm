@@ -1,0 +1,3 @@
+Date: 13-04-2026,
+Error: No module name leads,
+Reason: Because of path, In apps.py -> name = leads so we need to change it's path-> csc_crm.apps.leads and then we put inside the installed apps of the settings.py 

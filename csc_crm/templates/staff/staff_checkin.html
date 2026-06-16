@@ -282,7 +282,22 @@ button:disabled {
     filter: grayscale(100%);
 }
 
+.back-btn{
+    display:inline-block;
+    margin-bottom:15px;
+    padding:10px 16px;
+    background:#043297;
+    color:white;
+    text-decoration:none;
+    border-radius:8px;
+    font-weight:600;
+    transition:0.3s;
+}
 
+.back-btn:hover{
+    background:#ecec14;
+    color:rgb(23, 6, 150);
+}
 </style>
 
 </head>
@@ -298,10 +313,12 @@ button:disabled {
 {% endif %}
 <div class="container">
 
-    <h1 class="title">
-        Staff Attendance
-    </h1>
+   
+    <div class="title-header">
+    <a href="{% url 'attendance' staff.id %}" class="back-btn"> ← Back</a>
 
+    <h1 class="title">Staff Attendance</h1>
+    </div>
     
 
     <form method="POST">
@@ -361,6 +378,7 @@ button:disabled {
                 value="checkout"
                 class="checkout-btn"
                 {% if not is_checkin_done or is_checkout_done or is_leave_or_absent or is_checkout_closed %}disabled{% endif %} >
+                
                 Check-Out
 
             </button>

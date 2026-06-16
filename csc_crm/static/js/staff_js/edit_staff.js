@@ -7,6 +7,8 @@ function isFormValid() {
 
     const dobError = document.getElementById('dateOfBirthError').textContent;
 
+    const dojError = document.getElementById('dateOfJoiningError').textContent;
+
     const phoneError = document.getElementById('phoneError').textContent;
 
     const emailError = document.getElementById('emailError').textContent;
@@ -17,6 +19,10 @@ function isFormValid() {
 
     if (dobError !== '') {
         return false;
+    }
+
+    if (dojError !== '') {
+    return false;
     }
 
     if (phoneError !== '') {
@@ -302,112 +308,115 @@ document.addEventListener('DOMContentLoaded', ()=>{
 
 });
 
-// =========================== DATE OF JOINING VALIDATION ==================================
-
-document.addEventListener('DOMContentLoaded', () => {
-
-    const dateOfJoiningInput = document.getElementById('dateOfJoiningInput');
-    const dateOfJoiningError = document.getElementById('dateOfJoiningError');
-
-    function validateDOJ() {
-        if (!dateOfJoiningInput.value) {
-            dateOfJoiningError.textContent = "Date of Joining is required";
-            dateOfJoiningInput.classList.add("error-input");
-        } else {
-            dateOfJoiningError.textContent = "";
-            dateOfJoiningInput.classList.remove("error-input");
-        }
-    }
-
-    validateDOJ();
-
-    dateOfJoiningInput.addEventListener("change", validateDOJ);
-});
-
-// ======================== DATE OF BIRTH VALIDATION ============================
+// ======================== DOB + DOJ VALIDATION ============================
 
 document.addEventListener('DOMContentLoaded', () => {
 
     const form = document.getElementById('staffMgmtForm');
+
     const dateOfBirthInput = document.getElementById('dateOfBirthInput');
+    const dateOfJoiningInput = document.getElementById('dateOfJoiningInput');
+
     const dateOfBirthError = document.getElementById('dateOfBirthError');
+    const dateOfJoiningError = document.getElementById('dateOfJoiningError');
 
-    const originalDob = dateOfBirthInput.value;
+    if (!form || !dateOfBirthInput || !dateOfJoiningInput) return;
 
-    const today = new Date().toISOString().split('T')[0];
-    dateOfBirthInput.setAttribute('max', today);
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
 
-    function validateDOB() {
+    dateOfBirthInput.setAttribute('max', today.toISOString().split('T')[0]);
 
-        if (!dateOfBirthInput.value) {
+    function calculateAgeOnJoining(dob, doj) {
+        let age = doj.getFullYear() - dob.getFullYear();
 
-            dateOfBirthError.textContent = '';
-            dateOfBirthInput.classList.remove('error-input');
-
-            if (typeof checkChanges === 'function') {
-                checkChanges();
-            }
-
-            return true;
-        }
-
-        const dob = new Date(dateOfBirthInput.value);
-        const currentDate = new Date();
-
-        if (dob > currentDate) {
-            dateOfBirthError.textContent = 'Date of birth cannot be in the future';
-            dateOfBirthInput.classList.add('error-input');
-
-            if (typeof checkChanges === 'function') {
-                checkChanges();
-            }
-
-            return false;
-        }
-
-        let age = currentDate.getFullYear() - dob.getFullYear();
-
-        const monthDiff = currentDate.getMonth() - dob.getMonth();
+        const monthDiff = doj.getMonth() - dob.getMonth();
 
         if (
             monthDiff < 0 ||
-            (monthDiff === 0 && currentDate.getDate() < dob.getDate())
+            (monthDiff === 0 && doj.getDate() < dob.getDate())
         ) {
             age--;
         }
 
-        if (age < 18) {
-            dateOfBirthError.textContent = 'Employee must be at least 18 years old';
-            dateOfBirthInput.classList.add('error-input');
+        return age;
+    }
 
-            if (typeof checkChanges === 'function') {
-                checkChanges();
-            }
+    function validateDOBAndDOJ() {
 
-            return false;
-        }
+        let isValid = true;
 
         dateOfBirthError.textContent = '';
+        dateOfJoiningError.textContent = '';
+
         dateOfBirthInput.classList.remove('error-input');
+        dateOfJoiningInput.classList.remove('error-input');
+
+        const dobValue = dateOfBirthInput.value;
+        const dojValue = dateOfJoiningInput.value;
+
+        const dob = dobValue ? new Date(dobValue) : null;
+        const doj = dojValue ? new Date(dojValue) : null;
+
+        if (!dojValue) {
+            dateOfJoiningError.textContent = 'Date of Joining is required';
+            dateOfJoiningInput.classList.add('error-input');
+            isValid = false;
+        }
+
+        if (dob && dob > today) {
+            dateOfBirthError.textContent = 'Date of birth cannot be in the future';
+            dateOfBirthInput.classList.add('error-input');
+            isValid = false;
+        }
+
+        if (dob && doj) {
+
+            if (dob > doj) {
+                dateOfBirthError.textContent =
+                    'Date of birth cannot be after date of joining';
+
+                dateOfBirthInput.classList.add('error-input');
+                dateOfJoiningInput.classList.add('error-input');
+
+                isValid = false;
+            } else {
+                const ageOnJoining = calculateAgeOnJoining(dob, doj);
+
+                if (ageOnJoining < 18) {
+                    dateOfJoiningError.textContent =
+                        'Employee must be at least 18 years old on date of joining';
+
+                    dateOfBirthInput.classList.add('error-input');
+                    dateOfJoiningInput.classList.add('error-input');
+
+                    isValid = false;
+                }
+            }
+        }
 
         if (typeof checkChanges === 'function') {
             checkChanges();
         }
 
-        return true;
+        return isValid;
     }
 
-    dateOfBirthInput.addEventListener('change', validateDOB);
-    dateOfBirthInput.addEventListener('input', validateDOB);
+    dateOfBirthInput.addEventListener('change', validateDOBAndDOJ);
+    dateOfBirthInput.addEventListener('input', validateDOBAndDOJ);
+
+    dateOfJoiningInput.addEventListener('change', validateDOBAndDOJ);
+    dateOfJoiningInput.addEventListener('input', validateDOBAndDOJ);
+
+    validateDOBAndDOJ();
 
     form.addEventListener('submit', (e) => {
-        if (!validateDOB()) {
+        if (!validateDOBAndDOJ()) {
             e.preventDefault();
         }
     });
 
 });
-
 // ============================== DEPARTMENT & ROLE AUTOMATICALLY SELECTED ==============================
 
 document.addEventListener('DOMContentLoaded', () => {

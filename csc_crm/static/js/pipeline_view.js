@@ -173,3 +173,32 @@ document.addEventListener("DOMContentLoaded", function () {
     updateExportUrl();
 
 });
+
+
+// Pagination
+
+document.addEventListener("click", function(e){
+
+    const link = e.target.closest(".ajax-page");
+
+    if(!link) return;
+
+    e.preventDefault();
+
+    fetch(link.href,{
+        headers:{
+            "X-Requested-With":"XMLHttpRequest"
+        }
+    })
+    .then(res => res.text())
+    .then(html => {
+
+        const parser = new DOMParser();
+        const doc = parser.parseFromString(html,"text/html");
+
+        document.getElementById("pipelineData").innerHTML =
+            doc.getElementById("pipelineData").innerHTML;
+
+        history.replaceState(null,"",link.href);
+    });
+});

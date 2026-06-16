@@ -26,7 +26,7 @@
             {% for staff in staffs %}
             <option value="{{ staff.id }}"
                 {% if assigned_to == staff.id|stringformat:"s" %}selected{% endif %}>
-                {{ staff.username }}
+                {{ staff.user.username|default:staff }}
             </option>
             {% endfor %}
         </select>
@@ -334,7 +334,7 @@
              <div class="content-card-pipe">
 
             <div class="card-header">
-               <h2 class="all-card-title-pipe">All Leads</h2>
+               <h2 class="all-card-title-pipe">All Leads <strong>({{ total_leads }})</strong></h2>
             </div>
 
             <div class="table-wrapper-pipe">
@@ -382,6 +382,45 @@
              </div>
         
        </section>
+
+          <!-- Pagination  -->
+
+        <!-- Pagination -->
+{% if leads.has_other_pages %}
+<div class="pagination-wrapper">
+    <div class="pagination">
+
+        {% if leads.has_previous %}
+            <a href="?page=1&search={{ search_query }}&assigned_to={{ assigned_to }}"
+               class="pagination-link ajax-page">
+                First
+            </a>
+
+            <a href="?page={{ leads.previous_page_number }}&search={{ search_query }}&assigned_to={{ assigned_to }}"
+               class="pagination-link ajax-page">
+                Previous
+            </a>
+        {% endif %}
+
+        <span class="pagination-info">
+            Page {{ leads.number }} of {{ leads.paginator.num_pages }}
+        </span>
+
+        {% if leads.has_next %}
+            <a href="?page={{ leads.next_page_number }}&search={{ search_query }}&assigned_to={{ assigned_to }}"
+               class="pagination-link ajax-page">
+                Next
+            </a>
+
+            <a href="?page={{ leads.paginator.num_pages }}&search={{ search_query }}&assigned_to={{ assigned_to }}"
+               class="pagination-link ajax-page">
+                Last
+            </a>
+        {% endif %}
+
+    </div>
+</div>
+{% endif %}
         {% else %}
 
         <div class="no-search-results">

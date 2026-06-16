@@ -286,6 +286,7 @@ body{
     padding: 10px;
     scroll-behavior:smooth;
     width: 100%;
+    margin-bottom: 20px;
 }
 
 /* WRAPPER */
@@ -562,6 +563,54 @@ body{
     margin-top: 20px;
 }
 
+/* ===== PAGINATION ===== */
+
+.pagination-wrapper{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin: 25px 0;
+    width: 100%;
+}
+
+.pagination{
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    flex-wrap: wrap;
+}
+
+.pagination-link{
+    padding: 10px 16px;
+    background: var(--primary);
+    color: #ffffff;
+    text-decoration: none;
+    border-radius: 8px;
+    font-size: 14px;
+    font-weight: 600;
+    transition: all 0.3s ease;
+    border: none;
+}
+
+.pagination-link:hover{
+    background: #0f2a73;
+}
+
+.pagination-info{
+    padding: 10px 16px;
+    background: #f8fafc;
+    color: #374151;
+    border: 1px solid #e5e7eb;
+    border-radius: 8px;
+    font-size: 14px;
+    font-weight: 600;
+    white-space: nowrap;
+}
+
+/* Active Page Style (optional) */
+.pagination-link.active{
+    background: #111827;
+}
 /* =========================================
    RESPONSIVE DESIGN
 ========================================= */
@@ -663,6 +712,48 @@ body{
         overflow-x:auto;
     }
 
+     .funnel-summary{
+        padding:15px;
+    }
+
+    .summary-title{
+        font-size:14px;
+        text-align:center;
+        margin-bottom:15px;
+    }
+
+    .funnel-container{
+        display:grid;
+        grid-template-columns:1fr 1fr;
+        gap:12px;
+        overflow-x:hidden;
+    }
+
+    .funnel-item{
+        min-width:auto;
+        width:100%;
+        background:#f8f9fc;
+        padding:10px;
+        border-radius:10px;
+    }
+
+    .funnel-label{
+        flex-direction:column;
+        gap:4px;
+        align-items:flex-start;
+    }
+
+    .funnel-status,
+    .funnel-count,
+    .funnel-percentage{
+        font-size:12px;
+    }
+
+    .funnel-total{
+        margin-top:15px;
+        text-align:center;
+    }
+
     .kanban-container{
         overflow-x:auto;
     }
@@ -694,6 +785,24 @@ body{
         font-size:11px;
         padding:5px 8px;
     }
+
+     .pagination{
+        justify-content: center;
+        gap: 8px;
+    }
+
+    .pagination-link{
+        padding: 8px 12px;
+        font-size: 13px;
+    }
+
+    .pagination-info{
+        width: 100%;
+        text-align: center;
+        font-size: 13px;
+        padding: 8px 12px;
+        order: -1;
+    }
 }
 
 /* SMALL MOBILE */
@@ -722,6 +831,31 @@ body{
 
     .status-number{
         font-size:26px;
+    }
+
+     .funnel-container{
+        grid-template-columns:1fr;
+        gap:10px;
+    }
+
+    .funnel-item{
+        padding:12px;
+    }
+
+    .summary-title{
+        font-size:13px;
+    }
+
+    .funnel-label{
+        font-size:11px;
+    }
+
+    .funnel-bar{
+        height:8px;
+    }
+
+    .funnel-total p{
+        font-size:13px;
     }
 
     .kanban-column{
@@ -758,5 +892,15 @@ body{
     .btn-edit{
         font-size:10px;
         padding:4px 6px;
+    }
+
+     .pagination{
+        width: 100%;
+    }
+
+    .pagination-link{
+        flex: 1;
+        text-align: center;
+        min-width: 80px;
     }
 }

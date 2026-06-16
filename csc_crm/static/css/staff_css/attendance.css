@@ -15,6 +15,23 @@ body{
 }
 
 
+.heading-section{
+    margin-bottom:30px;
+    background-color:#050580;
+    padding:15px 20px;
+    border-radius:10px;
+    color:white;
+
+    display:flex;
+    align-items:center;
+    gap:20px;
+}
+
+.heading-section h1{
+    font-size:30px;
+    font-weight:bold;
+    margin:0;
+}
 
 /* MAIN CONTAINER */
 
@@ -22,26 +39,12 @@ body{
     width:100%;
 }
 
-
+.staff-checkin-btn{
+    margin-left:auto;
+}
 
 /* HEADING */
 
-.heading-section{
-   margin-bottom:30px;
-    background-color:rgb(4, 4, 109);
-    padding:15px 20px;
-    border-radius:10px;
-    color:white;
-
-    display:flex;
-    justify-content:space-between;
-    align-items:center;
-}
-
-.heading-section h1{
-    font-size:30px;
-    font-weight:bold;
-}
 
 .history-header{
     display: flex;
@@ -606,7 +609,56 @@ body{
 
 
 @media(max-width:768px){
+ 
 
+.heading-section{
+        flex-direction:column;
+        gap:15px;
+        text-align:center;
+    }
+
+    .heading-section h1{
+        font-size:24px;
+    }
+
+    .staff-sidebar{
+        width:260px;
+    }
+
+    .menu-btn,
+    .staff-checkin-btn{
+        width:100%;
+    }
+
+.att-over-profile-card{
+    grid-template-columns:1fr;
+    text-align:center;
+    gap:20px;
+}
+
+.att-over-profile-image{
+    width:120px;
+    margin:0 auto;
+}
+
+.att-over-badges{
+    justify-content:center;
+}
+
+.att-over-info{
+    text-align:center;
+}
+
+.history-header{
+    flex-direction:column;
+    gap:15px;
+    text-align:center;
+}
+
+.history-header .attendance-submit{
+    width:100%;
+    max-width:250px;
+}
     .top-cards{
         grid-template-columns:1fr;
     }
@@ -640,7 +692,28 @@ body{
 
 }
 
+@media(max-width:480px){
 
+    .att-over-profile-image img{
+        width:90px;
+        height:90px;
+    }
+
+    .att-over-name{
+        font-size:20px;
+    }
+
+    .att-over-info p{
+        font-size:13px;
+    }
+
+    .today-top{
+        flex-direction:column;
+        gap:10px;
+        text-align:center;
+    }
+
+}
 .success-message{
 
     background:#d4edda;
@@ -675,4 +748,181 @@ text-decoration:none;
 .staff-checkin-btn:hover{
     background:#15803d;
     transform:translateY(-2px);
+}
+
+/* ====================MENU BUTTON======================== */
+
+.menu-btn{
+    background:#FEF200;
+    color:#262170;
+    border:none;
+    padding:12px 18px;
+    border-radius:10px;
+    font-size:15px;
+    font-weight:700;
+    cursor:pointer;
+    transition:0.3s;
+}
+
+.menu-btn:hover{
+    background:rgb(249, 239, 102);
+    transform:translateY(-2px);
+}
+
+
+
+
+
+
+/* ===========================SIDEBAR======================== */
+
+.staff-sidebar{
+    position:fixed;
+    top:0;
+    left:-320px;
+
+    width:300px;
+    height:100vh;
+
+    background:#262170;
+
+    padding:25px 20px;
+
+    box-shadow:0 0 25px rgba(0,0,0,0.25);
+
+    transition:0.3s ease;
+
+    z-index:1001;
+
+    overflow-y:auto;
+}
+
+.staff-sidebar.active{
+    left:0;
+}
+
+
+/* ===========================CLOSE BUTTON======================== */
+
+.close-btn{
+    background:none;
+    border:none;
+    color:#ffffff;
+    font-size:28px;
+    cursor:pointer;
+    margin-bottom:25px;
+}
+
+
+/* ==========================SIDEBAR LINKS======================== */
+
+.staff-sidebar a{
+    display:block;
+
+    text-decoration:none;
+
+    color:white;
+
+    padding:14px 16px;
+
+    margin-bottom:12px;
+
+    border-radius:10px;
+
+    font-size:15px;
+
+    font-weight:600;
+
+    transition:0.3s;
+}
+
+.staff-sidebar a:hover{
+   background:rgba(255,255,255,0.12);
+    color:white;
+
+}
+
+
+/* =========================== ACTIVE LINK========================= */
+
+.sidebar-active{
+    background:#FEF200;
+    color:black !important;
+    font-weight:700;
+}
+
+.sidebar-active:hover{
+    background: rgba(255,255,255,0.12) !important;
+    color:white !important;
+}
+/* =========================== EDIT BUTTON========================= */
+
+.edit-staff-btn{
+    margin-top:25px;
+
+    background:#FEF200;
+
+    color:black !important;
+
+    text-align:center;
+
+    font-weight:700;
+}
+
+.edit-staff-btn:hover{
+    background:#FEF200 !important;
+}
+
+
+/* =========================== OVERLAY======================== */
+
+.overlay{
+    position:fixed;
+
+    top:0;
+    left:0;
+
+    width:100%;
+    height:100%;
+
+    background:rgba(0,0,0,0.45);
+
+    backdrop-filter:blur(5px);
+
+    display:none;
+
+    z-index:1000;
+}
+
+.overlay.active{
+    display:block;
+}
+
+
+.staff-checkout-btn{
+    background:#dc2626;
+    color:white;
+    text-decoration:none;
+    padding:10px 18px;
+    border-radius:8px;
+    font-weight:600;
+     margin-left:auto;
+}
+
+.staff-checkout-btn:hover{
+    background:#b91c1c;
+}
+
+
+
+.staff-disabled-btn{
+    background:#9ca3af;
+    color:white;
+    text-decoration:none;
+    padding:10px 18px;
+    border-radius:8px;
+    font-weight:600;
+    cursor:not-allowed;
+    pointer-events:none;
+     margin-left:auto;
 }

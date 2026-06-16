@@ -24,14 +24,64 @@
 
 
     <!-- HEADING -->
+   <div class="heading-section">
 
-    <div class="heading-section">
-        <h1>Attendance</h1>
+    <button id="menuToggle" class="menu-btn">☰ </button>
 
-        <a class="staff-checkin-btn"  href="{% url 'staff_checkin' staff.id %}">Staff Check-In</a>
+    <h1>Attendance</h1>
+     
+{% if staff.status != 'terminated' %}
 
-    </div>
+    {% if today_attendance and today_attendance.status == 'Leave' %}
 
+        <a class="staff-disabled-btn">
+            On Leave
+        </a>
+
+    {% elif today_attendance and today_attendance.status == 'Absent' %}
+
+        <a class="staff-disabled-btn">
+            Absent
+        </a>
+
+    {% elif show_checkout %}
+
+        <a class="staff-checkout-btn"
+           href="{% url 'staff_checkin' staff.id %}">
+            Staff Check-Out
+        </a>
+
+    {% else %}
+
+        <a class="staff-checkin-btn"
+           href="{% url 'staff_checkin' staff.id %}">
+            Staff Check-In
+        </a>
+
+    {% endif %}
+
+{% endif %}
+</div>
+
+    <!-- Overlay -->
+<div class="overlay" id="overlay"></div>
+
+<!-- Sidebar -->
+<div class="staff-sidebar" id="staffSidebar">
+
+    <button class="close-btn" id="closeSidebar">  ✕</button>
+
+    <a href="{% url 'overview' staff.id %}">Overview</a>
+
+    <a href="{% url 'attendance' staff.id %}" class="sidebar-active">Attendance</a>
+
+    <a href="#">Documents</a>
+
+    <a href="#"> Activity Logs</a>
+
+    <a href="#" class="edit-staff-btn"> Edit Staff </a>
+
+</div>
 
     
 <!-- ===== PROFILE ===== -->

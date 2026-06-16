@@ -235,28 +235,47 @@ body.menu-open::before{
     z-index:1500;
 }
 
-/* ===== PROFILE  ===== */
+/* ===== PROFILE CARD ===== */
 
 .over-profile-card{
-    background: #ffffff;
-    padding: 20px 20px 20px 40px;
-    border-radius: 16px;
-    display: grid;
-    grid-template-columns: auto 1fr 1fr 1fr;
-    gap: 22px;
-    box-shadow: 0 10px 25px rgba(0,0,0,0.08);
-    margin-bottom: 20px;
-    transition: 0.3s ease;
-    border: 1px solid var(--secondary);
+    background:#f8f9fc;
+    border-radius:30px;
+    padding:15px 8px 8px 8px;
+    display:grid;
+    grid-template-columns:280px 1fr;
+    gap:35px;
+    align-items:start;
+    position:relative;
+    overflow:hidden;
+    box-shadow:0 12px 30px rgba(0,0,0,0.08);
+    border:1px solid #ececec;
+    margin-bottom:20px;
+}
+
+.over-profile-card::before{
+    content:"";
+    position:absolute;
+    top:0;
+    left:0;
+    width:100%;
+    height:8px;
+    background:linear-gradient(90deg,#ffd700,#d4af37,#1d2c5e);
 }
 
 
 /* Image */
+
+.over-profile-left{
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    text-align:center;
+    padding:0px 10px 10px 10px;
+}
+
 .over-profile-image{
-    position: relative;
-    display: inline-block;
-    width:130px;
-    margin:auto auto auto 40px;
+    position:relative;
+    display:inline-block;
 }
 
 .over-profile-image img{
@@ -264,29 +283,29 @@ body.menu-open::before{
     height:130px;
     border-radius:50%;
     object-fit:cover;
-    border:1px solid #fff;
+    border:6px solid #fff;
     box-shadow:0 6px 18px rgba(0,0,0,0.12);
     transition:0.3s ease;
     display:block;
     margin:0 auto;
-
 }
 
 .over-profile-image img:hover{
     transform: scale(1.05);
 }
 
-/* ===== STATUS DOT ===== */
+/* ===== STATUS ===== */
+
 .over-online,
 .over-offline{
-    width:18px;
-    height:18px;
+    width:22px;
+    height:22px;
     border-radius:50%;
     position:absolute;
-    border:2px solid #fff;
-    box-shadow:0 3px 10px rgba(0,0,0,0.2);
-    top:10px;
-    right:10px;
+    top:8px;
+    right:12px;
+    border:3px solid #fff;
+    box-shadow:0 4px 10px rgba(0,0,0,0.2);
 }
 
 .over-online{
@@ -297,89 +316,200 @@ body.menu-open::before{
     background:#ef4444;
 }
 
-/* Name*/
-.over-name{
-    font-size:28px;
-    font-weight:700;
-    color:#111827;
-    margin-bottom:15px;
-    letter-spacing:0.9px;
-    margin-left: 50px;
-    margin-top: 5px;
+.over-profile-details{
+    margin-top:10px;
+    width:100%;
 }
 
-/* Badge*/
+.over-name{
+    font-size:23px;
+    font-weight:800;
+    color:#16224d;
+    margin-bottom:8px;
+    line-height:1.2;
+}
+
+/* ===== BADGES ===== */
+
 .over-badges{
     display:flex;
+    justify-content: center;
     gap:10px;
-    margin-bottom:10px;
     flex-wrap:wrap;
-    justify-content:flex-start;
-    align-items:center;
-    margin-left: 50px;
 }
 
 .over-badge{
-    padding:8px 20px;
-    border-radius:20px;
-    font-size:12px;
-    font-weight:600;
-    letter-spacing:0.3px;
-    white-space:nowrap;
-
+    padding:8px 15px;
+    border-radius:50px;
+    font-size:11px;
+    font-weight:700;
+    transition:.3s;
 }
+
 
 .over-badge-blue{
-    background:#dbeafe;
-    color:#2563eb;
+    background:#e0e7ff;
+    color:#1e3a8a;
 }
 
-/* Badge color */
 .status-active{
-    background-color: rgb(3, 175, 3);
-    color: white;
+    background:#dcfce7;
+    color:#15803d;
 }
 
 .status-inactive{
-    background:#a855f7;;
-    color: #f6f4f4;
+    background:#f3e8ff;
+    color:#9333ea;
 }
 
 .status-on_leave{
-    background:#f58a0f;
-    color:#faf9f6;
+    background:#ffedd5;
+    color:#ea580c;
 }
 
 .status-terminated{
-    background:#ff2807;
-    color: rgb(255, 255, 255);
+    background:#fee2e2;
+    color:#dc2626;
 }
 
-/* Info */
-.over-info p{
-    margin-bottom:6px;
-    font-size:14px;
-    color:#374151;
-    line-height:1.5;
-    margin-top: 10px;
+/* ===== INFO GRID ===== */
+
+.over-info-grid{
+    display:grid;
+    grid-template-columns:repeat(4,1fr);
+    gap:14px;
+    align-items:stretch;
+    padding-top: 30px;
 }
 
-.over-info p strong{
-    color:#111827;
+/* ===== INFO CARD ===== */
+
+.info-card{
+    background:#fff;
+    border:1px solid #e5e7eb;
+    border-radius:18px;
+    padding:10px;
+    min-height:60px;
+    display:flex;
+    flex-direction:column;
+    justify-content:center;
+    box-shadow:0 4px 12px rgba(0,0,0,0.05);
+    transition:.3s;
+    border-left:2px solid var(--secondary);
+
 }
 
-.over-info2 p{
-    margin-bottom:6px;
-    margin-left: -80px;
-    margin-top: 10px;
-    font-size:14px;
-    color:#374151;
-    line-height:1.5;
+.info-card:hover{
+    transform:translateY(-5px);
+    box-shadow:0 10px 20px rgba(0,0,0,0.08);
 }
 
-.over-info2 p strong{
-    color:#111827;
+.info-card span{
+    font-size:10px;
+    font-weight:700;
+    letter-spacing:1px;
+    color:#9ca3af;
+    margin-bottom:10px;
+    text-transform:uppercase;
 }
+
+.info-card h3{
+    font-size:13px;
+    font-weight:500;
+    color:#16224d;
+    margin:0;
+    line-height:1.4;
+    overflow-wrap:break-word;
+    word-break:break-word;
+}
+
+/* ================ Admin Page =================== */
+
+
+.over-add-profile-card{
+    background:#f8f9fc;
+    border-radius:30px;
+    padding:20px 10px 10px 10px;
+    display:grid;
+    grid-template-columns:280px 1fr;
+    gap:35px;
+    align-items:start;
+    position:relative;
+    overflow:hidden;
+    box-shadow:0 12px 30px rgba(0,0,0,0.08);
+    border:1px solid #ececec;
+    margin-bottom:20px;
+}
+
+.over-add-profile-card::before{
+    content:"";
+    position:absolute;
+    top:0;
+    left:0;
+    width:100%;
+    height:8px;
+    background:linear-gradient(90deg,#ffd700,#d4af37,#1d2c5e);
+}
+
+/* ===== LEFT SIDE ===== */
+
+.over-add-profile-left{
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    text-align:center;
+    padding:8px;
+}
+
+/* ===== PROFILE IMAGE ===== */
+
+.over-add-profile-image{
+    position:relative;
+    display:inline-block;
+}
+
+.over-add-profile-image img{
+    width:140px;
+    height:140px;
+    border-radius:50%;
+    object-fit:cover;
+    border:4px solid #fff;
+    box-shadow:0 6px 18px rgba(0,0,0,0.12);
+    transition:0.3s ease;
+    display:block;
+}
+
+.over-add-profile-image img:hover{
+    transform:scale(1.05);
+}
+
+
+
+/* ===== PROFILE DETAILS ===== */
+
+.over-add-profile-details{
+    margin-top:10px;
+    width:100%;
+}
+
+.over-add-name{
+    font-size:26px;
+    font-weight:700;
+    color:#16224d;
+    margin-bottom:15px;
+    line-height:1.2;
+}
+
+/* ===== ADMIN INFO GRID ===== */
+
+.over-add-info-grid{
+    display:grid;
+    grid-template-columns:repeat(3,1fr);
+    gap:15px;
+    padding-top: 20px;
+}
+
+
 /* ===== KPI CARDS ===== */
 
 .over-cards{
@@ -433,6 +563,54 @@ body.menu-open::before{
 .purple{background:#a855f7;}
 .cyan{background:#06b6d4;}
 .red{background:#ef4444;}
+
+/* ===== HR,Trainer,Developer KPI ======= */
+.over-cards-htd{
+    display:grid;
+    justify-content: space-around;
+    grid-template-columns:repeat(auto-fit, minmax(160px, 1fr));
+    gap:15px;
+    margin-bottom:10px;
+}
+
+.over-card-htd{
+    background:#fff;
+    padding:15px 15px;
+    border-radius:12px;
+    box-shadow:0 3px 8px rgba(0,0,0,0.06);
+    text-align:center;
+    border-top: 5px solid var(--secondary);
+    cursor: pointer;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    will-change: transform;
+}
+
+.over-card-htd:hover{
+    transform: translateY(-10px);
+    box-shadow: 0 10px 20px rgba(0,0,0,0.12);
+}
+
+.over-card-htd h3{
+    font-size:16px;
+    margin:5px 0;
+    color:#6b7280;
+}
+
+.over-card-htd h2{
+    font-size:20px;
+}
+
+.over-card-icon-htd{
+    width:70px;
+    height:70px;
+    border-radius:50%;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    margin:0 auto 20px auto;
+    color:#fff;
+}
+
 
 /* ===== CHART ===== */
 
@@ -660,6 +838,15 @@ body.menu-open::before{
     padding: 20px;
 }
 
+/* Attendance page 2 */
+
+.over-box-attendance-att {
+    background: #ffffff;
+    padding: 20px;
+    border-radius: 14px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+    grid-column: span 2;
+}
 
 /* ===== RECENT LEADS ===== */
 
@@ -812,7 +999,8 @@ body{
     }
 
     .over-cards{
-        grid-template-columns: repeat(2, 1fr);
+        grid-template-columns: 1fr !important;
+        gap: 12px;
     }
 }
 
@@ -829,6 +1017,13 @@ body{
         width: 100%;
     }
 
+    .header-left h1{
+        font-size: 14px;
+    }
+    .header-left p{
+        font-size: 8px;
+    }
+
     .over-header-buttons{
         width: 100%;
         display: flex;
@@ -842,6 +1037,7 @@ body{
         align-items: center;
         padding: 8px 14px;
         margin-top: -60px;
+    
     }
 
     .over-back-btn,
@@ -852,17 +1048,52 @@ body{
     }
 
     .over-profile-card{
-        grid-template-columns: 1fr;
+        grid-template-columns: 1fr !important;
         text-align: center;
+        padding: 15px;
+        gap: 15px;
+         width: 100%;
+        overflow: hidden;
+    }
+
+    .over-online,
+    .over-offline{
+        top: 5px;
     }
 
     .over-profile-image{
         margin: 0 auto;
+        display: flex;
+        justify-content: center;
+        
+    }
+
+    .over-profile-details{
+        padding: 0 !important;
+        border-right: none !important;
+    }
+
+    .over-name{
+        font-size: 20px;
+    }
+
+    .over-badges{
+        justify-content: center;
+        flex-wrap: wrap;
+        gap: 8px;
+    }
+    
+    .over-info-grid{
+        grid-template-columns: 1fr !important;
+        width: 100%;
+        gap: 10px;
     }
 
     .over-main-grid{
         grid-template-columns: 1fr;
     }
+
+
 
     .over-attendance-grid{
         grid-template-columns: 1fr;
@@ -881,6 +1112,25 @@ body{
         width: 260px;
         left: -300px;
     }
+
+    .over-add-profile-card{
+        width: 100% !important;
+        display: grid;
+        grid-template-columns: 1fr !important;
+    }
+
+    .over-add-info-grid{
+        display: grid !important;
+        grid-template-columns: 1fr !important;
+        width: 100% !important;
+        gap: 10px;
+    }
+
+    .over-add-info-grid .info-card{
+        width: 100% !important;
+        min-width: 0 !important;
+        box-sizing: border-box;
+    }
 }
 
 /* ===== SMALL MOBILE ===== */
@@ -896,7 +1146,7 @@ body{
     }
 
     .over-chart-area svg{
-        height: 200px;
+        height: 150px;
     }
 
     .over-attendance-item h3{

@@ -75,7 +75,7 @@ class Staff(models.Model):
     first_name = models.CharField(max_length=20)
     last_name = models.CharField(max_length=20)
     email = models.EmailField(unique=True, db_index=True)
-    phone = models.CharField(max_length=10, unique=True)
+    phone = models.CharField(max_length=13, unique=True)
 
     # Role & Department
     role = models.ForeignKey(StaffRole, on_delete=models.PROTECT, related_name='staff_members')
@@ -86,7 +86,7 @@ class Staff(models.Model):
     documents = models.FileField(upload_to='staff/documents/', blank=True, null=True)
 
     # Performance & Target
-    monthly_target = models.DecimalField(max_digits=12, decimal_places=2, default=0, validators=[MinValueValidator(0)])
+    monthly_target = models.DecimalField(max_digits=12, decimal_places=2, default=0, validators=[MinValueValidator(0)], blank=True, null=True)
     performance_rating = models.IntegerField(default=3, validators=[MinValueValidator(0), MaxValueValidator(5)], blank=True, null=True)
 
     # Status & Dates

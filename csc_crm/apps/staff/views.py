@@ -179,7 +179,8 @@ def add_staff(request):
             )
 
             return redirect('overview', staff_id=staff.id)
-
+        else:
+            print(form.errors)
     else:
         form = StaffForm(
             initial={
@@ -677,7 +678,15 @@ def attendance_page(request, id):
     today_attendance = Attendance.objects.filter(staff=staff,date=today ).first()
 
     today_status = today_attendance.status if today_attendance else 'Absent'
+    
+    show_checkout = False
 
+    if (
+       today_attendance and
+       today_attendance.log_in and
+       not today_attendance.log_out):
+
+       show_checkout = True
     # ================= HISTORY =================
     attendance_data = Attendance.objects.filter( staff=staff).order_by('-date')
 
@@ -719,13 +728,14 @@ def attendance_page(request, id):
         'attendance_percentage': attendance_percentage,
         'today_status': today_status,
         'today_attendance': today_attendance,
+        'show_checkout': show_checkout,
         'staff': staff,
     }
 
     return render(request, 'staff/attendance.html', context)
 
 
-#================ export atttendance btn ===============
+#================export atttendance btn===============
 
 def export_attendance(request, id):
 
@@ -759,7 +769,6 @@ def export_attendance(request, id):
     wb.save(response)
 
     return response
-
 #==================================================================staff-checkin page===============================================
 def staff_checkin(request, id):
 
@@ -833,12 +842,17 @@ def staff_checkin(request, id):
 
                 attendance.log_out = current_time
 
+                worked_time = attendance.log_out - attendance.log_in
+
+                worked_hours = worked_time.total_seconds() / 3600
+
+                if worked_hours < 4:
+
+                    attendance.status = 'Absent'
+
                 attendance.save()
 
-                messages.success(
-                request,
-                "Check-Out completed successfully.")
-
+                messages.success(request,"Check-Out completed successfully.")
         # -------- LEAVE --------
         elif action == 'leave':
             attendance.status = 'Leave'
@@ -875,5 +889,105 @@ def staff_checkin(request, id):
         'is_checkout_closed': is_checkout_closed,
     })
 
-
 #======================================== DOCUMENT =========================================
+# ================================ DOCUMENT VIEWS ================================
+
+def _detect_document_type(filename):
+    """Auto-detect document type from filename keywords."""
+    import os
+    name = os.path.splitext(filename)[0].lower()
+    if any(k in name for k in ['aadhaar', 'aadhar', 'uid']):
+        return 'aadhaar', 'Aadhaar Card'
+    if any(k in name for k in ['pan', 'pancard']):
+        return 'pan', 'PAN Card'
+    if 'passport' in name:
+        return 'other', 'Passport'
+    if any(k in name for k in ['resume', 'cv']):
+        return 'resume', 'Resume'
+    if any(k in name for k in ['offer', 'appointment']):
+        return 'offer_letter', 'Offer Letter'
+    if any(k in name for k in ['certificate', 'cert', 'degree', 'diploma']):
+        return 'certificate', 'Certificate'
+    return 'other', os.path.splitext(filename)[0].replace('_', ' ').replace('-', ' ').title()
+
+
+def _ensure_legacy_document(staff):
+    """If staff has a legacy documents field file, create a StaffDocument entry for it."""
+    import os
+    if not staff.documents:
+        return
+    # Check if already imported
+    existing = StaffDocument.objects.filter(staff=staff, document=staff.documents.name)
+    if existing.exists():
+        return
+    filename = os.path.basename(staff.documents.name)
+    doc_type, doc_name = _detect_document_type(filename)
+    StaffDocument.objects.create(
+        staff=staff,
+        document_name=doc_name,
+        document_type=doc_type,
+        document=staff.documents.name,
+        status='pending',
+    )
+
+
+def staff_documents(request, staff_id):
+    """View documents for a specific staff member"""
+    staff = get_object_or_404(Staff, id=staff_id)
+
+    documents = StaffDocument.objects.filter(staff=staff).order_by('-uploaded_at')
+
+    if request.method == 'POST':
+        uploaded_file = request.FILES.get('file')
+
+        if uploaded_file:
+            StaffDocument.objects.create(
+                staff=staff,
+                document=uploaded_file
+            )
+
+            messages.success(request, f"Document '{uploaded_file.name}' uploaded successfully!")
+            return redirect('staff_documents', staff_id=staff.id)
+
+        else:
+            messages.error(request, 'Please select a file to upload.')
+
+    context = {
+        'staff': staff,
+        'documents': documents,
+        'total_count': documents.count(),
+    }
+
+    return render(request, 'staff/documents.html', context)
+
+def delete_document(request, doc_id):
+    """Delete a staff document"""
+    import os
+
+    doc = get_object_or_404(StaffDocument, id=doc_id)
+    staff_id = doc.staff.id
+
+    # Get file name before deleting
+    document_display_name = os.path.basename(doc.document.name) if doc.document else "Document"
+
+    if request.method == 'POST':
+        if doc.document:
+            doc.document.delete(save=False)
+
+        doc.delete()
+        messages.success(request, f"Document '{document_display_name}' deleted.")
+
+    return redirect('staff_documents', staff_id=staff_id)
+
+
+def update_document_status(request, doc_id):
+    """Update document verification status"""
+    doc = get_object_or_404(StaffDocument, id=doc_id)
+    if request.method == 'POST':
+        new_status = request.POST.get('status')
+        if new_status in ['pending', 'verified', 'rejected']:
+            doc.status = new_status
+            doc.save()
+            if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
+                return JsonResponse({'success': True, 'status': new_status})
+    return redirect('staff_documents', staff_id=doc.staff.id)
