@@ -26,7 +26,9 @@
     <!-- HEADING -->
    <div class="heading-section">
 
-    <button id="menuToggle" class="menu-btn">☰ </button>
+    <button class="att-nav-toggle" id="attnavToggle">
+            <i class="fas fa-bars"></i>
+        </button>
 
     <h1>Attendance</h1>
      
@@ -63,76 +65,122 @@
 {% endif %}
 </div>
 
-    <!-- Overlay -->
-<div class="overlay" id="overlay"></div>
 
-<!-- Sidebar -->
-<div class="staff-sidebar" id="staffSidebar">
 
-    <button class="close-btn" id="closeSidebar">  ✕</button>
+<!-- Hamburger -->
 
-    <a href="{% url 'overview' staff.id %}">Overview</a>
+<nav class="att-nav-tabs" id="attnavTabs">
 
-    <a href="{% url 'attendance' staff.id %}" class="sidebar-active">Attendance</a>
+    <a href="{% url 'overview' staff.id %}" class="att-nav-tab-link {% if request.resolver_match.url_name == 'overview' %}active-att-nav-tab{% endif %}">
+        Overview
+    </a>
 
-    <a href="#">Documents</a>
+    <a href="{% url 'attendance' staff.id %}"class="att-nav-tab-link {% if request.resolver_match.url_name == 'attendance' %} active-att-nav-tab{% endif %}">
+    Attendance
+    </a>
 
-    <a href="#"> Activity Logs</a>
+    <a href="{% url 'staff_documents' staff.id %}" class="att-nav-tab-link">
+        Documents
+    </a>
 
-    <a href="#" class="edit-staff-btn"> Edit Staff </a>
+    <a href="#" class="att-nav-tab-link">
+        Activity Logs
+    </a>
 
-</div>
+
+</nav>
 
     
 <!-- ===== PROFILE ===== -->
-<div class=" att-over-profile-card">
+{% if staff.role.role_name == "BDE" or staff.role.role_name == "Telecall" or staff.role.role_name == "Sales Exec" or staff.role.role_name == "Manager" or staff.role.role_name == "Digital Marketing" or staff.role.role_name == "Content Creator" or staff.role.role_name == "HR" or staff.role.role_name == "Trainer" or staff.role.role_name == "Developer" %}
+<div class="over-profile-card">
 
-<div class="att-over-profile-image">
+    <!-- LEFT SIDE -->
+    <div class="over-profile-left">
 
-<!-- PROFILE IMAGE -->
-{% if staff.profile_photo %}
-    <img src="{{ staff.profile_photo.url }}" alt="Profile Image">
-{% else %}
-    <img src="https://th.bing.com/th/id/OIP.dDKYQqVBsG1tIt2uJzEJHwHaHa?w=180&h=180&c=7&r=0&o=7&dpr=1.5&pid=1.7&rm=3" alt="Default Image">
+        <div class="over-profile-image">
+
+            {% if staff.profile_photo %}
+                <img src="{{ staff.profile_photo.url }}" alt="Profile Image">
+            {% else %}
+                <img src="https://th.bing.com/th/id/OIP.dDKYQqVBsG1tIt2uJzEJHwHaHa?w=180&h=180&c=7&r=0&o=7&dpr=1.5&pid=1.7&rm=3" alt="Default Image">
+            {% endif %}
+
+            {% if staff.status == 'active' %}
+                <div class="over-online"></div>
+            {% else %}
+                <div class="over-offline"></div>
+            {% endif %}
+
+        </div>
+
+        <div class="over-profile-details">
+
+            <h1 class="over-name">
+                {{ staff.first_name }} {{ staff.last_name }}
+            </h1>
+
+            <div class="over-badges">
+
+                <div class="over-badge over-badge-blue">
+                    {{ staff.department }}
+                </div>
+
+                <div class="over-badge status-{{ staff.status }}">
+                    {{ staff.get_status_display }}
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+    <!-- RIGHT SIDE -->
+    <div class="over-info-grid">
+
+    <!-- Row 1 -->
+    <div class="info-card">
+        <span>EMPLOYEE ID</span>
+        <h3>{{ staff.employee_id }}</h3>
+    </div>
+
+    <div class="info-card">
+        <span>ROLE</span>
+        <h3>{{ staff.role }}</h3>
+    </div>
+
+    <div class="info-card">
+        <span>PHONE</span>
+        <h3>{{ staff.phone }}</h3>
+    </div>
+
+    <!-- Row 2 -->
+    <div class="info-card">
+        <span>DATE OF BIRTH</span>
+        <h3>{{ staff.date_of_birth }}</h3>
+    </div>
+
+    <div class="info-card">
+        <span>JOINING DATE</span>
+        <h3>{{ staff.date_of_joining }}</h3>
+    </div>
+
+    <div class="info-card">
+        <span>EMAIL</span>
+        <h3>{{ staff.email }}</h3>
+    </div>
+
+    <!-- Last Row -->
+    <div class="info-card">
+        <span>PERFORMANCE</span>
+        <h3>{{ staff.performance_rating }}/5</h3>
+    </div>
+
+</div>
+
+</div>
 {% endif %}
-
-
-{% if staff.status == 'active' %}
-<div class="att-over-online"></div>
-{% else %}
-<div class="att-over-offline"></div>
-{% endif %}
-
-</div>
-
-<div>
-
-<h1 class=" att-over-name">{{ staff.first_name }} {{ staff.last_name }}</h1>
-
-<div class=" att-over-badges">
-<div class="att-over-badge over-badge-blue">{{ staff.department }}</div>
-<div class="att-over-badge status-{{ staff.status }}">{{ staff.get_status_display }}</div>
-</div>
-
-<div class=" att-over-info">
-<p><strong>EMP ID:</strong> {{ staff.employee_id }}</p>
-<p><strong>Role:</strong> {{ staff.role }}</p>
-<p><strong>Phone:</strong> {{ staff.phone }}</p>
-</div>
-
-</div>
-
-<div class=" att-over-info">
-<p><strong>Joining:</strong> {{ staff.date_of_joining }}</p>
-<p><strong>Email:</strong> {{ staff.email }}</p>
-
-<!-- <p><strong>Manager:</strong> {{ permission.permission.manager }}</p> -->
-
-<p><strong>Performance:</strong> {{ staff.performance_rating }}/5</p>
-<p><strong>Date Of Birth:</strong> {{ staff.date_of_birth }}</p>
-</div>
-
-</div>
 
 
 <div id="attendance-dashboard" >

@@ -32,6 +32,7 @@
     </div>
 
     <div class="over-header-buttons">
+        <a href="{% url 'edit_staff' staff.id %}" class="over-edit-btn">Edit</a>
         <a href="{% url 'staff_management' %}" class="over-back-btn">
             Back
         </a>
@@ -39,6 +40,7 @@
 
 </div>
 
+<!-- Navbar -->
 <nav class="nav-tabs" id="navTabs">
 
     <a href="#" class="nav-tab-link {% if request.resolver_match.url_name == 'overview' %}active-nav-tab{% endif %}">
@@ -49,7 +51,7 @@
         Attendance
     </a>
 
-    <a href="#" class="nav-tab-link">
+    <a href="{% url 'staff_documents' staff.id %}" class="nav-tab-link">
         Documents
     </a>
 
@@ -58,7 +60,6 @@
     </a>
 
     <div class="nav-header-right">
-        <a href="{% url 'edit_staff' staff.id %}" class="over-edit-btn">Edit</a>
         <a href="{% url 'staff_export' staff.id %}" class="over-export-btn">Export</a>
     </div>
 

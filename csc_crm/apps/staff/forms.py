@@ -50,8 +50,6 @@ class StaffForm(forms.ModelForm):
             'monthly_target': forms.TextInput(attrs={
                 'class' : 'form-control',
                 'placeholder' : '500000',
-                'step' : '0.01',
-                'min': '0',
                 'inputmode': 'decimal',
                 'autocomplete': 'off',
                 'id': 'monthlyTargetInput',
@@ -178,16 +176,23 @@ class StaffForm(forms.ModelForm):
         role_name = role_name.strip().lower().replace('_', ' ')
 
         if role_name in roles_need_monthly_target:
-            if monthly_target is None:
-                self.add_error(
-                    'monthly_target',
-                    'Monthly target is required for this role.'
-                )
-            elif monthly_target <= 0:
-                self.add_error(
-                    'monthly_target',
-                    'Monthly target must be greater than 0.'
-                )
+
+            # If Django already found an error in monthly_target,
+            # do not add another duplicate error.
+            if 'monthly_target' not in self.errors:
+
+                if monthly_target is None:
+                    self.add_error(
+                        'monthly_target',
+                        'Monthly target is required for this role.'
+                    )
+
+                elif monthly_target <= 0:
+                    self.add_error(
+                        'monthly_target',
+                        'Monthly target must be greater than 0.'
+                    )
+
         else:
             cleaned_data['monthly_target'] = None
 

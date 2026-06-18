@@ -342,8 +342,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
         function dobValidation (){
             if(dateOfBirthInput.value.trim() === ''){
-                dateOfBirthError.textContent = 'DOB is required.'
-                dateOfBirthInput.classList.add('error-input')
+                // dateOfBirthError.textContent = 'DOB is required.'
+                // dateOfBirthInput.classList.add('error-input')
                 return false
             }
             else{
@@ -398,10 +398,10 @@ document.addEventListener('DOMContentLoaded', () => {
 
     if (!form || !dateOfBirthInput || !dateOfJoiningInput) return;
 
-    const today = new Date();
-    today.setHours(0, 0, 0, 0);
+    const todayString = today.toISOString().split('T')[0];
 
-    dateOfBirthInput.setAttribute('max', today.toISOString().split('T')[0]);
+    dateOfBirthInput.setAttribute('max', todayString);
+    dateOfJoiningInput.setAttribute('max', todayString);
 
     function parseDate(value) {
         if (!value) return null;
@@ -487,6 +487,12 @@ document.addEventListener('DOMContentLoaded', () => {
 
         if (dateOfJoiningInput.value && !doj) {
             dateOfJoiningError.textContent = 'Invalid date of joining';
+            dateOfJoiningInput.classList.add('error-input');
+            isValid = false;
+        }
+
+        if (doj && doj > today) {
+            dateOfJoiningError.textContent = 'Date of joining cannot be in the future';
             dateOfJoiningInput.classList.add('error-input');
             isValid = false;
         }
@@ -905,21 +911,28 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     form.addEventListener('submit', (e) => {
-        if (!validateDocument()) {
-            e.preventDefault();
+    if (!validateDocument()) {
+        e.preventDefault();
+        e.stopImmediatePropagation();
 
-            documentInput.scrollIntoView({
-                behavior: 'smooth',
-                block: 'center'
-            });
-        }
-    });
+        documentInput.scrollIntoView({
+            behavior: 'smooth',
+            block: 'center'
+        });
+
+        documentInput.focus();
+        return false;
+    }
+}, true);
 
 });
 
 // ====================== SHOW / HIDE MONTHLY TARGET BASED ON ROLE ======================
 
 document.addEventListener('DOMContentLoaded', () => {
+
+    const MAX_MONTHLY_TARGET = 1000000;
+    const MAX_WHOLE_DIGITS = 8;
 
     const form = document.getElementById('staffMgmtForm');
     const roleInput = document.getElementById('roleInput');
@@ -1008,34 +1021,48 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
-    function validateMonthlyTarget() {
-        if (!isMonthlyTargetRequired()) {
-            clearMonthlyTargetError();
-            return true;
-        }
-
-        const value = monthlyTargetInput.value.trim();
-
-        if (value === '') {
-            showMonthlyTargetError('Monthly target is required.');
-            return false;
-        }
-
-        const target = Number(value);
-
-        if (Number.isNaN(target)) {
-            showMonthlyTargetError('Monthly target must be a valid number.');
-            return false;
-        }
-
-        if (target <= 0) {
-            showMonthlyTargetError('Monthly target must be greater than 0.');
-            return false;
-        }
-
+function validateMonthlyTarget() {
+    if (!isMonthlyTargetRequired()) {
         clearMonthlyTargetError();
         return true;
     }
+
+    const value = monthlyTargetInput.value.trim();
+
+    if (value === '') {
+        showMonthlyTargetError('Monthly target is required.');
+        return false;
+    }
+
+    const validAmountPattern = /^\d+(\.\d{1,2})?$/;
+
+    if (!validAmountPattern.test(value)) {
+        showMonthlyTargetError('Monthly target must contain only numbers.');
+        return false;
+    }
+
+    const [wholePart] = value.split('.');
+
+    if (wholePart.length > MAX_WHOLE_DIGITS) {
+        showMonthlyTargetError('Monthly target must not exceed ₹10,000,00.');
+        return false;
+    }
+
+    const target = Number(value);
+
+    if (target <= 0) {
+        showMonthlyTargetError('Monthly target must be greater than 0.');
+        return false;
+    }
+
+    if (target > MAX_MONTHLY_TARGET) {
+        showMonthlyTargetError('Monthly target must not exceed ₹99,999,999.99.');
+        return false;
+    }
+
+    clearMonthlyTargetError();
+    return true;
+}
 
     roleInput.addEventListener('change', () => {
         toggleMonthlyTarget();
@@ -1043,8 +1070,8 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     monthlyTargetInput.addEventListener('input', ()=>{
-        validateMonthlyTarget();
         sanitizeMonthlyTargetInput();
+        validateMonthlyTarget();
     });
     monthlyTargetInput.addEventListener('blur', validateMonthlyTarget);
 

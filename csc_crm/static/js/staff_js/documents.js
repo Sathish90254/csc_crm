@@ -107,3 +107,35 @@ document.addEventListener('DOMContentLoaded', () => {
         }, 3000);
     });
 });
+
+// ====================================== HAMBURGER MENU ===========================================
+
+document.addEventListener("DOMContentLoaded", function () {
+
+    const navToggle = document.getElementById("docnavToggle");
+    const navTabs = document.getElementById("docnavTabs");
+
+    if (!navToggle || !navTabs) return;
+
+    let isOpen = false;
+
+    navToggle.addEventListener("click", function (e) {
+        e.stopPropagation();
+
+        isOpen = !isOpen;
+
+        navTabs.classList.toggle("show", isOpen);
+        document.body.classList.toggle("menu-open", isOpen);
+    });
+
+    navTabs.addEventListener("click", function (e) {
+        e.stopPropagation();
+    });
+
+    document.addEventListener("click", function () {
+        isOpen = false;
+        navTabs.classList.remove("show");
+        document.body.classList.remove("menu-open");
+    });
+
+});

@@ -11,6 +11,11 @@
         <div>
             <h1><i class="fa fa-folder-open"></i> Document Vault</h1>
             <p>Upload, view and manage staff documents</p>
+            
+            <!-- Hamburger -->
+                 <button class="doc-nav-toggle" id="docnavToggle">
+                     <i class="fas fa-bars"></i>
+                 </button>
         </div>
 
         <div class="doc-header-buttons">
@@ -31,27 +36,120 @@
     </div>
     {% endif %}
 
-    <div class="doc-profile-strip">
-        <div class="doc-avatar">
+    <!-- Hamburger -->
+
+<nav class="doc-nav-tabs" id="docnavTabs">
+
+    <a href="{% url 'overview' staff.id %}" class="doc-nav-tab-link {% if request.resolver_match.url_name == 'overview' %}active-doc-nav-tab{% endif %}">
+        Overview
+    </a>
+
+    <a href="{% url 'attendance' staff.id %}"class="doc-nav-tab-link {% if request.resolver_match.url_name == 'attendance' %} active-doc-nav-tab{% endif %}">
+    Attendance
+    </a>
+
+    <a href="{% url 'staff_documents' staff.id %}" class="doc-nav-tab-link {% if request.resolver_match.url_name == 'staff_documents' %}active-doc-nav-tab{% endif %}">
+    Documents
+    </a>
+
+    <a href="#" class="doc-nav-tab-link">
+        Activity Logs
+    </a>
+
+
+</nav>
+
+    <!-- ===== PROFILE ===== -->
+{% if staff.role.role_name == "BDE" or staff.role.role_name == "Telecall" or staff.role.role_name == "Sales Exec" or staff.role.role_name == "Manager" or staff.role.role_name == "Digital Marketing" or staff.role.role_name == "Content Creator" or staff.role.role_name == "HR" or staff.role.role_name == "Trainer" or staff.role.role_name == "Developer" %}
+<div class="over-profile-card">
+
+    <!-- LEFT SIDE -->
+    <div class="over-profile-left">
+
+        <div class="over-profile-image">
+
             {% if staff.profile_photo %}
-                <img src="{{ staff.profile_photo.url }}" alt="{{ staff.first_name }}">
+                <img src="{{ staff.profile_photo.url }}" alt="Profile Image">
             {% else %}
-                {{ staff.get_initials }}
+                <img src="https://th.bing.com/th/id/OIP.dDKYQqVBsG1tIt2uJzEJHwHaHa?w=180&h=180&c=7&r=0&o=7&dpr=1.5&pid=1.7&rm=3" alt="Default Image">
             {% endif %}
+
+            {% if staff.status == 'active' %}
+                <div class="over-online"></div>
+            {% else %}
+                <div class="over-offline"></div>
+            {% endif %}
+
         </div>
 
-        <div class="doc-profile-info">
-            <h2>{{ staff.first_name }} {{ staff.last_name }}</h2>
-            <p>{{ staff.role }} &middot; {{ staff.employee_id }}</p>
+        <div class="over-profile-details">
 
-            <div class="doc-profile-badges">
-                <span class="doc-badge doc-badge-dept">{{ staff.department }}</span>
-                <span class="doc-badge doc-badge-{% if staff.status == 'active' %}active{% else %}inactive{% endif %}">
+            <h1 class="over-name">
+                {{ staff.first_name }} {{ staff.last_name }}
+            </h1>
+
+            <div class="over-badges">
+
+                <div class="over-badge over-badge-blue">
+                    {{ staff.department }}
+                </div>
+
+                <div class="over-badge status-{{ staff.status }}">
                     {{ staff.get_status_display }}
-                </span>
+                </div>
+
             </div>
+
         </div>
+
     </div>
+
+    <!-- RIGHT SIDE -->
+    <div class="over-info-grid">
+
+    <!-- Row 1 -->
+    <div class="info-card">
+        <span>EMPLOYEE ID</span>
+        <h3>{{ staff.employee_id }}</h3>
+    </div>
+
+    <div class="info-card">
+        <span>ROLE</span>
+        <h3>{{ staff.role }}</h3>
+    </div>
+
+    <div class="info-card">
+        <span>PHONE</span>
+        <h3>{{ staff.phone }}</h3>
+    </div>
+
+    <!-- Row 2 -->
+    <div class="info-card">
+        <span>DATE OF BIRTH</span>
+        <h3>{{ staff.date_of_birth }}</h3>
+    </div>
+
+    <div class="info-card">
+        <span>JOINING DATE</span>
+        <h3>{{ staff.date_of_joining }}</h3>
+    </div>
+
+    <div class="info-card">
+        <span>EMAIL</span>
+        <h3>{{ staff.email }}</h3>
+    </div>
+
+    <!-- Last Row -->
+    <div class="info-card">
+        <span>PERFORMANCE</span>
+        <h3>{{ staff.performance_rating }}/5</h3>
+    </div>
+
+</div>
+
+</div>
+{% endif %}
+
 
     <div class="doc-summary-grid">
         <div class="doc-summary-card">

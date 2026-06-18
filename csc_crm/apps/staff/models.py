@@ -86,7 +86,7 @@ class Staff(models.Model):
     documents = models.FileField(upload_to='staff/documents/', blank=True, null=True)
 
     # Performance & Target
-    monthly_target = models.DecimalField(max_digits=12, decimal_places=2, default=0, validators=[MinValueValidator(0)], blank=True, null=True)
+    monthly_target = models.DecimalField(max_digits=10, decimal_places=2, default=0, validators=[MinValueValidator(0)], blank=True, null=True)
     performance_rating = models.IntegerField(default=3, validators=[MinValueValidator(0), MaxValueValidator(5)], blank=True, null=True)
 
     # Status & Dates
