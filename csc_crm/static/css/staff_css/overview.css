@@ -142,9 +142,7 @@ a{
 }
 
 /*====== MAIN NAV =======*/
-.main-nav{
-    position:relative;
-}
+
 
 .nav-tabs{
      position: fixed;
@@ -214,12 +212,6 @@ a{
     min-height:42px;
 }
 
-
-.nav-header-right{
-   display:flex;
-    align-items:center;
-    gap:12px;
-}
 
 .over-export-btn:hover{
       background-color: orange;

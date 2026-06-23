@@ -398,7 +398,13 @@ document.addEventListener('DOMContentLoaded', () => {
 
     if (!form || !dateOfBirthInput || !dateOfJoiningInput) return;
 
-    const todayString = today.toISOString().split('T')[0];
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+
+    const todayString =
+        today.getFullYear() + '-' +
+        String(today.getMonth() + 1).padStart(2, '0') + '-' +
+        String(today.getDate()).padStart(2, '0');
 
     dateOfBirthInput.setAttribute('max', todayString);
     dateOfJoiningInput.setAttribute('max', todayString);
