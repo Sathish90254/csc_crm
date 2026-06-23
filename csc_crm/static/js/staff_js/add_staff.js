@@ -35,16 +35,31 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 });
     
-    // ===================== EMAIL VALIDATION =============================
+// ===================== EMAIL + PHONE VALIDATION =============================
 
 document.addEventListener('DOMContentLoaded', () => {
     const form = document.getElementById('staffMgmtForm');
+
     const emailInput = document.getElementById('emailInput');
     const emailError = document.getElementById('emailError');
 
-    let isSubmitting = false;
+    const phoneInput = document.getElementById('phoneInput');
+    const phoneError = document.getElementById('phoneError');
 
-    const allowDomainEndings = [
+    if (!form || !emailInput || !emailError || !phoneInput || !phoneError) {
+        console.log('Email / Phone validation elements missing:', {
+            form,
+            emailInput,
+            emailError,
+            phoneInput,
+            phoneError
+        });
+        return;
+    }
+
+    let allowFinalSubmit = false;
+
+    const allowedDomainEndings = [
         '.com',
         '.in',
         '.co.in',
@@ -56,47 +71,55 @@ document.addEventListener('DOMContentLoaded', () => {
         '.ac.in'
     ];
 
-    function showEmailError(message) {
-        emailError.textContent = message;
-        emailInput.classList.add('error-input');
+    function showError(input, errorElement, message) {
+        errorElement.textContent = message;
+        input.classList.add('error-input');
     }
 
-    function clearEmailError() {
-        emailError.textContent = '';
-        emailInput.classList.remove('error-input');
+    function clearError(input, errorElement) {
+        errorElement.textContent = '';
+        input.classList.remove('error-input');
     }
 
     function validateEmailFormat() {
         const email = emailInput.value.trim().toLowerCase();
 
         if (email === '') {
-            showEmailError('Email is required.');
+            showError(emailInput, emailError, 'Email is required.');
             return false;
         }
 
         const basicEmailPattern = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
 
         if (!basicEmailPattern.test(email)) {
-            showEmailError('Please enter a valid email address.');
+            showError(emailInput, emailError, 'Please enter a valid email address.');
             return false;
         }
 
         const domain = email.substring(email.lastIndexOf('@') + 1);
 
-        const isAllowedDomain = allowDomainEndings.some(ending => {
+        const isAllowedDomain = allowedDomainEndings.some(ending => {
             return domain.endsWith(ending);
         });
 
         if (!isAllowedDomain) {
-            showEmailError('Please enter an email with a valid domain like .com, .in, .co.in, .org, .net, .edu, or .ac.in.');
+            showError(
+                emailInput,
+                emailError,
+                'Please enter an email with a valid domain like .com, .in, .co.in, .org, .net, .edu, or .ac.in.'
+            );
             return false;
         }
 
-        clearEmailError();
+        clearError(emailInput, emailError);
         return true;
     }
 
     async function checkDuplicateEmail() {
+        if (!validateEmailFormat()) {
+            return false;
+        }
+
         const email = emailInput.value.trim();
 
         try {
@@ -104,117 +127,48 @@ document.addEventListener('DOMContentLoaded', () => {
             const data = await response.json();
 
             if (data.exists) {
-                showEmailError('This email already exists!');
+                showError(emailInput, emailError, 'This email already exists!');
                 return false;
             }
 
-            clearEmailError();
+            clearError(emailInput, emailError);
             return true;
 
         } catch (error) {
             console.log('Email check error:', error);
-            showEmailError('Unable to check email right now. Please try again.');
+            showError(emailInput, emailError, 'Unable to check email right now. Please try again.');
             return false;
         }
-    }
-
-    async function validateEmailFully() {
-        const isFormatValid = validateEmailFormat();
-
-        if (!isFormatValid) {
-            return false;
-        }
-
-        const isDuplicateValid = await checkDuplicateEmail();
-
-        if (!isDuplicateValid) {
-            return false;
-        }
-
-        return true;
-    }
-
-    emailInput.addEventListener('input', () => {
-        validateEmailFormat();
-    });
-
-    emailInput.addEventListener('blur', async () => {
-        await validateEmailFully();
-    });
-
-    form.addEventListener('submit', async function (e) {
-        if (isSubmitting) {
-            return;
-        }
-
-        if (!form.checkValidity()) {
-            return;
-        }
-
-        e.preventDefault();
-
-        const isEmailValid = await validateEmailFully();
-
-        if (!isEmailValid) {
-            emailInput.focus();
-            return;
-        }
-
-        isSubmitting = true;
-        form.requestSubmit();
-    });
-});
-
-// ============================= PHONE NUMBER VALIDATION =============================
-
-document.addEventListener('DOMContentLoaded', () => {
-    const form = document.getElementById('staffMgmtForm');
-    const phoneInput = document.getElementById('phoneInput');
-    const phoneError = document.getElementById('phoneError');
-
-    if (!form || !phoneInput || !phoneError) return;
-
-    function showPhoneError(message) {
-        phoneError.textContent = message;
-        phoneInput.classList.add('error-input');
-    }
-
-    function clearPhoneError() {
-        phoneError.textContent = '';
-        phoneInput.classList.remove('error-input');
     }
 
     function validatePhoneFormat() {
         const phone = phoneInput.value.trim();
 
         if (phone === '') {
-            showPhoneError('Phone number is required.');
+            showError(phoneInput, phoneError, 'Phone number is required.');
             return false;
         }
 
-        /*
-            Valid:
-            +919876543210
-            +91 9876543210
-            +91-9876543210
-
-            Invalid:
-            0001122568
-            9876543210
-            +910001122568
-        */
         const indianPhonePattern = /^\+91[\s-]?[6-9]\d{9}$/;
 
         if (!indianPhonePattern.test(phone)) {
-            showPhoneError('Phone number should start with +91 and contain a valid 10-digit Indian mobile number.');
+            showError(
+                phoneInput,
+                phoneError,
+                'Phone number should start with +91 and contain a valid 10-digit Indian mobile number.'
+            );
             return false;
         }
 
-        clearPhoneError();
+        clearError(phoneInput, phoneError);
         return true;
     }
 
     async function checkDuplicatePhone() {
+        if (!validatePhoneFormat()) {
+            return false;
+        }
+
         const phone = phoneInput.value.trim();
 
         try {
@@ -222,59 +176,96 @@ document.addEventListener('DOMContentLoaded', () => {
             const data = await response.json();
 
             if (data.exists) {
-                showPhoneError('This phone number already exists!');
+                showError(phoneInput, phoneError, 'This phone number already exists!');
                 return false;
             }
 
-            clearPhoneError();
+            clearError(phoneInput, phoneError);
             return true;
 
         } catch (error) {
             console.log('Phone check error:', error);
-            showPhoneError('Unable to check phone number right now.');
+            showError(phoneInput, phoneError, 'Unable to check phone number right now.');
             return false;
         }
     }
 
-    async function validatePhoneFully() {
-        const isFormatValid = validatePhoneFormat();
+    emailInput.addEventListener('input', () => {
+        validateEmailFormat();
+    });
 
-        if (!isFormatValid) {
-            return false;
-        }
-
-        const isDuplicateValid = await checkDuplicatePhone();
-
-        if (!isDuplicateValid) {
-            return false;
-        }
-
-        return true;
-    }
+    emailInput.addEventListener('blur', async () => {
+        await checkDuplicateEmail();
+    });
 
     phoneInput.addEventListener('input', () => {
-        // Allow only digits, +, space, and -
         phoneInput.value = phoneInput.value.replace(/[^0-9+\s-]/g, '');
-
         validatePhoneFormat();
     });
 
     phoneInput.addEventListener('blur', async () => {
-        await validatePhoneFully();
+        await checkDuplicatePhone();
     });
 
-    form.addEventListener('submit', async function (e) {
-        e.preventDefault();
+    let isChecking = false;
 
-        const isPhoneValid = await validatePhoneFully();
+form.addEventListener('submit', async function (e) {
+    if (allowFinalSubmit) {
+        return;
+    }
 
-        if (!isPhoneValid) {
-            phoneInput.focus();
-            return;
+    e.preventDefault();
+
+    if (isChecking) {
+        return;
+    }
+
+    if (!form.reportValidity()) {
+        return;
+    }
+
+    isChecking = true;
+
+    const submitBtn = form.querySelector('button[type="submit"], input[type="submit"]');
+
+    if (submitBtn) {
+        submitBtn.disabled = true;
+        submitBtn.dataset.originalText = submitBtn.innerText;
+        submitBtn.innerText = 'Checking...';
+    }
+
+    const isEmailValid = await checkDuplicateEmail();
+    const isPhoneValid = await checkDuplicatePhone();
+
+    if (!isEmailValid) {
+        emailInput.focus();
+
+        isChecking = false;
+
+        if (submitBtn) {
+            submitBtn.disabled = false;
+            submitBtn.innerText = submitBtn.dataset.originalText || 'Add Staff';
         }
 
-        form.submit();
-    });
+        return;
+    }
+
+    if (!isPhoneValid) {
+        phoneInput.focus();
+
+        isChecking = false;
+
+        if (submitBtn) {
+            submitBtn.disabled = false;
+            submitBtn.innerText = submitBtn.dataset.originalText || 'Add Staff';
+        }
+
+        return;
+    }
+
+    allowFinalSubmit = true;
+    form.requestSubmit();
+});
 });
     // ======================== FIRST NAME AND LAST NAME CONTAINS ONLY STRINGS =======================
 
