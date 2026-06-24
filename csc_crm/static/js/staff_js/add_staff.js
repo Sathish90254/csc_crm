@@ -210,6 +210,10 @@ document.addEventListener('DOMContentLoaded', () => {
 let isChecking = false;
 
 form.addEventListener('submit', async function (e) {
+    if (e.defaultPrevented) {
+        return;
+    }
+
     if (allowFinalSubmit) {
         return;
     }
@@ -524,10 +528,20 @@ document.addEventListener('DOMContentLoaded', () => {
     dateOfJoiningInput.addEventListener('change', validateDobAndDoj);
 
     form.addEventListener('submit', (e) => {
-        if (!validateDobAndDoj()) {
+    if (!validateDobAndDoj()) {
             e.preventDefault();
+            e.stopImmediatePropagation();
+
+            dateOfJoiningInput.scrollIntoView({
+                behavior: 'smooth',
+                block: 'center'
+            });
+
+            dateOfJoiningInput.focus();
+
+            return false;
         }
-    });
+    }, true);
 });
 
 // ============================== DEPARTMENT & ROLE AUTOMATICALLY SELECTED ==============================
