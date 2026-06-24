@@ -209,33 +209,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
 let isChecking = false;
 
-function getButtonText(button) {
-    if (!button) return 'Add Staff';
-
-    if (button.tagName === 'INPUT') {
-        return button.value;
-    }
-
-    return button.textContent.trim();
-}
-
-function setButtonText(button, text) {
-    if (!button) return;
-
-    if (button.tagName === 'INPUT') {
-        button.value = text;
-    } else {
-        button.textContent = text;
-    }
-}
-
-function resetSubmitButton(button) {
-    if (!button) return;
-
-    button.disabled = false;
-    setButtonText(button, button.dataset.originalText || 'Add Staff');
-}
-
 form.addEventListener('submit', async function (e) {
     if (allowFinalSubmit) {
         return;
@@ -251,55 +224,47 @@ form.addEventListener('submit', async function (e) {
         return;
     }
 
-    const submitBtn = form.querySelector('button[type="submit"], input[type="submit"]');
-
     isChecking = true;
 
+    const submitBtn = form.querySelector('button[type="submit"], input[type="submit"]');
+
     if (submitBtn) {
-        if (!submitBtn.dataset.originalText) {
-            submitBtn.dataset.originalText = getButtonText(submitBtn);
-        }
-
         submitBtn.disabled = true;
-        setButtonText(submitBtn, 'Checking...');
+        submitBtn.dataset.originalText = submitBtn.innerText;
+        submitBtn.innerText = 'Checking...';
     }
 
-    let canSubmit = false;
+    const isEmailValid = await checkDuplicateEmail();
+    const isPhoneValid = await checkDuplicatePhone();
 
-    try {
-        const isEmailValid = await checkDuplicateEmail();
+    if (!isEmailValid) {
+        emailInput.focus();
 
-        if (!isEmailValid) {
-            emailInput.focus();
-            return;
-        }
-
-        const isPhoneValid = await checkDuplicatePhone();
-
-        if (!isPhoneValid) {
-            phoneInput.focus();
-            return;
-        }
-
-        canSubmit = true;
-
-    } catch (error) {
-        console.error('Submit validation error:', error);
-        alert('Something went wrong while checking email or phone. Please try again.');
-
-    } finally {
         isChecking = false;
-        resetSubmitButton(submitBtn);
+
+        if (submitBtn) {
+            submitBtn.disabled = false;
+            submitBtn.innerText = submitBtn.dataset.originalText || 'Add Staff';
+        }
+
+        return;
     }
 
-    if (canSubmit) {
-        allowFinalSubmit = true;
-        HTMLFormElement.prototype.submit.call(form);
+    if (!isPhoneValid) {
+        phoneInput.focus();
 
-        setTimeout(() => {
-            allowFinalSubmit = false;
-        }, 0);
+        isChecking = false;
+
+        if (submitBtn) {
+            submitBtn.disabled = false;
+            submitBtn.innerText = submitBtn.dataset.originalText || 'Add Staff';
+        }
+
+        return;
     }
+
+    allowFinalSubmit = true;
+    form.requestSubmit();
 });
 });
     // ======================== FIRST NAME AND LAST NAME CONTAINS ONLY STRINGS =======================
