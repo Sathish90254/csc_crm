@@ -25,11 +25,11 @@
                     <div class="form-group">
                         <label for="email" class="form-label">Email *</label>
                         {{ form.email }}
-                        {% if form.email.errors %}
-                            <span class="form-error">{{ form.email.errors.0 }}</span>
-                        {% else %}
-                            <span class="form-error" id="emailError"></span>
-                        {% endif %}
+                        <span class="form-error" id="emailError">
+                            {% if form.email.errors %}
+                                {{ form.email.errors.0 }}
+                            {% endif %}
+                        </span>
                     </div>
                 </div>
 
@@ -50,11 +50,11 @@
                     <div class="form-group">
                         <label for="phone" class="form-label">Phone *</label>
                         {{ form.phone }}
-                        {% if form.phone.errors %}
-                            <span class="form-error">{{ form.phone.errors.0 }}</span>
-                        {% else %}
-                            <span class="form-error" id="phoneError"></span>
-                        {% endif %}
+                        <span class="form-error" id="phoneError">
+                            {% if form.phone.errors %}
+                                {{ form.phone.errors.0 }}
+                            {% endif %}
+                        </span>
                     </div>
                     <div class="form-group">
                         <label for="date_of_birth" class="form-label">Date of Birth</label>
