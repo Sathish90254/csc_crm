@@ -638,10 +638,17 @@ def staff_export(request, id):
     return response
     
 #============================================================Attendance page=======================================================================   
-#=====attendance checkout pennding===================
+from django.utils import timezone
+from datetime import datetime, time
+
 def auto_checkout_pending_attendance():
 
-    today = timezone.localdate()
+    current_time = timezone.localtime()
+
+    if current_time.time() < time(19, 00):
+        return
+
+    
 
     pending_attendance = Attendance.objects.filter(
         log_in__isnull=False,
@@ -650,28 +657,37 @@ def auto_checkout_pending_attendance():
 
     for attendance in pending_attendance:
 
-        if attendance.date < today:
-
-            auto_logout_time = datetime.combine(
+        auto_logout_time = timezone.make_aware(
+            datetime.combine(
                 attendance.date,
-                time(18, 30)   # 6:30 PM
+                time(18, 30)
             )
+        )
 
-            auto_logout_time = timezone.make_aware(
-                auto_logout_time
-            )
+        attendance.log_out = auto_logout_time
 
-            attendance.log_out = auto_logout_time
+        worked_time = (
+            attendance.log_out -
+            attendance.log_in
+        )
 
-            attendance.save()
+        worked_hours = (
+            worked_time.total_seconds() / 3600
+        )
 
+        if worked_hours < 4:
+            attendance.status = 'Absent'
+
+        attendance.save()
 #======attendance=========
 def attendance_page(request, id):
 
     auto_checkout_pending_attendance()
-
     staff = get_object_or_404(Staff, id=id)
-
+    
+    if staff.role.role_name == "Admin":
+        messages.error(request, "Attendance is not applicable for Admin.")
+        return redirect("overview", staff_id=staff.id)  
     # ================= TODAY =================
     today = timezone.localdate()
 
@@ -741,9 +757,22 @@ def export_attendance(request, id):
 
     staff = get_object_or_404(Staff, id=id)
 
-    attendance_data = Attendance.objects.filter(
-        staff=staff
-    ).order_by('-date')
+    attendance_data = Attendance.objects.filter(staff=staff)
+
+    filter_date = request.GET.get('date')
+    month = request.GET.get('month')
+    year = request.GET.get('year')
+
+    if filter_date:
+        attendance_data = attendance_data.filter(date=filter_date)
+
+    if month:
+        attendance_data = attendance_data.filter(date__month=month)
+
+    if year:
+        attendance_data = attendance_data.filter(date__year=year)
+
+    attendance_data = attendance_data.order_by('-date')
 
     wb = Workbook()
     ws = wb.active
@@ -779,7 +808,7 @@ def staff_checkin(request, id):
     
     current_time = timezone.localtime(timezone.now())
 
-    is_checkout_closed = current_time.time() >= time(19, 0)
+    is_checkout_closed = current_time.time() >= time(19, 00)
 
     # ================= TODAY ATTENDANCE =================
     today_attendance = Attendance.objects.filter(staff=staff, date=today).first()
@@ -802,7 +831,21 @@ def staff_checkin(request, id):
 
     # ================= POST =================
     if request.method == 'POST':
+        
+        # Future Joining Date Validation
+        if staff.date_of_joining > today:
+            messages.error(
+            request,
+            "Attendance cannot be marked before joining date.")
+            return redirect('attendance', id=staff.id)
 
+        # Admin Validation
+        if staff.role.role_name == "Admin":
+            messages.error(
+            request,
+            "Attendance is not applicable for Admin." )
+            return redirect('attendance', id=staff.id)
+    
         action = request.POST.get('action')
         current_time = timezone.localtime(timezone.now())
 
@@ -816,6 +859,11 @@ def staff_checkin(request, id):
 
         # -------- CHECKIN --------
         if action == 'checkin':
+            if current_time.time() >= time(19, 00):
+                messages.error(
+                request,"Check-In is not allowed after 7:00 PM.")
+                return redirect("attendance", id=staff.id)
+            
             if not attendance.log_in:
                 attendance.log_in = current_time
 
@@ -832,7 +880,7 @@ def staff_checkin(request, id):
         # -------- CHECKOUT --------
         elif action == 'checkout':
 
-            if current_time.time() >= time(19, 0):
+            if current_time.time() >= time(19, 00):
 
                 messages.error(
                 request,

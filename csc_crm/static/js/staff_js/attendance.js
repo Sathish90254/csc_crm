@@ -50,3 +50,54 @@ document.addEventListener("DOMContentLoaded", function () {
     });
 
 });
+
+  //attendance filter 
+document.getElementById('attendance-filter-form').addEventListener('submit', function(e){
+
+    e.preventDefault();
+
+    const month = document.querySelector('[name="month"]').value;
+    const year = document.querySelector('[name="year"]').value;
+    const date = document.querySelector('[name="date"]').value;
+
+    if(date){
+
+        const selectedDate = new Date(date);
+
+        const dateMonth = String(selectedDate.getMonth() + 1);
+        const dateYear = String(selectedDate.getFullYear());
+
+        if(month && month !== dateMonth){
+
+            alert("Selected Date and Month do not match.");
+            return;
+        }
+
+        if(year && year !== dateYear){
+
+            alert("Selected Date and Year do not match.");
+            return;
+        }
+    }
+
+    const params = new URLSearchParams(
+        new FormData(this)
+    );
+
+    fetch(window.location.pathname + '?' + params.toString())
+    .then(response => response.text())
+    .then(html => {
+
+        const parser = new DOMParser();
+
+        const doc = parser.parseFromString(html,'text/html');
+
+        const newDashboard =
+            doc.querySelector('#attendance-dashboard');
+
+        document.querySelector('#attendance-dashboard').innerHTML =
+            newDashboard.innerHTML;
+
+    });
+
+});
