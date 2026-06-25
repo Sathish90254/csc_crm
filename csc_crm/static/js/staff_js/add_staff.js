@@ -1052,13 +1052,6 @@ function validateMonthlyTarget() {
         return false;
     }
 
-    const [wholePart] = value.split('.');
-
-    if (wholePart.length > MAX_WHOLE_DIGITS) {
-        showMonthlyTargetError('Monthly target must not exceed ₹10,000,00.');
-        return false;
-    }
-
     const target = Number(value);
 
     if (target <= 0) {
@@ -1067,14 +1060,13 @@ function validateMonthlyTarget() {
     }
 
     if (target > MAX_MONTHLY_TARGET) {
-        showMonthlyTargetError('Monthly target must not exceed ₹99,999,999.99.');
+        showMonthlyTargetError('Monthly target must not exceed ₹10,00,000.');
         return false;
     }
 
     clearMonthlyTargetError();
     return true;
 }
-
     roleInput.addEventListener('change', () => {
         toggleMonthlyTarget();
         validateMonthlyTarget();
