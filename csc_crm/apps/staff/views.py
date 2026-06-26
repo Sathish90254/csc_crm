@@ -153,7 +153,7 @@ def add_staff(request):
 
     if request.method == 'POST':
         form = StaffForm(request.POST, request.FILES)
-
+    
         if form.is_valid():
             documents = request.FILES.getlist('documents')
 

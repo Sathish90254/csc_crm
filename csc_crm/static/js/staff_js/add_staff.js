@@ -402,7 +402,7 @@ document.addEventListener('DOMContentLoaded', () => {
         String(today.getDate()).padStart(2, '0');
 
     dateOfBirthInput.setAttribute('max', todayString);
-    dateOfJoiningInput.setAttribute('max', todayString);
+    dateOfJoiningInput.removeAttribute('max');
 
     function parseDate(value) {
         if (!value) return null;
@@ -492,11 +492,11 @@ document.addEventListener('DOMContentLoaded', () => {
             isValid = false;
         }
 
-        if (doj && doj > today) {
-            dateOfJoiningError.textContent = 'Date of joining cannot be in the future';
-            dateOfJoiningInput.classList.add('error-input');
-            isValid = false;
-        }
+        // if (doj && doj > today) {
+        //     dateOfJoiningError.textContent = 'Date of joining cannot be in the future';
+        //     dateOfJoiningInput.classList.add('error-input');
+        //     isValid = false;
+        // }
 
         if (dob && doj) {
             const ageAtJoining = calculateAge(dob, doj);
